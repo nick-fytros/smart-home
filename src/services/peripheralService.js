@@ -1,22 +1,16 @@
 import noble from 'noble';
-import NobleError from './models/nobleError';
+import NobleError from '../models/nobleError';
 
 export default class PeripheralService {
     constructor() {
         this.connectedPeripherals = [];
+        noble.stopScanning();
         noble.on('stateChange', function (state) {
             // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
             if (state === 'poweredOn') {
                 noble.startScanning();
             } else {
                 noble.stopScanning();
-            }
-        });
-        noble.on('discover', function (peripheral) {
-            /* find and connect to all the Ble lamps */
-            if (peripheral.advertisement.localName.includes('LEDBLE-')) {
-                noble.stopScanning();
-                this._connectToPeripheralAndInit(peripheral);
             }
         });
     }
@@ -48,16 +42,20 @@ export default class PeripheralService {
                         'colorCharecteristic': colorCharecteristic,
 						'currentColor': ''
                     });
+                    return null;
                 });
             });
         });
     }
 
-	get connectedPeripherals(){
-		return connectedPeripherals;
-	}
-
     startScanAndConnectToBleLamps() {
+		noble.on('discover', function (peripheral) {
+            /* find and connect to all the Ble lamps */
+            if (peripheral.advertisement.localName.includes('LEDBLE-')) {
+                noble.stopScanning();
+                this._connectToPeripheralAndInit(peripheral);
+            }
+        });
         noble.stopScanning();
         /* reset the connected peripherals array */
         this.connectedPeripherals = [];
