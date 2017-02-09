@@ -9,7 +9,7 @@ let peripheralService = new PeripheralService();
 try {
 	peripheralService.startScanAndConnectToBleLamps();
 }catch (err){
-	console.warn(err);	
+	console.warn(err.message);	
 }
 
 router.get('/', (req, res) => {

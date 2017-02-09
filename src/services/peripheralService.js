@@ -55,6 +55,10 @@ export default class PeripheralService {
                     /* on peripheral disconnect, reconnect */
                     peripheral.once('disconnect', () => {
                         console.log('peripheral disconnected...');
+                        let peripheralIndex = this.connectedPeripherals.findIndex(function (obj) {
+                            return obj.id === peripheral.id;
+                        });
+                        if (peripheralIndex >= 0) this.connectedPeripherals.splice(peripheralIndex, 1);
                         this._connectToPeripheralAndInit(peripheral);
                     });
                 });
@@ -80,19 +84,20 @@ export default class PeripheralService {
 
     setLampColor(peripheral, color) {
         let colorCommand = '56' + color + '00f0aa';
+        let peripheralIndex = this.connectedPeripherals.findIndex(function (obj) {
+            return obj.id === peripheral.id;
+        });
+        if (peripheralIndex < 0) {
+            throw new NobleError(`Peripheral ${peripheral.advertisement.localName} is not connected`);
+        }
         peripheral.colorCharecteristic.write(new Buffer(colorCommand, 'hex'), true, (error) => {
             if (error) {
                 console.warn(error);
                 throw new NobleError(error.message);
             }
-            console.log('set color ' + colorCommand);
+            console.log('set color ' + color);
             /* save color set to the peripheral it belongs */
-            let peripheralIndex = this.connectedPeripherals.findIndex(function (obj) {
-                return obj.id === peripheral.id;
-            });
-            if (peripheralIndex > 0) {
-                this.connectedPeripherals[peripheralIndex].currentColor = color;
-            }
+            this.connectedPeripherals[peripheralIndex].currentColor = color;
             console.log('final connected peripherals array is ' + this.connectedPeripherals.length);
         });
     }
