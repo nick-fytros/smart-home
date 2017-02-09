@@ -50,3 +50,8 @@ gulp.task('default', [
 	'develop',
 	'watch'
 ]);
+
+gulp.task('build', [
+	'babel',
+	'sass'
+]);

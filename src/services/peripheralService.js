@@ -8,6 +8,7 @@ export default class PeripheralService {
         noble.on('stateChange', (state) => {
             // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
             if (state === 'poweredOn') {
+                console.log('Noble started scanning')
                 noble.startScanning();
             } else {
                 noble.stopScanning();
@@ -76,7 +77,7 @@ export default class PeripheralService {
         this.connectedPeripherals = [];
         if (noble.state === 'poweredOn') {
             noble.startScanning();
-            console.log('started scanning');
+            console.log('Noble started scanning');
         } else {
             throw new NobleError(`Noble state is ${noble.state} and can't start scanning.`);
         }
