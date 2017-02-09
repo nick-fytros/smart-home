@@ -24,19 +24,19 @@ var router = _express2.default.Router();
 // initialize PeripheralService
 // TODO initialize elsewhere
 var peripheralService = new _peripheralService2.default();
+try {
+	peripheralService.startScanAndConnectToBleLamps();
+} catch (err) {
+	console.warn(err);
+}
 
 router.get('/', function (req, res) {
-	try {
-		peripheralService.startScanAndConnectToBleLamps();
-	} catch (err) {
-		console.warn(err);
-		res.send('error' + err.message);
-	}
 	res.render('index', { title: 'bleLamps' });
 });
 
 router.get('/color/:color', function (req, res) {
-	res.send();
+	peripheralService.setLampColor(peripheralService.getConnectedPeripherals()[0], req.params.color);
+	res.render('index', { title: 'color ' + req.params.color + ' set' });
 });
 
 exports.bleLamps = router;
