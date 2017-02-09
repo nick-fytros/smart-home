@@ -2,9 +2,9 @@
   "name": "blelamps",
   "version": "0.1.1",
   "private": true,
-  "main": "app.js",
+  "main": "start.js",
   "scripts": {
-    "start": "pm2 dist/start.js",
+    "start": "pm2 start dist/start.js",
     "test": "mocha --recursive test",
     "test:coverage": "nyc npm test",
     "test:unit": "mocha --recursive test/middleware test/models test/routes",
