@@ -1,0 +1,5 @@
+apps:
+  - script   : 'dist/start.js'
+    name     : 'smart-home'
+    exec_mode: 'cluster'
+    instances: 2
