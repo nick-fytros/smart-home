@@ -1,10 +1,10 @@
-import gulp from 'gulp';
-import nodemon from 'gulp-nodemon';
-import plumber from 'gulp-plumber';
-import livereload from 'gulp-livereload';
-import sass from 'gulp-sass';
-import babel from 'gulp-babel';
-import mocha from 'gulp-mocha';
+var gulp = require('gulp');
+var nodemon = require('gulp-nodemon');
+var plumber = require('gulp-plumber');
+var livereload = require('gulp-livereload');
+var sass = require('gulp-sass');
+var babel = require('gulp-babel');
+var mocha = require('gulp-mocha');
 
 gulp.task('babel', () =>
     gulp.src('src/**/*.js')

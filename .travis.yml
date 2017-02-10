@@ -10,3 +10,7 @@ script: gulp test
 
 notifications:
   email: false
+
+branches:
+  only:
+  - master
