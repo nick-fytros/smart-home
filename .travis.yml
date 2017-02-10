@@ -5,4 +5,4 @@ node_js:
     - 4.4.x
 before_script:
   - npm install -g gulp
-script: gulp
+script: gulp test
