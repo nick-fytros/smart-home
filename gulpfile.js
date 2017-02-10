@@ -1,10 +1,11 @@
-var gulp = require('gulp');
-var nodemon = require('gulp-nodemon');
-var plumber = require('gulp-plumber');
+var gulp       = require('gulp');
+var nodemon    = require('gulp-nodemon');
+var plumber    = require('gulp-plumber');
 var livereload = require('gulp-livereload');
-var sass = require('gulp-sass');
-var babel = require('gulp-babel');
-var mocha = require('gulp-mocha');
+var sass       = require('gulp-sass');
+var babel      = require('gulp-babel');
+var mocha      = require('gulp-mocha');
+var chai       = require('chai');
 
 gulp.task('babel', () =>
     gulp.src('src/**/*.js')
