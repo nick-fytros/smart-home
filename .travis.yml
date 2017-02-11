@@ -2,32 +2,23 @@ language: node_js
 
 # Notifications
 notifications:
-  email: false
+ email: false
+ webhooks: http://efyges.ddns.net/travisci
+  on_success: always
+  on_failure: never
+  on_start: never
 
 # Branches to run
 branches:
-  only:
+ only:
   - develop
 
 # Versions to test
 node_js:
-  - 7.5
-  - 6.1
+ - 7.5
+ - 6.1
 
 # Gulp build and run tests
 before_script:
-  - npm install -g gulp
+ - npm install -g gulp
 script: gulp test
-
-after_success:
-# Docker build
-sudo: required
-services:
-  - docker
-before_install:
-  - docker build -t nick-fytros/smart-home .
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "develop" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push nick-fytros/smart-home;
-    fi
