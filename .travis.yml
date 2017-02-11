@@ -13,28 +13,20 @@ branches:
 node_js:
   - 7.5
   - 6.1
-  - 5.11
-  - 4.4
-
-# Environment variables
-env:
-  - DOCKER_USERNAME=nickfytros
-  - DOCKER_PASSWORD=kwdikosgiatodocker16
 
 # Gulp build and run tests
 before_script:
   - npm install -g gulp
 script: gulp test
 
-after_success:
 # Docker build
-  sudo: required
-  services:
-    - docker
-  before_install:
-    - docker build -t nick-fytros/smart-home .
-  after_success:
-    - if [ "$TRAVIS_BRANCH" == "master" ]; then
-      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-      docker push nick-fytros/smart-home;
-      fi
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t nick-fytros/smart-home .
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "develop" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push nick-fytros/smart-home;
+    fi
