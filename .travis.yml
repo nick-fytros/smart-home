@@ -14,6 +14,7 @@ notifications:
 branches:
   only:
     - develop
+    - master
 
 # Versions to test
 node_js:
