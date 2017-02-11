@@ -46,7 +46,7 @@ gulp.task('develop', ['babel'], () => {
     });
 });
 
-gulp.task('test', function () {
+gulp.task('mocha', function () {
     return gulp.src(['test/*.js'], {
             read: false
         })
@@ -58,10 +58,16 @@ gulp.task('test', function () {
         }));
 });
 
+gulp.task('test', [
+    'babel',
+    'sass',
+    'mocha'
+]);
+
 gulp.task('default', [
     'babel',
     'sass',
-    'test',
+    'mocha',
     'develop',
     'watch'
 ]);
