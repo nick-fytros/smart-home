@@ -3,6 +3,7 @@
 README.md
 .editorconfig
 .travis.yml
+deploy.sh
 npm-debug.log
 node_modules
 src
