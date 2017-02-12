@@ -1,5 +1,9 @@
 .git
 .gitignore
+README.md
+.editorconfig
+.travis.yml
+npm-debug.log
 node_modules
 src
 test

@@ -1,6 +1,7 @@
 FROM hypriot/rpi-node:latest
 
 # Install required libs for node noble js
+RUN apt-get update
 RUN apt-get install bluetooth bluez libbluetooth-dev libudev-dev
 RUN apt-get install libcap2-bin
 RUN setcap cap_net_raw+eip $(eval readlink -f `which node`)
