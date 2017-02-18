@@ -1,42 +1,38 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var exphbs  = require('express-handlebars');
+let express = require('express');
+let path = require('path');
+let favicon = require('serve-favicon');
+let logger = require('morgan');
+let cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
+let expressVue = require('express-vue');
 
-import routes from './routes/index';
-import {bleLamps} from './routes/blelamps';
+import * as routers from './routes';
 
-var app = express();
+let app = express();
 
-var env = process.env.NODE_ENV || 'development';
-app.locals.ENV = env;
-app.locals.ENV_DEVELOPMENT = env == 'development';
+app.locals.ENV = process.env.NODE_ENV || 'development';
+app.locals.ENV_DEVELOPMENT = app.locals.ENV == 'development';
 
 // view engine setup
-
-app.engine('handlebars', exphbs({
-  defaultLayout: 'main',
-  partialsDir: ['views/partials/']
-}));
-
-//app.set('views', path.join(__dirname, 'views'));
-app.set('views', './views');
-app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, '/views'));
+app.set('vue', {
+    components: path.join(__dirname + '/views/components'),
+    defaultLayout: '/views/layout'
+});
+app.engine('vue', expressVue);
+app.set('view engine', 'vue');
 
 // app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: true
+    extended: true
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/blelamps', bleLamps);
+app.use('/', routers.main);
+app.use('/blelamps', routers.blelamps);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,8 +40,6 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
-
-/// error handlers
 
 // development error handler
 // will print stacktrace
@@ -72,4 +66,4 @@ app.use(function(err, req, res, next) {
     });
 });
 
-export {app};
+export { app };

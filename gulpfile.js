@@ -1,19 +1,21 @@
-var gulp       = require('gulp');
-var nodemon    = require('gulp-nodemon');
-var plumber    = require('gulp-plumber');
+var gulp = require('gulp');
+var nodemon = require('gulp-nodemon');
+var plumber = require('gulp-plumber');
 var livereload = require('gulp-livereload');
-var sass       = require('gulp-sass');
-var babel      = require('gulp-babel');
-var mocha      = require('gulp-mocha');
-var chai       = require('chai');
+var sass = require('gulp-sass');
+var babel = require('gulp-babel');
+var mocha = require('gulp-mocha');
+var chai = require('chai');
 
-gulp.task('babel', () =>
-    gulp.src('src/**/*.js')
-    .pipe(babel({
-        presets: ['es2015']
-    }))
-    .pipe(gulp.dest('dist'))
-);
+gulp.task('babel', () => {
+    gulp.src('app/**/*.js')
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(gulp.dest('dist'));
+    gulp.src('app/**/*.vue')
+        .pipe(gulp.dest('dist'));
+});
 
 gulp.task('sass', () => {
     gulp.src('./public/css/*.scss')
@@ -24,14 +26,14 @@ gulp.task('sass', () => {
 });
 
 gulp.task('watch', () => {
-    gulp.watch(['./public/css/*.scss', './src/**/*.js'], ['sass', 'babel']);
+    gulp.watch(['./public/css/*.scss', './app/**/*.js'], ['sass', 'babel']);
 });
 
 gulp.task('develop', ['babel'], () => {
     livereload.listen();
     nodemon({
         script: 'dist/start.js',
-        ext: 'js handlebars',
+        ext: 'js vue',
         stdout: true
     }).on('readable', () => {
         this.stdout.on('data', (chunk) => {
@@ -41,12 +43,12 @@ gulp.task('develop', ['babel'], () => {
         });
         this.stdout.pipe(process.stdout);
         this.stderr.pipe(process.stderr);
-    }).once('quit', function () {
+    }).once('quit', function() {
         process.exit();
     });
 });
 
-gulp.task('mocha', function () {
+gulp.task('mocha', function() {
     return gulp.src(['test/*.js'], {
             read: false
         })

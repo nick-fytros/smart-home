@@ -5,13 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.app = undefined;
 
-var _index = require('./routes/index');
+var _routes = require('./routes');
 
-var _index2 = _interopRequireDefault(_index);
+var routers = _interopRequireWildcard(_routes);
 
-var _blelamps = require('./routes/blelamps');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var express = require('express');
 var path = require('path');
@@ -19,24 +17,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var exphbs = require('express-handlebars');
+var expressVue = require('express-vue');
 
 var app = express();
 
-var env = process.env.NODE_ENV || 'development';
-app.locals.ENV = env;
-app.locals.ENV_DEVELOPMENT = env == 'development';
+app.locals.ENV = process.env.NODE_ENV || 'development';
+app.locals.ENV_DEVELOPMENT = app.locals.ENV == 'development';
 
 // view engine setup
-
-app.engine('handlebars', exphbs({
-    defaultLayout: 'main',
-    partialsDir: ['views/partials/']
-}));
-
-//app.set('views', path.join(__dirname, 'views'));
-app.set('views', './views');
-app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, '/views'));
+app.set('vue', {
+    components: path.join(__dirname + '/views/components'),
+    defaultLayout: '/views/layout'
+});
+app.engine('vue', expressVue);
+app.set('view engine', 'vue');
 
 // app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.use(logger('dev'));
@@ -47,8 +42,8 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', _index2.default);
-app.use('/blelamps', _blelamps.bleLamps);
+app.use('/', routers.main);
+app.use('/blelamps', routers.blelamps);
 
 /// catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -56,8 +51,6 @@ app.use(function (req, res, next) {
     err.status = 404;
     next(err);
 });
-
-/// error handlers
 
 // development error handler
 // will print stacktrace
