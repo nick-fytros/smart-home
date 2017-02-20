@@ -25,10 +25,9 @@ app.locals.ENV = process.env.NODE_ENV || 'development';
 app.locals.ENV_DEVELOPMENT = app.locals.ENV == 'development';
 
 // view engine setup
-app.set('views', path.join(__dirname, '/views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('vue', {
-    components: path.join(__dirname + '/views/components'),
-    defaultLayout: '/views/layout'
+    components: path.join(__dirname + '../views/components')
 });
 app.engine('vue', expressVue);
 app.set('view engine', 'vue');
@@ -59,9 +58,15 @@ if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
-            message: err.message,
-            error: err,
-            title: 'error'
+            data: {
+                error: err
+            },
+            vue: {
+                meta: {
+                    title: 'Something went wrong',
+                    head: [{ name: 'application-name', content: 'Smart home' }, { name: 'description', content: 'Error page', id: 'desc' }]
+                }
+            }
         });
     });
 }
@@ -71,9 +76,15 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
-        message: err.message,
-        error: {},
-        title: 'error'
+        data: {
+            error: ''
+        },
+        vue: {
+            meta: {
+                title: 'Page Title',
+                head: [{ name: 'application-name', content: 'Smart home' }, { name: 'description', content: 'Error page', id: 'desc' }]
+            }
+        }
     });
 });
 

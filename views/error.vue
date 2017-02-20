@@ -1,6 +1,7 @@
 <template>
     <p>
         Error
+        {{error}}
     </p>
 </template>
 

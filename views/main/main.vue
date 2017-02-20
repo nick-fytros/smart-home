@@ -1,7 +1,7 @@
 <template>
-    <footer>
-        <p>test footer</p>
-    </footer>
+    <div>
+        <h1>{{otherData}}</h1>
+    </div>
 </template>
 
 <script>
