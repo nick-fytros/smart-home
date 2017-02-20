@@ -25,12 +25,13 @@ app.locals.ENV = process.env.NODE_ENV || 'development';
 app.locals.ENV_DEVELOPMENT = app.locals.ENV == 'development';
 
 // view engine setup
-app.set('views', path.join(__dirname, '../views'));
-app.set('vue', {
-    components: path.join(__dirname + '../views/components')
-});
 app.engine('vue', expressVue);
 app.set('view engine', 'vue');
+app.set('views', path.join(__dirname, '/views'));
+app.set('vue', {
+    componentsDir: 'components',
+    defaultLayout: '/views/layout'
+});
 
 // app.use(favicon(__dirname + '/public/img/favicon.ico'));
 app.use(logger('dev'));

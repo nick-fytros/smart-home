@@ -15,7 +15,8 @@ router.get('/', function (req, res) {
         vue: {
             meta: {
                 title: 'Page Title',
-                head: [{ name: 'application-name', content: 'Name of my application' }, { name: 'description', content: 'A description of the page', id: 'desc' }]
+                head: [{ name: 'application-name', content: 'Name of my application' }, { name: 'description', content: 'A description of the page', id: 'desc' }],
+                components: ['sm-header', 'sm-footer']
             }
         }
     });
