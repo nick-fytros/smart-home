@@ -6,6 +6,7 @@ var sass = require('gulp-sass');
 var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
 var clean = require('gulp-clean');
+var cleanCSS = require('gulp-clean-css');
 var chai = require('chai');
 
 gulp.task('clean', () => {
@@ -28,15 +29,16 @@ gulp.task('babel', ['clean', 'vue'], () => {
 });
 
 gulp.task('sass', ['clean', 'vue'], () => {
-    return gulp.src('./public/css/*.scss')
+    return gulp.src('./assets/scss/*.scss')
         .pipe(plumber())
         .pipe(sass())
+        .pipe(cleanCSS({ compatibility: 'ie8' }))
         .pipe(gulp.dest('./public/css'))
         .pipe(livereload());
 });
 
 gulp.task('watch', ['clean'], () => {
-    gulp.watch(['./public/css/*.scss', './app/**/*.js', './app/**/*.vue'], ['clean', 'vue', 'sass', 'babel']);
+    gulp.watch(['./assets/scss/*.scss', './app/**/*.js', './app/**/*.vue'], ['clean', 'vue', 'sass', 'babel']);
 });
 
 gulp.task('develop', ['clean', 'babel', 'sass'], () => {

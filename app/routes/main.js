@@ -12,7 +12,8 @@ router.get('/', function(req, res) {
                 title: 'Smart Home by Nikos',
                 head: [
                     { name: 'application-name', content: 'Smart Home by Nikos' },
-                    { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' }
+                    { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' },
+                    { style: 'css/style.css' }
                 ]
             },
             components: ['smheader', 'smfooter']
