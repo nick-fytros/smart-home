@@ -15,5 +15,9 @@ var _blelamps2 = _interopRequireDefault(_blelamps);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Nikos Fytros
+ * Export the routers
+ */
 exports.main = _main2.default;
 exports.blelamps = _blelamps2.default;

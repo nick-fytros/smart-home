@@ -29,7 +29,7 @@ app.engine('vue', expressVue);
 app.set('view engine', 'vue');
 app.set('views', path.join(__dirname, '/views'));
 app.set('vue', {
-    componentsDir: 'components',
+    componentsDir: path.join(__dirname, '/views/components'),
     defaultLayout: '/views/layout'
 });
 

@@ -1,8 +1,8 @@
 <template>
     <div>
-        <sm-header></sm-header>
+        <smheader></smheader>
         <h1>{{otherData}}</h1>
-        <sm-footer></sm-footer>
+        <smfooter></smfooter>
     </div>
 </template>
 

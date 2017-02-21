@@ -10,14 +10,14 @@ var router = express.Router();
 router.get('/', function (req, res) {
     res.render('main/main', {
         data: {
-            otherData: 'Something Else'
+            otherData: 'Main page'
         },
         vue: {
             meta: {
-                title: 'Page Title',
-                head: [{ name: 'application-name', content: 'Name of my application' }, { name: 'description', content: 'A description of the page', id: 'desc' }],
-                components: ['sm-header', 'sm-footer']
-            }
+                title: 'Smart Home by Nikos',
+                head: [{ name: 'application-name', content: 'Smart Home by Nikos' }, { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' }]
+            },
+            components: ['smheader', 'smfooter']
         }
     });
 });
