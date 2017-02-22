@@ -1,5 +1,5 @@
 export default class VueScope {
-    contructor(scopeObject = {}) {
+    constructor(scopeObject = {}) {
         this.scope = {
             data: {
                 dafaultData: 'default'
@@ -26,9 +26,9 @@ export default class VueScope {
                 },
                 components: ['smheader', 'smfooter']
             }
-        }
+        };
         /* if a scope object is passed ovveride the given properties with the same keys and add new ones */
-        if (!Object.is(scopeObject, {})){
+        if (!Object.is(scopeObject, {})) {
             Object.assign(this.scope, scopeObject);
         }
     }
@@ -57,6 +57,10 @@ export default class VueScope {
 
     addData(dataObject) {
         this.scope.data = Object.assign(this.scope.data, dataObject);
+    }
+
+    getScope() {
+        return this.scope;
     }
 
 }

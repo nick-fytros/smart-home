@@ -3,23 +3,27 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var express = require('express');
-var router = express.Router();
+
+var _express = require('express');
+
+var _express2 = _interopRequireDefault(_express);
+
+var _vueScope = require('../models/vueScope');
+
+var _vueScope2 = _interopRequireDefault(_vueScope);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var router = _express2.default.Router();
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.render('main/main', {
-        data: {
-            otherData: 'Main page'
-        },
-        vue: {
-            meta: {
-                title: 'Smart Home by Nikos',
-                head: [{ name: 'application-name', content: 'Smart Home by Nikos' }, { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' }, { style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' }, { style: 'css/style.css' }]
-            },
-            components: ['smheader', 'smfooter']
-        }
+    var vueScope = new _vueScope2.default();
+    vueScope.addData({
+        title: 'Smart Home',
+        subtitle: 'Grünerløkka, Oslo'
     });
+    res.render('main/main', vueScope.getScope());
 });
 
 exports.default = router;
