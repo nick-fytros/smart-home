@@ -1,5 +1,5 @@
 <template>
-    <header class="page-center">
+    <header>
         <p>test header</p>
     </header>
 </template>

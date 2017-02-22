@@ -1,5 +1,5 @@
 <template>
-    <footer class="page-center">
+    <footer>
         <p>test footer</p>
     </footer>
 </template>

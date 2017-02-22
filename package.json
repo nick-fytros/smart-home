@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "body-parser": "^1.13.3",
+    "bulma": "^0.3.1",
     "cookie-parser": "^1.3.3",
     "express": "^4.13.3",
     "express-vue": "^3.5.1",
@@ -27,8 +28,8 @@
     "debug": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
-    "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^3.0.3",
+    "gulp-clean-dest": "^0.2.0",
     "gulp-livereload": "^3.8.0",
     "gulp-mocha": "^3.0.1",
     "gulp-nodemon": "^2.0.2",

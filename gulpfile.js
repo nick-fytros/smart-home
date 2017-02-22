@@ -5,22 +5,18 @@ var livereload = require('gulp-livereload');
 var sass = require('gulp-sass');
 var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
-var clean = require('gulp-clean');
+var clean = require('gulp-clean-dest');
 var cleanCSS = require('gulp-clean-css');
 var chai = require('chai');
 
-gulp.task('clean', () => {
-    return gulp.src('dist', { read: false })
-        .pipe(clean());
-});
-
-gulp.task('vue', ['clean'], () => {
+gulp.task('vue', () => {
     return gulp.src('app/**/*.vue')
+        .pipe(clean('dist'))
         .pipe(gulp.dest('dist'))
         .pipe(livereload());
 });
 
-gulp.task('babel', ['clean', 'vue'], () => {
+gulp.task('babel', ['vue'], () => {
     return gulp.src('app/**/*.js')
         .pipe(babel({
             presets: ['es2015']
@@ -28,20 +24,22 @@ gulp.task('babel', ['clean', 'vue'], () => {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.task('sass', ['clean', 'vue'], () => {
+gulp.task('sass', ['vue'], () => {
     return gulp.src('./assets/scss/*.scss')
         .pipe(plumber())
         .pipe(sass())
-        .pipe(cleanCSS({ compatibility: 'ie8' }))
+        .pipe(cleanCSS({
+            compatibility: 'ie8'
+        }))
         .pipe(gulp.dest('./public/css'))
         .pipe(livereload());
 });
 
-gulp.task('watch', ['clean'], () => {
-    gulp.watch(['./assets/scss/*.scss', './app/**/*.js', './app/**/*.vue'], ['clean', 'vue', 'sass', 'babel']);
+gulp.task('watch', () => {
+    gulp.watch(['./assets/scss/*.scss', './app/**/*.js', './app/**/*.vue'], ['vue', 'sass', 'babel']);
 });
 
-gulp.task('develop', ['clean', 'babel', 'sass'], () => {
+gulp.task('develop', ['vue', 'babel', 'sass'], () => {
     livereload.listen();
     nodemon({
         script: 'dist/start.js',
@@ -55,12 +53,12 @@ gulp.task('develop', ['clean', 'babel', 'sass'], () => {
         });
         this.stdout.pipe(process.stdout);
         this.stderr.pipe(process.stderr);
-    }).once('quit', function() {
+    }).once('quit', function () {
         process.exit();
     });
 });
 
-gulp.task('mocha', ['clean'], function() {
+gulp.task('mocha', function () {
     return gulp.src(['test/*.js'], {
             read: false
         })
@@ -73,7 +71,6 @@ gulp.task('mocha', ['clean'], function() {
 });
 
 gulp.task('test', [
-    'clean',
     'vue',
     'babel',
     'sass',
@@ -81,7 +78,6 @@ gulp.task('test', [
 ]);
 
 gulp.task('default', [
-    'clean',
     'vue',
     'babel',
     'sass',
@@ -91,7 +87,6 @@ gulp.task('default', [
 ]);
 
 gulp.task('build', [
-    'clean',
     'vue',
     'babel',
     'sass'

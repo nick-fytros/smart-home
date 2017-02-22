@@ -1,19 +1,23 @@
 <template>
     <div>
         <smheader></smheader>
-        <h1>{{otherData}}</h1>
+        <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+                <h1>{{otherData}}</h1>
+            </div>
+        </div>
         <smfooter></smfooter>
     </div>
 </template>
-
 <script>
     export default {
         data() {
             return {}
         }
     }
-</script>
 
+</script>
 <style>
+
 
 </style>
