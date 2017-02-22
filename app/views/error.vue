@@ -1,0 +1,18 @@
+<template>
+    <p>
+        Error
+        {{error}}
+    </p>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {}
+        }
+    }
+</script>
+
+<style>
+
+</style>
