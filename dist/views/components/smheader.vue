@@ -1,17 +1,26 @@
 <template>
-    <header>
-        <p>test header</p>
+    <header class="hero is-primary is-bold">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    {{title}}
+                </h1>
+                <h2 class="subtitle">
+                    {{subtitle}}
+                </h2>
+            </div>
+        </div>
     </header>
 </template>
 
 <script>
     export default {
-        data() {
-            return {}
-        }
+        props: ['title', 'subtitle']
     }
+
 </script>
 
 <style>
+
 
 </style>

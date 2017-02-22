@@ -10,43 +10,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var VueScope = function () {
     function VueScope() {
+        var scopeObject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
         _classCallCheck(this, VueScope);
+
+        this.scope = {
+            data: {
+                dafaultData: 'default'
+            },
+            vue: {
+                meta: {
+                    title: 'Smart Home by Nikos',
+                    head: [{
+                        name: 'application-name',
+                        content: 'Smart Home by Nikos'
+                    }, {
+                        name: 'description',
+                        content: 'Smart Home by Nikos Fytros',
+                        id: 'desc'
+                    }, {
+                        style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'
+                    }, {
+                        style: 'css/style.css'
+                    }]
+                },
+                components: ['smheader', 'smfooter']
+            }
+        };
+        /* if a scope object is passed ovveride the given properties with the same keys and add new ones */
+        if (!Object.is(scopeObject, {})) {
+            Object.assign(this.scope, scopeObject);
+        }
     }
 
     _createClass(VueScope, [{
-        key: 'contructor',
-        value: function contructor() {
-            var scopeObject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-            this.scope = {
-                data: {
-                    dafaultData: 'default'
-                },
-                vue: {
-                    meta: {
-                        title: 'Smart Home by Nikos',
-                        head: [{
-                            name: 'application-name',
-                            content: 'Smart Home by Nikos'
-                        }, {
-                            name: 'description',
-                            content: 'Smart Home by Nikos Fytros',
-                            id: 'desc'
-                        }, {
-                            style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'
-                        }, {
-                            style: 'css/style.css'
-                        }]
-                    },
-                    components: ['smheader', 'smfooter']
-                }
-            };
-            /* if a scope object is passed ovveride the given properties with the same keys and add new ones */
-            if (!Object.is(scopeObject, {})) {
-                Object.assign(this.scope, scopeObject);
-            }
-        }
-    }, {
         key: 'changeApplicationTitle',
         value: function changeApplicationTitle(appTitle) {
             this.scope.vue.meta.title = appTitle;
@@ -77,6 +74,11 @@ var VueScope = function () {
         key: 'addData',
         value: function addData(dataObject) {
             this.scope.data = Object.assign(this.scope.data, dataObject);
+        }
+    }, {
+        key: 'getScope',
+        value: function getScope() {
+            return this.scope;
         }
     }]);
 

@@ -1,26 +1,29 @@
 <template>
-    <div class="content">
-        <smheader></smheader>
-        <div class="columns">
-            <div class="column is-half is-offset-one-quarter">
-                <h1>{{otherData}}</h1>
-                <form>
-                    <p class="control has-icon">
-                        <input class="input" type="email" placeholder="Email">
-                        <span class="icon is-small"><i class="fa fa-envelope"></i></span>
-                    </p>
-                    <p class="control has-icon">
-                        <input class="input" type="password" placeholder="Password">
-                        <span class="icon is-small"><i class="fa fa-lock"></i></span>
-                    </p>
-                    <div class="control is-grouped">
-                        <p class="control">
-                            <button class="button is-primary">Submit</button>
-                        </p>
+    <div>
+        <smheader :title="title" :subtitle="subtitle"></smheader>
+        <section class="section content">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-one-third is-offset-one-third">
+                        <form>
+                            <p class="control has-icon">
+                                <input class="input" type="email" placeholder="Email">
+                                <span class="icon is-small"><i class="fa fa-envelope"></i></span>
+                            </p>
+                            <p class="control has-icon">
+                                <input class="input" type="password" placeholder="Password">
+                                <span class="icon is-small"><i class="fa fa-lock"></i></span>
+                            </p>
+                            <div class="control is-grouped">
+                                <p class="control">
+                                    <button class="button is-primary">Login</button>
+                                </p>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </section>
         <smfooter></smfooter>
     </div>
 </template>

@@ -36,6 +36,7 @@ gulp.task('sass', ['vue'], () => {
 });
 
 gulp.task('watch', () => {
+    livereload.listen();
     gulp.watch(['./assets/scss/*.scss', './app/**/*.js', './app/**/*.vue'], ['vue', 'sass', 'babel']);
 });
 
@@ -43,7 +44,7 @@ gulp.task('develop', ['vue', 'babel', 'sass'], () => {
     livereload.listen();
     nodemon({
         script: 'dist/start.js',
-        ext: 'js vue',
+        ext: 'js vue scss',
         stdout: true
     }).on('readable', () => {
         this.stdout.on('data', (chunk) => {
