@@ -15,7 +15,7 @@ router.get('/', function (req, res) {
         vue: {
             meta: {
                 title: 'Smart Home by Nikos',
-                head: [{ name: 'application-name', content: 'Smart Home by Nikos' }, { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' }, { style: 'css/style.css' }]
+                head: [{ name: 'application-name', content: 'Smart Home by Nikos' }, { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' }, { style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' }, { style: 'css/style.css' }]
             },
             components: ['smheader', 'smfooter']
         }

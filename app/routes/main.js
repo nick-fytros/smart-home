@@ -13,6 +13,7 @@ router.get('/', function(req, res) {
                 head: [
                     { name: 'application-name', content: 'Smart Home by Nikos' },
                     { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' },
+                    { style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css' },
                     { style: 'css/style.css' }
                 ]
             },
