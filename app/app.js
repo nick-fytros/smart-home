@@ -1,25 +1,14 @@
-'use strict';
+let express = require('express');
+let path = require('path');
+let favicon = require('serve-favicon');
+let logger = require('morgan');
+let cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
+let expressVue = require('express-vue');
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.app = undefined;
+import * as routers from './routes';
 
-var _routes = require('./routes');
-
-var routers = _interopRequireWildcard(_routes);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var expressVue = require('express-vue');
-
-var app = express();
+let app = express();
 
 app.locals.ENV = process.env.NODE_ENV || 'development';
 app.locals.ENV_DEVELOPMENT = app.locals.ENV == 'development';
@@ -45,7 +34,7 @@ app.use('/', routers.main);
 app.use('/blelamps', routers.blelamps);
 
 /// catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -55,7 +44,7 @@ app.use(function (req, res, next) {
 // will print stacktrace
 
 if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
+    app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
             data: {
@@ -64,7 +53,10 @@ if (app.get('env') === 'development') {
             vue: {
                 meta: {
                     title: 'Something went wrong',
-                    head: [{ name: 'application-name', content: 'Smart home' }, { name: 'description', content: 'Error page', id: 'desc' }]
+                    head: [
+                        { name: 'application-name', content: 'Smart home' },
+                        { name: 'description', content: 'Error page', id: 'desc' }
+                    ]
                 }
             }
         });
@@ -73,7 +65,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         data: {
@@ -82,10 +74,13 @@ app.use(function (err, req, res, next) {
         vue: {
             meta: {
                 title: 'Page Title',
-                head: [{ name: 'application-name', content: 'Smart home' }, { name: 'description', content: 'Error page', id: 'desc' }]
+                head: [
+                    { name: 'application-name', content: 'Smart home' },
+                    { name: 'description', content: 'Error page', id: 'desc' }
+                ]
             }
         }
     });
 });
 
-exports.app = app;
+export { app };

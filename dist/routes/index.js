@@ -1,12 +1,23 @@
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-
-/* GET home page. */
-
-router.get('/', function (req, res) {
-  res.render('index', { title: 'Express' });
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
+exports.blelamps = exports.main = undefined;
 
-module.exports = router;
+var _main = require('../routes/main');
+
+var _main2 = _interopRequireDefault(_main);
+
+var _blelamps = require('../routes/blelamps');
+
+var _blelamps2 = _interopRequireDefault(_blelamps);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Nikos Fytros
+ * Export the routers
+ */
+exports.main = _main2.default;
+exports.blelamps = _blelamps2.default;

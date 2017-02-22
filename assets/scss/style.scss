@@ -1,0 +1,17 @@
+@import 'partials/reset';
+@import 'partials/header';
+@import 'partials/footer';
+body {
+    background: #ffe761;
+    color: #000;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    .page-center {
+        width: 960px;
+        margin: 0 auto;
+    }
+}
+
+a {
+    color: #00B7FF;
+}
