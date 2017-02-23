@@ -1,6 +1,6 @@
-import noble from 'noble';
-import PeripheralService from '../services/peripheralService'
-import express from 'express';
+import * as noble from 'noble';
+import PeripheralService from '../services/peripheralService';
+import * as express from 'express';
 let router = express.Router();
 
 // initialize PeripheralService

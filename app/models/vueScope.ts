@@ -1,5 +1,15 @@
+/**
+ * VueScope class to be passed in Vue views
+ * by Nikos Fytros
+ */
+import {
+    Scope
+} from "./interfaces/scope";
+
 export default class VueScope {
-    constructor(scopeObject = {}) {
+    scope: Scope;
+
+    constructor(scopeObject ? : Scope) {
         this.scope = {
             data: {
                 dafaultData: 'default'
@@ -28,38 +38,38 @@ export default class VueScope {
             }
         };
         /* if a scope object is passed ovveride the given properties with the same keys and add new ones */
-        if (!Object.is(scopeObject, {})) {
+        if (scopeObject != undefined) {
             Object.assign(this.scope, scopeObject);
         }
     }
 
-    changeApplicationTitle(appTitle) {
+    changeApplicationTitle(appTitle: string): void {
         this.scope.vue.meta.title = appTitle;
     }
 
-    changeApplicationName(appName) {
+    changeApplicationName(appName: string): void {
         this.scope.vue.meta.head[0].content = appName;
     }
 
-    changeApplicationDescription(appDescription) {
+    changeApplicationDescription(appDescription: string): void {
         this.scope.vue.meta.head[1].content = appDescription;
     }
 
-    addStyleUrl(styleUrl) {
+    addStyleUrl(styleUrl: string): void {
         this.scope.vue.meta.head.push({
             style: styleUrl
         });
     }
 
-    addComponent(componentName) {
+    addComponent(componentName: string): void {
         this.scope.vue.components.push(componentName);
     }
 
-    addData(dataObject) {
-        this.scope.data = Object.assign(this.scope.data, dataObject);
+    addData(data: object): void {
+        this.scope.data = Object.assign(this.scope.data, data);
     }
 
-    getScope() {
+    getScope(): Scope {
         return this.scope;
     }
 
