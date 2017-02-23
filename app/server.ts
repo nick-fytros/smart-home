@@ -26,10 +26,12 @@ export class Server {
     constructor() {
         this.app = express();
         this.config();
-        this.routes();
+        this.attachRoutes();
+        this.attachErrorHandler();
+        this.startServer();
     }
 
-    public config() {
+    private config() {
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
         this.app.locals.ENV_DEVELOPMENT = this.app.locals.ENV == 'development';
 
@@ -52,19 +54,16 @@ export class Server {
     }
 
 
-    private routes() {
+    private attachRoutes(): void {
         let router: express.Router;
         router = express.Router();
         // app.use('/', routers.main);
         // app.use('/blelamps', routers.blelamps);
-
-        //error handling
-        this.errorHandler();
     }
 
     // development error handler
     // will print stacktrace
-    private errorHandler() {
+    private attachErrorHandler(): void {
         /// catch 404 and forward to error handler
         this.app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
             err.status = 404;
@@ -124,4 +123,11 @@ export class Server {
         });
     }
 
+    private startServer() {
+        this.app.set('port', process.env.PORT || 3000);
+
+        let server = this.app.listen(this.app.get('port'), () => {
+            console.info('Express server listening on port ' + server.address().port);
+        });
+    }
 }
