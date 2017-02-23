@@ -2,13 +2,13 @@
  * Main router
  * by Nikos Fytros
  */
-import express from 'express';
+import * as express from 'express';
 import VueScope from '../models/vueScope';
+let router: express.Router;
 
-let router = express.Router();
-
+router = express.Router();
 /* GET home page. */
-router.get('/', function (req: object, res: object) {
+router.get('/', function (req: express.Request, res: express.Response) {
     let vueScope = new VueScope();
     vueScope.addData({
         title: 'Smart Home',

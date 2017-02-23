@@ -1,11 +1,15 @@
 import * as noble from 'noble';
 import PeripheralService from '../services/peripheralService';
 import * as express from 'express';
-let router = express.Router();
+
+let router: express.Router;
+
+router = express.Router();
 
 // initialize PeripheralService
 // TODO initialize elsewhere
 let peripheralService = new PeripheralService();
+
 try {
     peripheralService.startScanAndConnectToBleLamps();
 } catch (err) {
