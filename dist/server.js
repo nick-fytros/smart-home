@@ -1,49 +1,32 @@
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import * as express from 'express';
-import * as logger from 'morgan';
-import * as path from 'path';
-import * as favicon from 'serve-favicon';
-import expressVue = require('express-vue');
-
-import * as routers from './routes';
-
-export class Server {
-
-    /**
-     * Bootstrap the application.
-     *
-     * @class Server
-     * @method bootstrap
-     * @static
-     */
-    public static bootstrap(): Server {
-        return new Server();
-    }
-
-    public app: express.Application;
-
-    constructor() {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
+var express = require("express");
+var logger = require("morgan");
+var path = require("path");
+var expressVue = require("express-vue");
+var routers = require("./routes");
+var Server = (function () {
+    function Server() {
         this.app = express();
         this.config();
         this.attachRoutes();
         this.attachErrorHandler();
         this.startServer();
     }
-
-    private config() {
+    Server.bootstrap = function () {
+        return new Server();
+    };
+    Server.prototype.config = function () {
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
         this.app.locals.ENV_DEVELOPMENT = this.app.locals.ENV === 'development';
-
-        // view engine setup
         this.app.engine('vue', expressVue);
         this.app.set('view engine', 'vue');
         this.app.set('views', path.join(__dirname, '/views'));
         this.app.set('vue', {
             componentsDir: path.join(__dirname, '/views/components')
         });
-
-        // this.app.use(favicon(__dirname + '/public/img/favicon.ico'));
         this.app.use(logger('dev'));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({
@@ -51,27 +34,19 @@ export class Server {
         }));
         this.app.use(cookieParser());
         this.app.use(express.static(path.join(__dirname, '../public')));
-    }
-
-    private attachRoutes(): void {
-        for (const Router in Object.values(routers)){
+    };
+    Server.prototype.attachRoutes = function () {
+        for (var Router in Object.values(routers)) {
             console.log(typeof Router);
         }
-    }
-
-    /**
-     * development error handler
-     * will print stacktrace
-     */
-    private attachErrorHandler(): void {
-        /* catch 404 and forward to error handler */
-        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    };
+    Server.prototype.attachErrorHandler = function () {
+        this.app.use(function (err, req, res, next) {
             err.status = 404;
             next(err);
         });
-
         if (this.app.get('env') === 'development') {
-            this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+            this.app.use(function (err, req, res, next) {
                 res.status(err.status || 500);
                 res.render('error', {
                     data: {
@@ -95,12 +70,7 @@ export class Server {
                 });
             });
         }
-
-        /**
-         * production error handler
-         * no stacktraces leaked to user
-         */
-        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.app.use(function (err, req, res, next) {
             res.status(err.status || 500);
             res.render('error', {
                 data: {
@@ -123,13 +93,13 @@ export class Server {
                 }
             });
         });
-    }
-
-    private startServer() {
+    };
+    Server.prototype.startServer = function () {
         this.app.set('port', process.env.PORT || 3000);
-
-        const server = this.app.listen(this.app.get('port'), () => {
+        var server = this.app.listen(this.app.get('port'), function () {
             console.info('Express server listening on port ' + server.address().port);
         });
-    }
-}
+    };
+    return Server;
+}());
+exports.Server = Server;

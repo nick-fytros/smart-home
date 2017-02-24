@@ -1,15 +1,7 @@
-/**
- * VueScope class to be passed in Vue views
- * by Nikos Fytros
- */
-import {
-    IScope
-} from '../interfaces/scope';
-
-export default class VueScope {
-    public scope: IScope;
-
-    constructor(scopeObject ?: IScope) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var VueScope = (function () {
+    function VueScope(scopeObject) {
         this.scope = {
             data: {
                 dafaultData: 'default'
@@ -37,40 +29,33 @@ export default class VueScope {
                 components: ['smheader', 'smfooter']
             }
         };
-        /* if a scope object is passed ovveride the given properties with the same keys and add new ones */
         if (scopeObject !== undefined) {
             Object.assign(this.scope, scopeObject);
         }
     }
-
-    public changeApplicationTitle(appTitle: string): void {
+    VueScope.prototype.changeApplicationTitle = function (appTitle) {
         this.scope.vue.meta.title = appTitle;
-    }
-
-    public changeApplicationName(appName: string): void {
+    };
+    VueScope.prototype.changeApplicationName = function (appName) {
         this.scope.vue.meta.head[0].content = appName;
-    }
-
-    public changeApplicationDescription(appDescription: string): void {
+    };
+    VueScope.prototype.changeApplicationDescription = function (appDescription) {
         this.scope.vue.meta.head[1].content = appDescription;
-    }
-
-    public addStyleUrl(styleUrl: string): void {
+    };
+    VueScope.prototype.addStyleUrl = function (styleUrl) {
         this.scope.vue.meta.head.push({
             style: styleUrl
         });
-    }
-
-    public addComponent(componentName: string): void {
+    };
+    VueScope.prototype.addComponent = function (componentName) {
         this.scope.vue.components.push(componentName);
-    }
-
-    public addData(data: object): void {
+    };
+    VueScope.prototype.addData = function (data) {
         this.scope.data = Object.assign(this.scope.data, data);
-    }
-
-    public getScope(): IScope {
+    };
+    VueScope.prototype.getScope = function () {
         return this.scope;
-    }
-
-}
+    };
+    return VueScope;
+}());
+exports.default = VueScope;

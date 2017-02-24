@@ -6,7 +6,7 @@ import * as express from 'express';
 import * as interfaces from '../interfaces/router';
 import VueScope from '../models/vueScope';
 
-export default class Main implements interfaces.IRouter {
+export class Main implements interfaces.IRouter {
 
     public static bootstrap(app: express.Application) {
         return new Main(app);
