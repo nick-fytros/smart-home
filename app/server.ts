@@ -1,16 +1,14 @@
+import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import * as express from 'express';
+import * as logger from 'morgan';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
-import * as logger from 'morgan';
-import * as cookieParser from 'cookie-parser';
-import * as bodyParser from 'body-parser';
-import * as expressVue from 'express-vue';
+import expressVue = require('express-vue');
 
 import * as routers from './routes';
 
 export class Server {
-
-    public app: express.Application;
 
     /**
      * Bootstrap the application.
@@ -23,6 +21,8 @@ export class Server {
         return new Server();
     }
 
+    public app: express.Application;
+
     constructor() {
         this.app = express();
         this.config();
@@ -33,7 +33,7 @@ export class Server {
 
     private config() {
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
-        this.app.locals.ENV_DEVELOPMENT = this.app.locals.ENV == 'development';
+        this.app.locals.ENV_DEVELOPMENT = this.app.locals.ENV === 'development';
 
         // view engine setup
         this.app.engine('vue', expressVue);
@@ -57,21 +57,19 @@ export class Server {
     private attachRoutes(): void {
         let router: express.Router;
         router = express.Router();
-        // app.use('/', routers.main);
-        // app.use('/blelamps', routers.blelamps);
     }
 
     // development error handler
     // will print stacktrace
     private attachErrorHandler(): void {
         /// catch 404 and forward to error handler
-        this.app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
             err.status = 404;
             next(err);
         });
 
         if (this.app.get('env') === 'development') {
-            this.app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+            this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
                 res.status(err.status || 500);
                 res.render('error', {
                     data: {
@@ -98,7 +96,7 @@ export class Server {
 
         // production error handler
         // no stacktraces leaked to user
-        this.app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
             res.status(err.status || 500);
             res.render('error', {
                 data: {
@@ -126,7 +124,7 @@ export class Server {
     private startServer() {
         this.app.set('port', process.env.PORT || 3000);
 
-        let server = this.app.listen(this.app.get('port'), () => {
+        const server = this.app.listen(this.app.get('port'), () => {
             console.info('Express server listening on port ' + server.address().port);
         });
     }

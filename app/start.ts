@@ -1,5 +1,5 @@
 import {
     Server
-} from 'server';
+} from './server';
 
 Server.bootstrap();
