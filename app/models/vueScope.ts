@@ -1,6 +1,6 @@
 /**
  * VueScope class to be passed in Vue views
- * by Nikos Fytros
+ * @class VueScope
  */
 import {
     IScope
@@ -12,11 +12,12 @@ export default class VueScope {
     constructor(scopeObject ?: IScope) {
         this.scope = {
             data: {
-                dafaultData: 'default'
+                title: 'Smart Home - Login',
+                subtitle: 'Grünerløkka, Oslo'
             },
             vue: {
                 meta: {
-                    title: 'Smart Home by Nikos',
+                    title: 'Smart Home',
                     head: [{
                             name: 'application-name',
                             content: 'Smart Home by Nikos'

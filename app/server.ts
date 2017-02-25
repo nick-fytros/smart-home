@@ -4,6 +4,8 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
+import * as mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
 import cookieSession = require('cookie-session');
 import expressVue = require('express-vue');
 
@@ -34,9 +36,10 @@ export class Server {
     }
 
     private config() {
+        // dotevn config
+        dotenv.config();
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
         this.app.locals.ENV_DEVELOPMENT = this.app.locals.ENV === 'development';
-
         // view engine setup
         this.app.engine('vue', expressVue);
         this.app.set('view engine', 'vue');
@@ -44,7 +47,6 @@ export class Server {
         this.app.set('vue', {
             componentsDir: path.join(__dirname, '/views/components')
         });
-
         // this.app.use(favicon(__dirname + '/public/img/favicon.ico'));
         this.app.use(logger('dev'));
         this.app.use(bodyParser.json());
@@ -54,19 +56,21 @@ export class Server {
         this.app.use(cookieParser());
         this.app.use(express.static(path.join(__dirname, '../public')));
         this.app.use(cookieSession({
-            name: 'smart-home-session',
-            keys: ['#fr344kiJA89d3##8', '99($#)_)#$jAEIF#'],
+            name: process.env.COOKIESESSION_NAME,
+            keys: [process.env.COOKIESESSION_KEY1, process.env.COOKIESESSION_KEY2],
             // Cookie Options
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         }));
-
-        // middleware to check if user is logged in
+        // db connection initiation
+        mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
+        // add middleware
         this.app.use(Middleware.Security.checkIfUserLoggedIn);
     }
 
     private attachRoutes(): void {
-        Routers.Main.bootstrap(this.app).attach();
-        Routers.BleLamps.bootstrap(this.app).attach();
+        Routers.Main.bootstrap(this.app).attach('/');
+        Routers.BleLamps.bootstrap(this.app).attach('/blelamps');
+        Routers.Login.bootstrap(this.app).attach('/auth');
     }
 
     /**
@@ -74,7 +78,7 @@ export class Server {
      * will print stacktrace
      */
     private attachErrorHandler(): void {
-        /* catch 404 and forward to error handler */
+        // catch 404 and forward to error handler
         this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
             err.status = 404;
             next(err);

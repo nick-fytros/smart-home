@@ -11,7 +11,8 @@ import VueScope from '../models/vueScope';
 export class Security {
 
     public static checkIfUserLoggedIn(req: Request, res: Response, next: NextFunction) {
-        if (req.session.user) {
+        // exclude the login path
+        if (req.session.user || req.path === '/auth/login') {
             next();
         } else {
             const vueScope = new VueScope();

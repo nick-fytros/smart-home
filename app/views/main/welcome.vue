@@ -1,0 +1,27 @@
+<template>
+    <div>
+        <smheader :title="title" :subtitle="subtitle"></smheader>
+        <section class="section content">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-one-third is-offset-one-third">
+                        <p>Hello, {{user.email}}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <smfooter></smfooter>
+    </div>
+</template>
+<script>
+    export default {
+        data() {
+            return {}
+        }
+    }
+
+</script>
+<style>
+
+
+</style>

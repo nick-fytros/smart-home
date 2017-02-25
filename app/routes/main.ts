@@ -3,10 +3,12 @@
  * @extends Router Interface
  */
 import * as express from 'express';
-import * as interfaces from '../interfaces/router';
+import {
+    IRouter
+} from '../interfaces/router';
 import VueScope from '../models/vueScope';
 
-export class Main implements interfaces.IRouter {
+export class Main implements IRouter {
 
     public static bootstrap(app: express.Application) {
         return new Main(app);
@@ -21,7 +23,7 @@ export class Main implements interfaces.IRouter {
         this.addHomeRoute();
     }
 
-    public attach(pathToAttach ?: string): void {
+    public attach(pathToAttach ? : string): void {
         if (pathToAttach) {
             this.app.use(pathToAttach, this.router);
         } else {
@@ -33,7 +35,7 @@ export class Main implements interfaces.IRouter {
         this.router.get('/', (req: express.Request, res: express.Response) => {
             const vueScope = new VueScope();
             vueScope.addData({
-                title: 'Smart Home',
+                title: 'Smart Home - Login',
                 subtitle: 'Grünerløkka, Oslo'
             });
             res.render('main/main', vueScope.getScope());

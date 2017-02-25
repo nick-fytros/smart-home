@@ -20,6 +20,7 @@
                                 </p>
                             </div>
                         </form>
+                        <p v-if="error">{{error.message}}</p>
                     </div>
                 </div>
             </div>

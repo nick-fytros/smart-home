@@ -8,7 +8,7 @@ var VueScope = (function () {
             },
             vue: {
                 meta: {
-                    title: 'Smart Home by Nikos',
+                    title: 'Smart Home by',
                     head: [{
                             name: 'application-name',
                             content: 'Smart Home by Nikos'
