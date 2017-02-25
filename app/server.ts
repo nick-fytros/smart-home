@@ -4,9 +4,11 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
+import cookieSession = require('cookie-session');
 import expressVue = require('express-vue');
 
-import * as routers from './routes';
+import * as Routers from './routes';
+import * as Middleware from './middleware';
 
 export class Server {
 
@@ -51,12 +53,20 @@ export class Server {
         }));
         this.app.use(cookieParser());
         this.app.use(express.static(path.join(__dirname, '../public')));
+        this.app.use(cookieSession({
+            name: 'smart-home-session',
+            keys: ['#fr344kiJA89d3##8', '99($#)_)#$jAEIF#'],
+            // Cookie Options
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        }));
+
+        // middleware to check if user is logged in
+        this.app.use(Middleware.Security.checkIfUserLoggedIn);
     }
 
     private attachRoutes(): void {
-        for (const Router in Object.values(routers)){
-            console.log(typeof Router);
-        }
+        Routers.Main.bootstrap(this.app).attach();
+        Routers.BleLamps.bootstrap(this.app).attach();
     }
 
     /**

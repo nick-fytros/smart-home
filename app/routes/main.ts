@@ -33,8 +33,8 @@ export class Main implements interfaces.IRouter {
         this.router.get('/', (req: express.Request, res: express.Response) => {
             const vueScope = new VueScope();
             vueScope.addData({
-                subtitle: 'Grünerløkka, Oslo',
-                title: 'Smart Home'
+                title: 'Smart Home',
+                subtitle: 'Grünerløkka, Oslo'
             });
             res.render('main/main', vueScope.getScope());
         });

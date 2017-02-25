@@ -23,8 +23,8 @@ var Main = (function () {
         this.router.get('/', function (req, res) {
             var vueScope = new vueScope_1.default();
             vueScope.addData({
-                subtitle: 'Grünerløkka, Oslo',
-                title: 'Smart Home'
+                title: 'Smart Home',
+                subtitle: 'Grünerløkka, Oslo'
             });
             res.render('main/main', vueScope.getScope());
         });

@@ -5,8 +5,10 @@ var cookieParser = require("cookie-parser");
 var express = require("express");
 var logger = require("morgan");
 var path = require("path");
+var cookieSession = require("cookie-session");
 var expressVue = require("express-vue");
-var routers = require("./routes");
+var Routers = require("./routes");
+var Middleware = require("./middleware");
 var Server = (function () {
     function Server() {
         this.app = express();
@@ -34,11 +36,16 @@ var Server = (function () {
         }));
         this.app.use(cookieParser());
         this.app.use(express.static(path.join(__dirname, '../public')));
+        this.app.use(cookieSession({
+            name: 'smart-home-session',
+            keys: ['#fr344kiJA89d3##8', '99($#)_)#$jAEIF#'],
+            maxAge: 24 * 60 * 60 * 1000
+        }));
+        this.app.use(Middleware.Security.checkIfUserLoggedIn);
     };
     Server.prototype.attachRoutes = function () {
-        for (var Router in Object.values(routers)) {
-            console.log(typeof Router);
-        }
+        Routers.Main.bootstrap(this.app).attach();
+        Routers.BleLamps.bootstrap(this.app).attach();
     };
     Server.prototype.attachErrorHandler = function () {
         this.app.use(function (err, req, res, next) {
