@@ -5,16 +5,12 @@ var Security = (function () {
     function Security() {
     }
     Security.checkIfUserLoggedIn = function (req, res, next) {
-        if (req.session.user) {
+        if (req.session.user || req.path === '/auth/login' || req.path === '/') {
             next();
         }
         else {
             var vueScope = new vueScope_1.default();
-            vueScope.addData({
-                title: 'Smart Home - Login',
-                subtitle: 'Grünerløkka, Oslo'
-            });
-            res.render('main/main', vueScope.getScope());
+            res.redirect('/');
         }
     };
     return Security;

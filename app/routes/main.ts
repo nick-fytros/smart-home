@@ -21,9 +21,10 @@ export class Main implements IRouter {
         this.app = app;
         this.router = express.Router();
         this.addHomeRoute();
+        this.addWelcomeRoute();
     }
 
-    public attach(pathToAttach ? : string): void {
+    public attach(pathToAttach ?: string): void {
         if (pathToAttach) {
             this.app.use(pathToAttach, this.router);
         } else {
@@ -35,10 +36,19 @@ export class Main implements IRouter {
         this.router.get('/', (req: express.Request, res: express.Response) => {
             const vueScope = new VueScope();
             vueScope.addData({
-                title: 'Smart Home - Login',
-                subtitle: 'Grünerløkka, Oslo'
+                flash: req.session.flash
             });
             res.render('main/main', vueScope.getScope());
+        });
+    }
+
+    private addWelcomeRoute(): void {
+        this.router.get('/welcome', (req: express.Request, res: express.Response) => {
+            const vueScope = new VueScope();
+            vueScope.addData({
+                user: req.session.user
+            });
+            res.render('main/welcome', vueScope.getScope());
         });
     }
 }

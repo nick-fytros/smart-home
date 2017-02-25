@@ -5,6 +5,8 @@ var cookieParser = require("cookie-parser");
 var express = require("express");
 var logger = require("morgan");
 var path = require("path");
+var mongoose = require("mongoose");
+var dotenv = require("dotenv");
 var cookieSession = require("cookie-session");
 var expressVue = require("express-vue");
 var Routers = require("./routes");
@@ -21,6 +23,7 @@ var Server = (function () {
         return new Server();
     };
     Server.prototype.config = function () {
+        dotenv.config();
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
         this.app.locals.ENV_DEVELOPMENT = this.app.locals.ENV === 'development';
         this.app.engine('vue', expressVue);
@@ -37,15 +40,17 @@ var Server = (function () {
         this.app.use(cookieParser());
         this.app.use(express.static(path.join(__dirname, '../public')));
         this.app.use(cookieSession({
-            name: 'smart-home-session',
-            keys: ['#fr344kiJA89d3##8', '99($#)_)#$jAEIF#'],
+            name: process.env.COOKIESESSION_NAME,
+            keys: [process.env.COOKIESESSION_KEY1, process.env.COOKIESESSION_KEY2],
             maxAge: 24 * 60 * 60 * 1000
         }));
+        mongoose.connect("mongodb://" + process.env.DB_HOST + "/" + process.env.DB_NAME);
         this.app.use(Middleware.Security.checkIfUserLoggedIn);
     };
     Server.prototype.attachRoutes = function () {
-        Routers.Main.bootstrap(this.app).attach();
-        Routers.BleLamps.bootstrap(this.app).attach();
+        Routers.Main.bootstrap(this.app).attach('/');
+        Routers.BleLamps.bootstrap(this.app).attach('/blelamps');
+        Routers.Login.bootstrap(this.app).attach('/auth');
     };
     Server.prototype.attachErrorHandler = function () {
         this.app.use(function (err, req, res, next) {

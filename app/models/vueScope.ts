@@ -13,7 +13,8 @@ export default class VueScope {
         this.scope = {
             data: {
                 title: 'Smart Home - Login',
-                subtitle: 'Grünerløkka, Oslo'
+                subtitle: 'Grünerløkka, Oslo',
+                flash: {}
             },
             vue: {
                 meta: {

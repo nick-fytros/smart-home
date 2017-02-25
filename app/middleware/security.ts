@@ -12,15 +12,11 @@ export class Security {
 
     public static checkIfUserLoggedIn(req: Request, res: Response, next: NextFunction) {
         // exclude the login path
-        if (req.session.user || req.path === '/auth/login') {
+        if (req.session.user || req.path === '/auth/login' || req.path === '/') {
             next();
         } else {
             const vueScope = new VueScope();
-            vueScope.addData({
-                title: 'Smart Home - Login',
-                subtitle: 'Grünerløkka, Oslo'
-            });
-            res.render('main/main', vueScope.getScope());
+            res.redirect('/');
         }
     }
 }

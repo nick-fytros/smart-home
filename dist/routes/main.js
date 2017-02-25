@@ -7,6 +7,7 @@ var Main = (function () {
         this.app = app;
         this.router = express.Router();
         this.addHomeRoute();
+        this.addWelcomeRoute();
     }
     Main.bootstrap = function (app) {
         return new Main(app);
@@ -23,10 +24,18 @@ var Main = (function () {
         this.router.get('/', function (req, res) {
             var vueScope = new vueScope_1.default();
             vueScope.addData({
-                title: 'Smart Home - Login',
-                subtitle: 'Grünerløkka, Oslo'
+                flash: req.session.flash
             });
             res.render('main/main', vueScope.getScope());
+        });
+    };
+    Main.prototype.addWelcomeRoute = function () {
+        this.router.get('/welcome', function (req, res) {
+            var vueScope = new vueScope_1.default();
+            vueScope.addData({
+                user: req.session.user
+            });
+            res.render('main/welcome', vueScope.getScope());
         });
     };
     return Main;

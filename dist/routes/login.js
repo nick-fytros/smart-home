@@ -1,45 +1,35 @@
-/**
- * @class Login
- * @extends Router Interface
- */
-import * as express from 'express';
-import * as interfaces from '../interfaces/router';
-import VueScope from '../models/vueScope';
-import User from '../models/user';
-
-export class Login implements interfaces.IRouter {
-
-    public static bootstrap(app: express.Application) {
-        return new Login(app);
-    }
-
-    public app: express.Application;
-    public router: express.Router;
-
-    constructor(app: express.Application) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require("express");
+var vueScope_1 = require("../models/vueScope");
+var user_1 = require("../models/user");
+var Login = (function () {
+    function Login(app) {
         this.app = app;
         this.router = express.Router();
         this.addLoginRoute();
     }
-
-    public attach(pathToAttach ? : string): void {
+    Login.bootstrap = function (app) {
+        return new Login(app);
+    };
+    Login.prototype.attach = function (pathToAttach) {
         if (pathToAttach) {
             this.app.use(pathToAttach, this.router);
-        } else {
+        }
+        else {
             this.app.use('/', this.router);
         }
-    }
-
-    private addLoginRoute(): void {
-        this.router.post('/login', (req: express.Request, res: express.Response) => {
-            User.findOne({
+    };
+    Login.prototype.addLoginRoute = function () {
+        this.router.post('/login', function (req, res) {
+            user_1.default.findOne({
                 email: req.body.email
-            }, (err, user) => {
+            }, function (err, user) {
                 if (err) {
                     throw err;
                 }
                 if (user) {
-                    user.comparePassword(req.session.password, (err: Error, isMatch: boolean) => {
+                    user.comparePassword(req.session.password, function (err, isMatch) {
                         if (err) {
                             throw err;
                         }
@@ -62,14 +52,14 @@ export class Login implements interfaces.IRouter {
                 res.redirect('/');
             });
         });
-    }
-
-    private addLogoutRoute(): void {
-        const vueScope = new VueScope();
-
-        this.router.post('/logout', (req: express.Request, res: express.Response) => {
+    };
+    Login.prototype.addLogoutRoute = function () {
+        var vueScope = new vueScope_1.default();
+        this.router.post('/logout', function (req, res) {
             req.session = null;
             res.redirect('/');
         });
-    }
-}
+    };
+    return Login;
+}());
+exports.Login = Login;

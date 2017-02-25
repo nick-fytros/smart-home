@@ -5,13 +5,13 @@
             <div class="container">
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <form>
+                        <form action="/auth/login" method="post">
                             <p class="control has-icon">
-                                <input class="input" type="email" placeholder="Email">
+                                <input class="input" type="email" placeholder="Email" name="email">
                                 <span class="icon is-small"><i class="fa fa-envelope"></i></span>
                             </p>
                             <p class="control has-icon">
-                                <input class="input" type="password" placeholder="Password">
+                                <input class="input" type="password" placeholder="Password" name="password">
                                 <span class="icon is-small"><i class="fa fa-lock"></i></span>
                             </p>
                             <div class="control is-grouped">
@@ -20,6 +20,7 @@
                                 </p>
                             </div>
                         </form>
+                        <p v-if="flash.error">{{flash.error.message}}</p>
                     </div>
                 </div>
             </div>

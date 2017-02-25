@@ -4,11 +4,13 @@ var VueScope = (function () {
     function VueScope(scopeObject) {
         this.scope = {
             data: {
-                dafaultData: 'default'
+                title: 'Smart Home - Login',
+                subtitle: 'Grünerløkka, Oslo',
+                flash: {}
             },
             vue: {
                 meta: {
-                    title: 'Smart Home by',
+                    title: 'Smart Home',
                     head: [{
                             name: 'application-name',
                             content: 'Smart Home by Nikos'
