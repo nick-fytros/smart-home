@@ -5,10 +5,11 @@
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import {
-    IUser
+    IUser,
+    userAccess
 } from '../interfaces/user';
 
-class User{
+class User {
 
     public static bootstrap() {
         return new User();
@@ -34,6 +35,11 @@ class User{
             lastLogin: {
                 type: Date,
                 default: Date.now
+            },
+            userAccess: {
+                type: Number,
+                required: true,
+                default: userAccess.USER
             }
         });
 
@@ -47,7 +53,7 @@ class User{
             // generate a salt
             bcrypt.genSalt(process.env.SALT_FACTOR, (err: Error, salt: string) => {
                 if (err) {
-                    return next(err)
+                    return next(err);
                 }
                 // hash the password using our new salt
                 bcrypt.hash(user.password, salt, (err: Error, hashedPassword: string) => {

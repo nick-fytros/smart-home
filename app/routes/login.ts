@@ -23,6 +23,7 @@ export class Login implements interfaces.IRouter {
         this.app = app;
         this.router = express.Router();
         this.addLoginRoute();
+        this.addLogoutRoute();
     }
 
     public attach(pathToAttach ?: string): void {
@@ -68,8 +69,6 @@ export class Login implements interfaces.IRouter {
     }
 
     private addLogoutRoute(): void {
-        const vueScope = new VueScope();
-
         this.router.post('/logout', (req: express.Request, res: express.Response) => {
             req.session.user = null;
             FlashMessage.setFlashMessage(req, {
