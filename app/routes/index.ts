@@ -9,11 +9,11 @@ import {
     Main
 } from './main';
 import {
-    Login
-} from './login';
+    Auth
+} from './auth';
 
 export {
     Main,
     BleLamps,
-    Login
+    Auth
 };

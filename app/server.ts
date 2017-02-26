@@ -70,7 +70,7 @@ export class Server {
     private attachRoutes(): void {
         Routers.Main.bootstrap(this.app).attach('/');
         Routers.BleLamps.bootstrap(this.app).attach('/blelamps');
-        Routers.Login.bootstrap(this.app).attach('/auth');
+        Routers.Auth.bootstrap(this.app).attach('/auth');
     }
 
     /**

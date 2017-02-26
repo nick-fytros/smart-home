@@ -52,7 +52,7 @@ var Server = (function () {
     Server.prototype.attachRoutes = function () {
         Routers.Main.bootstrap(this.app).attach('/');
         Routers.BleLamps.bootstrap(this.app).attach('/blelamps');
-        Routers.Login.bootstrap(this.app).attach('/auth');
+        Routers.Auth.bootstrap(this.app).attach('/auth');
     };
     Server.prototype.attachErrorHandler = function () {
         this.app.use(function (err, req, res, next) {

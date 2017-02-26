@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require("mongoose");
-var bcrypt = require("bcrypt");
+var bcrypt = require("bcryptjs");
 var User = (function () {
     function User() {
         var UserSchema = new mongoose.Schema({

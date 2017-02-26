@@ -1,5 +1,5 @@
 /**
- * @class Login
+ * @class Auth
  * @extends Router Interface
  */
 import * as express from 'express';
@@ -10,10 +10,10 @@ import {
     FlashMessage
 } from '../services/flashMessage';
 
-export class Login implements interfaces.IRouter {
+export class Auth implements interfaces.IRouter {
 
     public static bootstrap(app: express.Application) {
-        return new Login(app);
+        return new Auth(app);
     }
 
     public app: express.Application;
