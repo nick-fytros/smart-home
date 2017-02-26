@@ -1,9 +1,10 @@
 var gulp = require('gulp');
+var ts = require("gulp-typescript");
+var tsProject = ts.createProject("tsconfig.json");
 var nodemon = require('gulp-nodemon');
 var plumber = require('gulp-plumber');
 var livereload = require('gulp-livereload');
 var sass = require('gulp-sass');
-var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
 var clean = require('gulp-clean-dest');
 var cleanCSS = require('gulp-clean-css');
@@ -16,12 +17,10 @@ gulp.task('vue', () => {
         .pipe(livereload());
 });
 
-gulp.task('babel', ['vue'], () => {
-    return gulp.src('app/**/*.js')
-        .pipe(babel({
-            presets: ['es2015']
-        }))
-        .pipe(gulp.dest('dist'));
+gulp.task('ts', () => {
+    return tsProject.src()
+        .pipe(tsProject())
+        .js.pipe(gulp.dest("dist"));
 });
 
 gulp.task('sass', ['vue'], () => {
@@ -37,10 +36,10 @@ gulp.task('sass', ['vue'], () => {
 
 gulp.task('watch', () => {
     livereload.listen();
-    gulp.watch(['./assets/scss/*.scss', './app/**/*.js', './app/**/*.vue'], ['vue', 'sass', 'babel']);
+    gulp.watch(['./assets/scss/*.scss', './app/**/*.ts', './app/**/*.vue'], ['vue', 'sass', 'ts']);
 });
 
-gulp.task('develop', ['vue', 'babel', 'sass'], () => {
+gulp.task('develop', ['vue', 'ts', 'sass'], () => {
     livereload.listen();
     nodemon({
         script: 'dist/start.js',
@@ -73,14 +72,14 @@ gulp.task('mocha', function () {
 
 gulp.task('test', [
     'vue',
-    'babel',
+    'ts',
     'sass',
     'mocha'
 ]);
 
 gulp.task('default', [
     'vue',
-    'babel',
+    'ts',
     'sass',
     'mocha',
     'develop',
@@ -89,6 +88,6 @@ gulp.task('default', [
 
 gulp.task('build', [
     'vue',
-    'babel',
+    'ts',
     'sass'
 ]);

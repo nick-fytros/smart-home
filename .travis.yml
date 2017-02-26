@@ -18,8 +18,9 @@ branches:
 
 # Versions to test
 node_js:
-  - 7.5
-  - 6.1
+  - "5"
+  - "6"
+  - "7"
 
 # Gulp build and run tests
 before_script:

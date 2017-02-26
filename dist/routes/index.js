@@ -1,23 +1,8 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.blelamps = exports.main = undefined;
-
-var _main = require('../routes/main');
-
-var _main2 = _interopRequireDefault(_main);
-
-var _blelamps = require('../routes/blelamps');
-
-var _blelamps2 = _interopRequireDefault(_blelamps);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Nikos Fytros
- * Export the routers
- */
-exports.main = _main2.default;
-exports.blelamps = _blelamps2.default;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var blelamps_1 = require("./blelamps");
+exports.BleLamps = blelamps_1.BleLamps;
+var main_1 = require("./main");
+exports.Main = main_1.Main;
+var login_1 = require("./login");
+exports.Login = login_1.Login;

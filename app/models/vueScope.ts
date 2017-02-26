@@ -1,12 +1,24 @@
+/**
+ * VueScope class to be passed in Vue views
+ * @class VueScope
+ */
+import {
+    IScope
+} from '../interfaces/scope';
+
 export default class VueScope {
-    constructor(scopeObject = {}) {
+    public scope: IScope;
+
+    constructor(scopeObject ?: IScope) {
         this.scope = {
             data: {
-                dafaultData: 'default'
+                title: 'Smart Home - Login',
+                subtitle: 'Grünerløkka, Oslo',
+                flash: {}
             },
             vue: {
                 meta: {
-                    title: 'Smart Home by Nikos',
+                    title: 'Smart Home',
                     head: [{
                             name: 'application-name',
                             content: 'Smart Home by Nikos'
@@ -24,42 +36,42 @@ export default class VueScope {
                         }
                     ]
                 },
-                components: ['smheader', 'smfooter']
+                components: ['smheader', 'smfooter', 'messagebox']
             }
         };
         /* if a scope object is passed ovveride the given properties with the same keys and add new ones */
-        if (!Object.is(scopeObject, {})) {
+        if (scopeObject !== undefined) {
             Object.assign(this.scope, scopeObject);
         }
     }
 
-    changeApplicationTitle(appTitle) {
+    public changeApplicationTitle(appTitle: string): void {
         this.scope.vue.meta.title = appTitle;
     }
 
-    changeApplicationName(appName) {
+    public changeApplicationName(appName: string): void {
         this.scope.vue.meta.head[0].content = appName;
     }
 
-    changeApplicationDescription(appDescription) {
+    public changeApplicationDescription(appDescription: string): void {
         this.scope.vue.meta.head[1].content = appDescription;
     }
 
-    addStyleUrl(styleUrl) {
+    public addStyleUrl(styleUrl: string): void {
         this.scope.vue.meta.head.push({
             style: styleUrl
         });
     }
 
-    addComponent(componentName) {
+    public addComponent(componentName: string): void {
         this.scope.vue.components.push(componentName);
     }
 
-    addData(dataObject) {
-        this.scope.data = Object.assign(this.scope.data, dataObject);
+    public addData(data: object): void {
+        this.scope.data = Object.assign(this.scope.data, data);
     }
 
-    getScope() {
+    public getScope(): IScope {
         return this.scope;
     }
 
