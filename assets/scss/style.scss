@@ -9,8 +9,9 @@ serif; // Add a serif family
 // You can change these values:
 $family-primary: $family-serif; // Use the new serif family
 @import './node_modules/bulma/bulma';
-@import 'partials/header';
-@import 'partials/footer';
+@import 'partials/smheader';
+@import 'partials/smfooter';
+@import 'partials/messagebox';
 body {
     min-height: 100vh;
     background: #ffe761;
