@@ -15,7 +15,6 @@ export class Security {
         if (req.session.user || req.path === '/auth/login' || req.path === '/') {
             next();
         } else {
-            const vueScope = new VueScope();
             res.redirect('/');
         }
     }

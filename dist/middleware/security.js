@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var vueScope_1 = require("../models/vueScope");
 var Security = (function () {
     function Security() {
     }
@@ -9,7 +8,6 @@ var Security = (function () {
             next();
         }
         else {
-            var vueScope = new vueScope_1.default();
             res.redirect('/');
         }
     };

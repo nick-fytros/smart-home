@@ -6,6 +6,9 @@ import * as express from 'express';
 import * as interfaces from '../interfaces/router';
 import VueScope from '../models/vueScope';
 import User from '../models/user';
+import {
+    FlashMessage
+} from '../services/flashMessage';
 
 export class Login implements interfaces.IRouter {
 
@@ -22,7 +25,7 @@ export class Login implements interfaces.IRouter {
         this.addLoginRoute();
     }
 
-    public attach(pathToAttach ? : string): void {
+    public attach(pathToAttach ?: string): void {
         if (pathToAttach) {
             this.app.use(pathToAttach, this.router);
         } else {
@@ -53,12 +56,12 @@ export class Login implements interfaces.IRouter {
                         }
                     });
                 }
-                req.session.flash = {
+                FlashMessage.setFlashMessage(req, {
                     error: {
                         status: 401,
                         message: 'Sorry, the credentials you provided are wrong'
                     }
-                };
+                });
                 res.redirect('/');
             });
         });
@@ -68,7 +71,13 @@ export class Login implements interfaces.IRouter {
         const vueScope = new VueScope();
 
         this.router.post('/logout', (req: express.Request, res: express.Response) => {
-            req.session = null;
+            req.session.user = null;
+            FlashMessage.setFlashMessage(req, {
+                success: {
+                    status: 200,
+                    message: 'You have successfully logged out.'
+                }
+            });
             res.redirect('/');
         });
     }

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
+var flashMessage_1 = require("../services/flashMessage");
 var vueScope_1 = require("../models/vueScope");
 var Main = (function () {
     function Main(app) {
@@ -23,6 +24,7 @@ var Main = (function () {
     Main.prototype.addHomeRoute = function () {
         this.router.get('/', function (req, res) {
             var vueScope = new vueScope_1.default();
+            flashMessage_1.FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
                 flash: req.session.flash
             });
@@ -32,6 +34,7 @@ var Main = (function () {
     Main.prototype.addWelcomeRoute = function () {
         this.router.get('/welcome', function (req, res) {
             var vueScope = new vueScope_1.default();
+            flashMessage_1.FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
                 user: req.session.user
             });

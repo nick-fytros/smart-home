@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var express = require("express");
 var logger = require("morgan");
 var path = require("path");
+var favicon = require("serve-favicon");
 var mongoose = require("mongoose");
 var dotenv = require("dotenv");
 var cookieSession = require("cookie-session");
@@ -32,6 +33,7 @@ var Server = (function () {
         this.app.set('vue', {
             componentsDir: path.join(__dirname, '/views/components')
         });
+        this.app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
         this.app.use(logger('dev'));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({

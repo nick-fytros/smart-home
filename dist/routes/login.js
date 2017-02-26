@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var vueScope_1 = require("../models/vueScope");
 var user_1 = require("../models/user");
+var flashMessage_1 = require("../services/flashMessage");
 var Login = (function () {
     function Login(app) {
         this.app = app;
@@ -43,12 +44,12 @@ var Login = (function () {
                         }
                     });
                 }
-                req.session.flash = {
+                flashMessage_1.FlashMessage.setFlashMessage(req, {
                     error: {
                         status: 401,
                         message: 'Sorry, the credentials you provided are wrong'
                     }
-                };
+                });
                 res.redirect('/');
             });
         });
@@ -56,7 +57,13 @@ var Login = (function () {
     Login.prototype.addLogoutRoute = function () {
         var vueScope = new vueScope_1.default();
         this.router.post('/logout', function (req, res) {
-            req.session = null;
+            req.session.user = null;
+            flashMessage_1.FlashMessage.setFlashMessage(req, {
+                success: {
+                    status: 200,
+                    message: 'You have successfully logged out.'
+                }
+            });
             res.redirect('/');
         });
     };

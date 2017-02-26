@@ -6,6 +6,9 @@ import * as express from 'express';
 import {
     IRouter
 } from '../interfaces/router';
+import {
+    FlashMessage
+} from '../services/flashMessage';
 import VueScope from '../models/vueScope';
 
 export class Main implements IRouter {
@@ -35,6 +38,7 @@ export class Main implements IRouter {
     private addHomeRoute(): void {
         this.router.get('/', (req: express.Request, res: express.Response) => {
             const vueScope = new VueScope();
+            FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
                 flash: req.session.flash
             });
@@ -45,6 +49,7 @@ export class Main implements IRouter {
     private addWelcomeRoute(): void {
         this.router.get('/welcome', (req: express.Request, res: express.Response) => {
             const vueScope = new VueScope();
+            FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
                 user: req.session.user
             });

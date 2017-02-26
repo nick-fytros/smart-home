@@ -47,7 +47,7 @@ export class Server {
         this.app.set('vue', {
             componentsDir: path.join(__dirname, '/views/components')
         });
-        // this.app.use(favicon(__dirname + '/public/img/favicon.ico'));
+        this.app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
         this.app.use(logger('dev'));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({
