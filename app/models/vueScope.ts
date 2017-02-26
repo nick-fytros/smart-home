@@ -36,7 +36,7 @@ export default class VueScope {
                         }
                     ]
                 },
-                components: ['smheader', 'smfooter']
+                components: ['smheader', 'smfooter', 'messagebox']
             }
         };
         /* if a scope object is passed ovveride the given properties with the same keys and add new ones */

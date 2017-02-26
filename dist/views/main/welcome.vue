@@ -5,6 +5,7 @@
             <div class="container">
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
+                        <messagebox :flash="flash"></messagebox>
                         <p>Hello, {{user.email}}</p>
                     </div>
                 </div>

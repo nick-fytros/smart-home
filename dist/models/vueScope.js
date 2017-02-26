@@ -28,7 +28,7 @@ var VueScope = (function () {
                         }
                     ]
                 },
-                components: ['smheader', 'smfooter']
+                components: ['smheader', 'smfooter', 'messagebox']
             }
         };
         if (scopeObject !== undefined) {
