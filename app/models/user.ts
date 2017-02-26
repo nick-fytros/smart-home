@@ -3,7 +3,7 @@
  * User
  */
 import * as mongoose from 'mongoose';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import {
     IUser,
     userAccess
@@ -68,7 +68,7 @@ class User {
         });
 
         UserSchema.methods.comparePassword = function(candidatePassword: string, cb: Function) {
-            bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+            bcrypt.compare(candidatePassword, this.password, (err: Object, isMatch: boolean) => {
                 if (err) {
                     return cb(err);
                 }
