@@ -9,10 +9,10 @@ import {
     userAccess
 } from '../interfaces/user';
 
-class User {
+class PersistentUser {
 
     public static bootstrap() {
-        return new User();
+        return new PersistentUser();
     }
 
     public user: mongoose.Model <IUser>;
@@ -84,6 +84,6 @@ class User {
     }
 }
 
-const userActions = User.bootstrap().getUserModel();
+const persistentUser = PersistentUser.bootstrap().getUserModel();
 
-export default userActions;
+export default persistentUser;

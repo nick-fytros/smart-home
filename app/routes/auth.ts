@@ -5,7 +5,7 @@
 import * as express from 'express';
 import * as interfaces from '../interfaces/router';
 import VueScope from '../models/vueScope';
-import User from '../models/user';
+import persistentUser from '../models/persistentUser';
 import {
     FlashMessage
 } from '../services/flashMessage';
@@ -36,7 +36,7 @@ export class Auth implements interfaces.IRouter {
 
     private addLoginRoute(): void {
         this.router.post('/login', (req: express.Request, res: express.Response) => {
-            User.findOne({
+            persistentUser.findOne({
                 email: req.body.email
             }, (err, user) => {
                 if (err) {

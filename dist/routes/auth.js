@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
-var user_1 = require("../models/user");
+var persistentUser_1 = require("../models/persistentUser");
 var flashMessage_1 = require("../services/flashMessage");
 var Auth = (function () {
     function Auth(app) {
@@ -23,7 +23,7 @@ var Auth = (function () {
     };
     Auth.prototype.addLoginRoute = function () {
         this.router.post('/login', function (req, res) {
-            user_1.default.findOne({
+            persistentUser_1.default.findOne({
                 email: req.body.email
             }, function (err, user) {
                 if (err) {
