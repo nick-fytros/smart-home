@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var noble = require("noble");
-var nobleError_1 = require("../models/nobleError");
 var PeripheralService = (function () {
     function PeripheralService() {
         var _this = this;
@@ -35,7 +34,7 @@ var PeripheralService = (function () {
             console.log('Noble started scanning');
         }
         else {
-            throw new nobleError_1.default("Noble state is " + noble.state + " and can't start scanning.");
+            throw new Error("Noble state is " + noble.state + " and can't start scanning.");
         }
     };
     PeripheralService.prototype.setLampColor = function (peripheral, color) {
@@ -45,12 +44,12 @@ var PeripheralService = (function () {
             return obj.id === peripheral.id;
         });
         if (peripheralIndex < 0) {
-            throw new nobleError_1.default("Peripheral " + peripheral.advertisement.localName + " is not connected");
+            throw new Error("Peripheral " + peripheral.advertisement.localName + " is not connected");
         }
         peripheral.colorCharecteristic.write(new Buffer(colorCommand, 'hex'), true, function (error) {
             if (error) {
                 console.warn(error);
-                throw new nobleError_1.default(error.message);
+                throw new Error(error.message);
             }
             console.log('set color ' + color);
             _this.connectedPeripherals[peripheralIndex].currentColor = color;

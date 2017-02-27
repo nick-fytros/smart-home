@@ -1,5 +1,4 @@
 import * as noble from 'noble';
-import NobleError from '../models/nobleError';
 
 export default class PeripheralService {
     public connectedPeripherals: Array < object > ;
@@ -38,7 +37,7 @@ export default class PeripheralService {
             noble.startScanning();
             console.log('Noble started scanning');
         } else {
-            throw new NobleError(`Noble state is ${noble.state} and can't start scanning.`);
+            throw new Error(`Noble state is ${noble.state} and can't start scanning.`);
         }
     }
 
@@ -48,12 +47,12 @@ export default class PeripheralService {
             return obj.id === peripheral.id;
         });
         if (peripheralIndex < 0) {
-            throw new NobleError(`Peripheral ${peripheral.advertisement.localName} is not connected`);
+            throw new Error(`Peripheral ${peripheral.advertisement.localName} is not connected`);
         }
         peripheral.colorCharecteristic.write(new Buffer(colorCommand, 'hex'), true, (error: Error) => {
             if (error) {
                 console.warn(error);
-                throw new NobleError(error.message);
+                throw new Error(error.message);
             }
             console.log('set color ' + color);
             /* save color set to the peripheral it belongs */

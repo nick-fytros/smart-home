@@ -4,9 +4,9 @@
  */
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import * as validator from 'validator';
 import {
-    IUser,
-    userAccess
+    IUser
 } from '../interfaces/user';
 
 class PersistentUser {
@@ -15,14 +15,20 @@ class PersistentUser {
         return new PersistentUser();
     }
 
-    public user: mongoose.Model <IUser>;
+    public user: mongoose.Model < IUser > ;
 
     constructor() {
         const UserSchema = new mongoose.Schema({
             email: {
                 type: String,
                 required: [true, 'Email is required'],
-                lowercase: true
+                lowercase: true,
+                validate: {
+                    validator: (email: string) => {
+                        return validator.isEmail(email);
+                    },
+                    message: '{VALUE} is not a valid email address!'
+                },
             },
             password: {
                 type: String,
@@ -36,22 +42,22 @@ class PersistentUser {
                 type: Date,
                 default: Date.now
             },
-            userAccess: {
-                type: Number,
-                required: true,
-                default: userAccess.USER
+            role: {
+                type: String,
+                enum: ['user', 'admin'],
+                default: 'user'
             }
         });
 
         // MongoDB hash pass middleware
-        UserSchema.pre('save', function(next) {
+        UserSchema.pre('save', function (next) {
             const user = this;
             // only hash the password if it has been modified (or is new)
             if (!user.isModified('password')) {
                 return next();
             }
             // generate a salt
-            bcrypt.genSalt(process.env.SALT_FACTOR, (err: Error, salt: string) => {
+            bcrypt.genSalt(parseInt(process.env.SALT_FACTOR), (err: Error, salt: string) => {
                 if (err) {
                     return next(err);
                 }
@@ -76,10 +82,10 @@ class PersistentUser {
             });
         };
 
-        this.user = mongoose.model<IUser>('User', UserSchema);
+        this.user = mongoose.model < IUser > ('User', UserSchema);
     }
 
-    public getUserModel(): mongoose.Model <IUser> {
+    public getUserModel(): mongoose.Model < IUser > {
         return this.user;
     }
 }

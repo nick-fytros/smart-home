@@ -2,13 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose = require("mongoose");
 var bcrypt = require("bcryptjs");
+var validator = require("validator");
 var PersistentUser = (function () {
     function PersistentUser() {
         var UserSchema = new mongoose.Schema({
             email: {
                 type: String,
                 required: [true, 'Email is required'],
-                lowercase: true
+                lowercase: true,
+                validate: {
+                    validator: function (email) {
+                        return validator.isEmail(email);
+                    },
+                    message: '{VALUE} is not a valid email address!'
+                },
             },
             password: {
                 type: String,
@@ -22,10 +29,10 @@ var PersistentUser = (function () {
                 type: Date,
                 default: Date.now
             },
-            userAccess: {
-                type: Number,
-                required: true,
-                default: 1
+            role: {
+                type: String,
+                enum: ['user', 'admin'],
+                default: 'user'
             }
         });
         UserSchema.pre('save', function (next) {
@@ -33,7 +40,7 @@ var PersistentUser = (function () {
             if (!user.isModified('password')) {
                 return next();
             }
-            bcrypt.genSalt(process.env.SALT_FACTOR, function (err, salt) {
+            bcrypt.genSalt(parseInt(process.env.SALT_FACTOR), function (err, salt) {
                 if (err) {
                     return next(err);
                 }

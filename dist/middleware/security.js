@@ -4,7 +4,7 @@ var Security = (function () {
     function Security() {
     }
     Security.checkIfUserLoggedIn = function (req, res, next) {
-        if (req.session.user || req.path === '/auth/login' || req.path === '/') {
+        if (req.session.user || req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/') {
             next();
         }
         else {

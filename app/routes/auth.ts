@@ -5,7 +5,8 @@
 import * as express from 'express';
 import * as interfaces from '../interfaces/router';
 import VueScope from '../models/vueScope';
-import persistentUser from '../models/persistentUser';
+import PersistentUser from '../models/persistentUser';
+import User from '../models/user';
 import {
     FlashMessage
 } from '../services/flashMessage';
@@ -24,6 +25,7 @@ export class Auth implements interfaces.IRouter {
         this.router = express.Router();
         this.addLoginRoute();
         this.addLogoutRoute();
+        this.addSignupRoute();
     }
 
     public attach(pathToAttach ?: string): void {
@@ -36,7 +38,7 @@ export class Auth implements interfaces.IRouter {
 
     private addLoginRoute(): void {
         this.router.post('/login', (req: express.Request, res: express.Response) => {
-            persistentUser.findOne({
+            PersistentUser.findOne({
                 email: req.body.email
             }, (err, user) => {
                 if (err) {
@@ -48,11 +50,7 @@ export class Auth implements interfaces.IRouter {
                             throw err;
                         }
                         if (isMatch) {
-                            req.session.user = {
-                                email: user.get('email'),
-                                createdAt: user.get('createdAt'),
-                                lastLogin: user.get('lastLogin')
-                            };
+                            req.session.user = new User(user);
                             res.redirect('/welcome');
                         }
                     });
@@ -61,6 +59,32 @@ export class Auth implements interfaces.IRouter {
                     error: {
                         status: 401,
                         message: 'Sorry, the credentials you provided are wrong'
+                    }
+                });
+                res.redirect('/');
+            });
+        });
+    }
+
+    private addSignupRoute(): void {
+        this.router.get('/signup', (req: express.Request, res: express.Response) => {
+            const vueScope = new VueScope();
+            vueScope.addData({title: 'Smart Home - Sign up'});
+            res.render('auth/signup', vueScope);
+        });
+        this.router.post('/signup', (req: express.Request, res: express.Response) => {
+            const newUser = new PersistentUser({
+                email: req.body.email,
+                password: req.body.password
+            });
+            newUser.save().then((user) => {
+                req.session.user = new User(user);
+                res.redirect('/welcome');
+            }).catch((err) => {
+                FlashMessage.setFlashMessage(req, {
+                    error: {
+                        status: 401,
+                        message: err.message
                     }
                 });
                 res.redirect('/');

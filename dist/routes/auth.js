@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
+var vueScope_1 = require("../models/vueScope");
 var persistentUser_1 = require("../models/persistentUser");
+var user_1 = require("../models/user");
 var flashMessage_1 = require("../services/flashMessage");
 var Auth = (function () {
     function Auth(app) {
@@ -9,6 +11,7 @@ var Auth = (function () {
         this.router = express.Router();
         this.addLoginRoute();
         this.addLogoutRoute();
+        this.addSignupRoute();
     }
     Auth.bootstrap = function (app) {
         return new Auth(app);
@@ -35,11 +38,7 @@ var Auth = (function () {
                             throw err;
                         }
                         if (isMatch) {
-                            req.session.user = {
-                                email: user.get('email'),
-                                createdAt: user.get('createdAt'),
-                                lastLogin: user.get('lastLogin')
-                            };
+                            req.session.user = new user_1.default(user);
                             res.redirect('/welcome');
                         }
                     });
@@ -48,6 +47,31 @@ var Auth = (function () {
                     error: {
                         status: 401,
                         message: 'Sorry, the credentials you provided are wrong'
+                    }
+                });
+                res.redirect('/');
+            });
+        });
+    };
+    Auth.prototype.addSignupRoute = function () {
+        this.router.get('/signup', function (req, res) {
+            var vueScope = new vueScope_1.default();
+            vueScope.addData({ title: 'Smart Home - Sign up' });
+            res.render('auth/signup', vueScope);
+        });
+        this.router.post('/signup', function (req, res) {
+            var newUser = new persistentUser_1.default({
+                email: req.body.email,
+                password: req.body.password
+            });
+            newUser.save().then(function (user) {
+                req.session.user = new user_1.default(user);
+                res.redirect('/welcome');
+            }).catch(function (err) {
+                flashMessage_1.FlashMessage.setFlashMessage(req, {
+                    error: {
+                        status: 401,
+                        message: err.message
                     }
                 });
                 res.redirect('/');
