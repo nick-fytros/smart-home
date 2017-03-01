@@ -3,8 +3,6 @@
  * @extends Router Interface
  */
 import * as express from 'express';
-import * as noble from 'noble';
-import * as interfaces from '../interfaces/router';
 import VueScope from '../models/vueScope';
 import PeripheralService from '../services/peripheralService';
 
@@ -17,7 +15,7 @@ try {
     console.warn(err.message);
 }
 
-export class BleLamps implements interfaces.IRouter {
+export class BleLamps {
 
     public static bootstrap(app: express.Application) {
         return new BleLamps(app);

@@ -79,7 +79,8 @@ export class Server {
      */
     private attachErrorHandler(): void {
         // catch 404 and forward to error handler
-        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+            const err = new Error();
             err.status = 404;
             next(err);
         });

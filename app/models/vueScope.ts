@@ -9,7 +9,7 @@ import {
 export default class VueScope {
     public scope: IScope;
 
-    constructor(scopeObject ?: IScope) {
+    constructor() {
         this.scope = {
             data: {
                 title: 'Smart Home - Login',
@@ -39,10 +39,6 @@ export default class VueScope {
                 components: ['smheader', 'smfooter', 'messagebox']
             }
         };
-        /* if a scope object is passed ovveride the given properties with the same keys and add new ones */
-        if (scopeObject !== undefined) {
-            Object.assign(this.scope, scopeObject);
-        }
     }
 
     public changeApplicationTitle(appTitle: string): void {

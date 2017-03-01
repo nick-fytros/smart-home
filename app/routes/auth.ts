@@ -1,28 +1,31 @@
 /**
  * @class Auth
- * @extends Router Interface
  */
 import * as express from 'express';
-import * as interfaces from '../interfaces/router';
+import * as mongoose from 'mongoose';
+import {
+    IUser
+} from '../interfaces/user';
 import VueScope from '../models/vueScope';
-import PersistentUser from '../models/persistentUser';
 import User from '../models/user';
 import {
     FlashMessage
 } from '../services/flashMessage';
 
-export class Auth implements interfaces.IRouter {
+export class Auth {
 
     public static bootstrap(app: express.Application) {
         return new Auth(app);
     }
 
-    public app: express.Application;
-    public router: express.Router;
+    private app: express.Application;
+    private router: express.Router;
+    private MongooseUser: mongoose.Model < IUser > ;
 
     constructor(app: express.Application) {
         this.app = app;
         this.router = express.Router();
+        this.MongooseUser = mongoose.model < IUser > ('User');
         this.addLoginRoute();
         this.addLogoutRoute();
         this.addSignupRoute();
@@ -38,9 +41,9 @@ export class Auth implements interfaces.IRouter {
 
     private addLoginRoute(): void {
         this.router.post('/login', (req: express.Request, res: express.Response) => {
-            PersistentUser.findOne({
+            this.MongooseUser.findOne({
                 email: req.body.email
-            }, (err, user) => {
+            }, (err, user: IUser) => {
                 if (err) {
                     throw err;
                 }
@@ -69,11 +72,13 @@ export class Auth implements interfaces.IRouter {
     private addSignupRoute(): void {
         this.router.get('/signup', (req: express.Request, res: express.Response) => {
             const vueScope = new VueScope();
-            vueScope.addData({title: 'Smart Home - Sign up'});
+            vueScope.addData({
+                title: 'Smart Home - Sign up'
+            });
             res.render('auth/signup', vueScope);
         });
         this.router.post('/signup', (req: express.Request, res: express.Response) => {
-            const newUser = new PersistentUser({
+            const newUser = new this.MongooseUser({
                 email: req.body.email,
                 password: req.body.password
             });

@@ -4,14 +4,11 @@
  */
 import * as express from 'express';
 import {
-    IRouter
-} from '../interfaces/router';
-import {
     FlashMessage
 } from '../services/flashMessage';
 import VueScope from '../models/vueScope';
 
-export class Main implements IRouter {
+export class Main {
 
     public static bootstrap(app: express.Application) {
         return new Main(app);
