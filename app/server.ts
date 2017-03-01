@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as favicon from 'serve-favicon';
 import * as mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 import cookieSession = require('cookie-session');
 import expressVue = require('express-vue');
 
@@ -31,13 +32,14 @@ export class Server {
 
     constructor() {
         this.app = express();
-        this.config();
+        this.configureServer();
+        this.configfureDatabase();
         this.attachRoutes();
         this.attachErrorHandler();
         this.startServer();
     }
 
-    private config() {
+    private configureServer() {
         // dotevn config
         dotenv.config();
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
@@ -63,10 +65,17 @@ export class Server {
             // Cookie Options
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         }));
-        // db connection initiation
-        mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
         // add middleware
         this.app.use(Middleware.Security.checkIfUserLoggedIn);
+    }
+
+    private configfureDatabase(): void {
+        // db connection initiation
+        mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
+        // create db Schemas
+        fs.readdirSync(path.join(__dirname, '/schemas')).forEach((file: string) => {
+            require('./schemas/' + file);
+        });
     }
 
     private attachRoutes(): void {
@@ -88,7 +97,9 @@ export class Server {
         const vueScope = new VueScope();
         if (this.app.get('env') === 'development') {
             this.app.use((err: SmError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-                vueScope.addData({error: err});
+                vueScope.addData({
+                    error: err
+                });
                 res.status(err.status || 500);
                 res.render('error', vueScope);
             });

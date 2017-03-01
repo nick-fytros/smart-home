@@ -8,14 +8,18 @@ var path = require("path");
 var favicon = require("serve-favicon");
 var mongoose = require("mongoose");
 var dotenv = require("dotenv");
+var fs = require("fs");
 var cookieSession = require("cookie-session");
 var expressVue = require("express-vue");
+var smError_1 = require("./models/smError");
+var vueScope_1 = require("./models/vueScope");
 var Routers = require("./routes");
 var Middleware = require("./middleware");
 var Server = (function () {
     function Server() {
         this.app = express();
-        this.config();
+        this.configureServer();
+        this.configfureDatabase();
         this.attachRoutes();
         this.attachErrorHandler();
         this.startServer();
@@ -23,7 +27,7 @@ var Server = (function () {
     Server.bootstrap = function () {
         return new Server();
     };
-    Server.prototype.config = function () {
+    Server.prototype.configureServer = function () {
         dotenv.config();
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
         this.app.locals.ENV_DEVELOPMENT = this.app.locals.ENV === 'development';
@@ -46,8 +50,13 @@ var Server = (function () {
             keys: [process.env.COOKIESESSION_KEY1, process.env.COOKIESESSION_KEY2],
             maxAge: 24 * 60 * 60 * 1000
         }));
-        mongoose.connect("mongodb://" + process.env.DB_HOST + "/" + process.env.DB_NAME);
         this.app.use(Middleware.Security.checkIfUserLoggedIn);
+    };
+    Server.prototype.configfureDatabase = function () {
+        mongoose.connect("mongodb://" + process.env.DB_HOST + "/" + process.env.DB_NAME);
+        fs.readdirSync(path.join(__dirname, '/schemas')).forEach(function (file) {
+            require('./schemas/' + file);
+        });
     };
     Server.prototype.attachRoutes = function () {
         Routers.Main.bootstrap(this.app).attach('/');
@@ -56,57 +65,24 @@ var Server = (function () {
     };
     Server.prototype.attachErrorHandler = function () {
         this.app.use(function (req, res, next) {
-            var err = new Error();
-            err.status = 404;
-            next(err);
+            var error = new smError_1.default('The page you were looking for is not found', 404);
+            next(error);
         });
+        var vueScope = new vueScope_1.default();
         if (this.app.get('env') === 'development') {
             this.app.use(function (err, req, res, next) {
-                res.status(err.status || 500);
-                res.render('error', {
-                    data: {
-                        error: err
-                    },
-                    vue: {
-                        meta: {
-                            title: 'Something went wrong',
-                            head: [{
-                                    name: 'application-name',
-                                    content: 'Smart home'
-                                },
-                                {
-                                    name: 'description',
-                                    content: 'Error page',
-                                    id: 'desc'
-                                }
-                            ]
-                        }
-                    }
+                vueScope.addData({
+                    error: err
                 });
+                res.status(err.status || 500);
+                res.render('error', vueScope);
             });
         }
         this.app.use(function (err, req, res, next) {
             res.status(err.status || 500);
-            res.render('error', {
-                data: {
-                    error: ''
-                },
-                vue: {
-                    meta: {
-                        title: 'Page Title',
-                        head: [{
-                                name: 'application-name',
-                                content: 'Smart home'
-                            },
-                            {
-                                name: 'description',
-                                content: 'Error page',
-                                id: 'desc'
-                            }
-                        ]
-                    }
-                }
-            });
+            delete err.stack;
+            vueScope.addData(err);
+            res.render('error', vueScope);
         });
     };
     Server.prototype.startServer = function () {
