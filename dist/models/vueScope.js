@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var VueScope = (function () {
-    function VueScope(scopeObject) {
+    function VueScope() {
         this.scope = {
             data: {
                 title: 'Smart Home - Login',
@@ -31,9 +31,6 @@ var VueScope = (function () {
                 components: ['smheader', 'smfooter', 'messagebox']
             }
         };
-        if (scopeObject !== undefined) {
-            Object.assign(this.scope, scopeObject);
-        }
     }
     VueScope.prototype.changeApplicationTitle = function (appTitle) {
         this.scope.vue.meta.title = appTitle;

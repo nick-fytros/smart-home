@@ -55,7 +55,8 @@ var Server = (function () {
         Routers.Auth.bootstrap(this.app).attach('/auth');
     };
     Server.prototype.attachErrorHandler = function () {
-        this.app.use(function (err, req, res, next) {
+        this.app.use(function (req, res, next) {
+            var err = new Error();
             err.status = 404;
             next(err);
         });

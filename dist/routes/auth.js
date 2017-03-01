@@ -1,14 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
+var mongoose = require("mongoose");
 var vueScope_1 = require("../models/vueScope");
-var persistentUser_1 = require("../models/persistentUser");
 var user_1 = require("../models/user");
 var flashMessage_1 = require("../services/flashMessage");
 var Auth = (function () {
     function Auth(app) {
         this.app = app;
         this.router = express.Router();
+        this.MongooseUser = mongoose.model('User');
         this.addLoginRoute();
         this.addLogoutRoute();
         this.addSignupRoute();
@@ -25,8 +26,9 @@ var Auth = (function () {
         }
     };
     Auth.prototype.addLoginRoute = function () {
+        var _this = this;
         this.router.post('/login', function (req, res) {
-            persistentUser_1.default.findOne({
+            _this.MongooseUser.findOne({
                 email: req.body.email
             }, function (err, user) {
                 if (err) {
@@ -54,13 +56,16 @@ var Auth = (function () {
         });
     };
     Auth.prototype.addSignupRoute = function () {
+        var _this = this;
         this.router.get('/signup', function (req, res) {
             var vueScope = new vueScope_1.default();
-            vueScope.addData({ title: 'Smart Home - Sign up' });
+            vueScope.addData({
+                title: 'Smart Home - Sign up'
+            });
             res.render('auth/signup', vueScope);
         });
         this.router.post('/signup', function (req, res) {
-            var newUser = new persistentUser_1.default({
+            var newUser = new _this.MongooseUser({
                 email: req.body.email,
                 password: req.body.password
             });

@@ -9,6 +9,8 @@ import * as dotenv from 'dotenv';
 import cookieSession = require('cookie-session');
 import expressVue = require('express-vue');
 
+import SmError from './models/smError';
+import VueScope from './models/vueScope';
 import * as Routers from './routes';
 import * as Middleware from './middleware';
 
@@ -80,34 +82,15 @@ export class Server {
     private attachErrorHandler(): void {
         // catch 404 and forward to error handler
         this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const err = new Error();
-            err.status = 404;
-            next(err);
+            const error = new SmError('The page you were looking for is not found', 404);
+            next(error);
         });
-
+        const vueScope = new VueScope();
         if (this.app.get('env') === 'development') {
-            this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+            this.app.use((err: SmError, req: express.Request, res: express.Response, next: express.NextFunction) => {
+                vueScope.addData({error: err});
                 res.status(err.status || 500);
-                res.render('error', {
-                    data: {
-                        error: err
-                    },
-                    vue: {
-                        meta: {
-                            title: 'Something went wrong',
-                            head: [{
-                                    name: 'application-name',
-                                    content: 'Smart home'
-                                },
-                                {
-                                    name: 'description',
-                                    content: 'Error page',
-                                    id: 'desc'
-                                }
-                            ]
-                        }
-                    }
-                });
+                res.render('error', vueScope);
             });
         }
 
@@ -115,28 +98,11 @@ export class Server {
          * production error handler
          * no stacktraces leaked to user
          */
-        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.app.use((err: SmError, req: express.Request, res: express.Response, next: express.NextFunction) => {
             res.status(err.status || 500);
-            res.render('error', {
-                data: {
-                    error: ''
-                },
-                vue: {
-                    meta: {
-                        title: 'Page Title',
-                        head: [{
-                                name: 'application-name',
-                                content: 'Smart home'
-                            },
-                            {
-                                name: 'description',
-                                content: 'Error page',
-                                id: 'desc'
-                            }
-                        ]
-                    }
-                }
-            });
+            delete err.stack;
+            vueScope.addData(err);
+            res.render('error', vueScope);
         });
     }
 
