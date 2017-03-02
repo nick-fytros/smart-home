@@ -1,45 +1,54 @@
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import * as express from 'express';
-import * as logger from 'morgan';
-import * as path from 'path';
-import * as favicon from 'serve-favicon';
-import * as mongoose from 'mongoose';
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import cookieSession = require('cookie-session');
-import expressVue = require('express-vue');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const logger = require('morgan');
+const path = require('path');
+const favicon = require('serve-favicon');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const fs = require('fs');
+const cookieSession = require('cookie-session');
+const expressVue = require('express-vue');
+const requireDir = require('require-dir');
 
-import SmError from './models/smError';
-import VueScope from './models/vueScope';
-import * as Routers from './routes';
-import * as Middleware from './middleware';
+const SmError = require('./models/smError');
+const VueScope = require('./models/vueScope');
+const Routers = requireDir('./routes');
+const Middleware = requireDir('./middleware');
+const Schemas = requireDir('./schemas');
 
-export class Server {
+/**
+ * @export
+ * @class Server
+ */
+class Server {
 
     /**
-     * Bootstrap the application.
-     *
-     * @class Server
-     * @method bootstrap
      * @static
+     * @returns 
+     * @memberOf Server
      */
-    public static bootstrap(): Server {
+    static bootstrap() {
         return new Server();
     }
 
-    public app: express.Application;
-
+    /**
+     * Creates an instance of Server.
+     * @memberOf Server
+     */
     constructor() {
         this.app = express();
-        this.configureServer();
-        this.configfureDatabase();
-        this.attachRoutes();
-        this.attachErrorHandler();
-        this.startServer();
+        this._configureServer();
+        this._configfureDatabase();
+        this._attachRoutes();
+        this._attachErrorHandler();
+        this._startServer();
     }
 
-    private configureServer() {
+    /**
+     * @memberOf Server
+     */
+    _configureServer() {
         // dotevn config
         dotenv.config();
         this.app.locals.ENV = process.env.NODE_ENV || 'development';
@@ -69,16 +78,20 @@ export class Server {
         this.app.use(Middleware.Security.checkIfUserLoggedIn);
     }
 
-    private configfureDatabase(): void {
+    /**
+     * @memberOf Server
+     */
+    _configfureDatabase() {
         // db connection initiation
         mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
         // create db Schemas
-        fs.readdirSync(path.join(__dirname, '/schemas')).forEach((file: string) => {
-            require('./schemas/' + file);
-        });
+
     }
 
-    private attachRoutes(): void {
+    /**
+     * @memberOf Server
+     */
+    _attachRoutes() {
         Routers.Main.bootstrap(this.app).attach('/');
         Routers.BleLamps.bootstrap(this.app).attach('/blelamps');
         Routers.Auth.bootstrap(this.app).attach('/auth');
@@ -87,16 +100,17 @@ export class Server {
     /**
      * development error handler
      * will print stacktrace
+     * @memberOf Server
      */
-    private attachErrorHandler(): void {
+    _attachErrorHandler() {
         // catch 404 and forward to error handler
-        this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.app.use((req, res, next) => {
             const error = new SmError('The page you were looking for is not found', 404);
             next(error);
         });
         const vueScope = new VueScope();
         if (this.app.get('env') === 'development') {
-            this.app.use((err: SmError, req: express.Request, res: express.Response, next: express.NextFunction) => {
+            this.app.use((err, req, res, next) => {
                 vueScope.addData({
                     error: err
                 });
@@ -109,7 +123,7 @@ export class Server {
          * production error handler
          * no stacktraces leaked to user
          */
-        this.app.use((err: SmError, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        this.app.use((err, req, res, next) => {
             res.status(err.status || 500);
             delete err.stack;
             vueScope.addData(err);
@@ -117,7 +131,10 @@ export class Server {
         });
     }
 
-    private startServer() {
+    /**
+     * @memberOf Server
+     */
+    _startServer() {
         this.app.set('port', process.env.PORT || 3000);
 
         const server = this.app.listen(this.app.get('port'), () => {
@@ -125,3 +142,5 @@ export class Server {
         });
     }
 }
+
+module.exports.Server;

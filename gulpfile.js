@@ -1,29 +1,13 @@
 var gulp = require('gulp');
-var ts = require("gulp-typescript");
-var tsProject = ts.createProject("tsconfig.json");
 var nodemon = require('gulp-nodemon');
 var plumber = require('gulp-plumber');
 var livereload = require('gulp-livereload');
 var sass = require('gulp-sass');
 var mocha = require('gulp-mocha');
-var clean = require('gulp-clean-dest');
 var cleanCSS = require('gulp-clean-css');
 var chai = require('chai');
 
-gulp.task('vue', () => {
-    return gulp.src('app/**/*.vue')
-        .pipe(clean('dist'))
-        .pipe(gulp.dest('dist'))
-        .pipe(livereload());
-});
-
-gulp.task('ts', () => {
-    return tsProject.src()
-        .pipe(tsProject())
-        .js.pipe(gulp.dest("dist"));
-});
-
-gulp.task('sass', ['vue'], () => {
+gulp.task('sass', () => {
     return gulp.src('./assets/scss/*.scss')
         .pipe(plumber())
         .pipe(sass())
@@ -36,10 +20,10 @@ gulp.task('sass', ['vue'], () => {
 
 gulp.task('watch', () => {
     livereload.listen();
-    gulp.watch(['./assets/scss/*.scss', './app/**/*.ts', './app/**/*.vue'], ['vue', 'sass', 'ts']);
+    gulp.watch(['./assets/scss/*.scss'], ['sass']);
 });
 
-gulp.task('develop', ['vue', 'ts', 'sass'], () => {
+gulp.task('develop', ['sass'], () => {
     livereload.listen();
     nodemon({
         script: 'dist/start.js',
@@ -71,15 +55,11 @@ gulp.task('mocha', function () {
 });
 
 gulp.task('test', [
-    'vue',
-    'ts',
     'sass',
     'mocha'
 ]);
 
 gulp.task('default', [
-    'vue',
-    'ts',
     'sass',
     'mocha',
     'develop',
@@ -87,7 +67,5 @@ gulp.task('default', [
 ]);
 
 gulp.task('build', [
-    'vue',
-    'ts',
     'sass'
 ]);
