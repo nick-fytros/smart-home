@@ -1,0 +1,75 @@
+/**
+ * @export
+ * @class VueScope
+ */
+class VueScope {
+
+    /**
+     * Creates an instance of VueScope.
+     * 
+     * @memberOf VueScope
+     */
+    constructor() {
+        this.scope = {
+            data: {
+                title: 'Smart Home - Login',
+                subtitle: 'Grünerløkka, Oslo',
+                flash: {}
+            },
+            vue: {
+                head: {
+                    title: 'Smart Home',
+                    meta: [{
+                        name: 'application-name',
+                        content: 'Smart Home by Nikos'
+                    },
+                    {
+                        name: 'description',
+                        content: 'Smart Home by Nikos Fytros',
+                        id: 'desc'
+                    },
+                    {
+                        style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'
+                    },
+                    {
+                        style: 'css/style.css'
+                    }]
+                },
+                components: ['smheader', 'smfooter', 'messagebox']
+            }
+        };
+    }
+
+    changeApplicationTitle(appTitle) {
+        this.scope.vue.head.title = appTitle;
+    }
+
+    changeApplicationName(appName) {
+        this.scope.vue.head.meta[0].content = appName;
+    }
+
+    changeApplicationDescription(appDescription) {
+        this.scope.vue.head.meta[1].content = appDescription;
+    }
+
+    addStyleUrl(styleUrl) {
+        this.scope.vue.head.meta.push({
+            style: styleUrl
+        });
+    }
+
+    addComponent(componentName) {
+        this.scope.vue.components.push(componentName);
+    }
+
+    addData(data) {
+        this.scope.data = Object.assign(this.scope.data, data);
+    }
+
+    getScope() {
+        return this.scope;
+    }
+
+}
+
+module.exports = VueScope;

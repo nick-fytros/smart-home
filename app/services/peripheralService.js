@@ -1,16 +1,23 @@
-import * as noble from 'noble';
-import NobleError from '../models/nobleError';
+const noble = require('noble');
 
-export default class PeripheralService {
-    public connectedPeripherals: Array < object > ;
+/**
+ * @export
+ * @class PeripheralService
+ */
+class PeripheralService {
 
+    /**
+     * Creates an instance of PeripheralService.
+     * 
+     * @memberOf PeripheralService
+     */
     constructor() {
         this.connectedPeripherals = [];
         noble.stopScanning();
         noble.on('stateChange', (state) => {
             // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
             if (state === 'poweredOn') {
-                console.log('Noble started scanning')
+                console.log('Noble started scanning');
                 noble.startScanning();
             } else {
                 noble.stopScanning();
@@ -21,16 +28,24 @@ export default class PeripheralService {
             if (typeof peripheral.advertisement.localName !== 'undefined' &&
                 peripheral.advertisement.localName.includes('LEDBLE-')) {
                 noble.stopScanning();
-                this.connectToPeripheralAndInit(peripheral);
+                this._connectToPeripheralAndInit(peripheral);
             }
         });
     }
 
-    public getConnectedPeripherals() {
+    /**
+     * @returns 
+     * 
+     * @memberOf PeripheralService
+     */
+    getConnectedPeripherals() {
         return this.connectedPeripherals;
     }
 
-    public startScanAndConnectToBleLamps() {
+    /**
+     * @memberOf PeripheralService
+     */
+    startScanAndConnectToBleLamps() {
         noble.stopScanning();
         /* reset the connected peripherals array */
         this.connectedPeripherals = [];
@@ -38,22 +53,28 @@ export default class PeripheralService {
             noble.startScanning();
             console.log('Noble started scanning');
         } else {
-            throw new NobleError(`Noble state is ${noble.state} and can't start scanning.`);
+            throw new Error(`Noble state is ${noble.state} and can't start scanning.`);
         }
     }
 
-    public setLampColor(peripheral: noble.Peripheral, color: string) {
+    /**
+     * @param {Noble.Peripheral} peripheral 
+     * @param {String} color 
+     * 
+     * @memberOf PeripheralService
+     */
+    setLampColor(peripheral, color) {
         let colorCommand = '56' + color + '00f0aa';
-        let peripheralIndex = this.connectedPeripherals.findIndex((obj: Object) => {
+        let peripheralIndex = this.connectedPeripherals.findIndex((obj) => {
             return obj.id === peripheral.id;
         });
         if (peripheralIndex < 0) {
-            throw new NobleError(`Peripheral ${peripheral.advertisement.localName} is not connected`);
+            throw new Error(`Peripheral ${peripheral.advertisement.localName} is not connected`);
         }
-        peripheral.colorCharecteristic.write(new Buffer(colorCommand, 'hex'), true, (error: Error) => {
+        peripheral.colorCharecteristic.write(new Buffer(colorCommand, 'hex'), true, (error) => {
             if (error) {
                 console.warn(error);
-                throw new NobleError(error.message);
+                throw new Error(error.message);
             }
             console.log('set color ' + color);
             /* save color set to the peripheral it belongs */
@@ -62,16 +83,20 @@ export default class PeripheralService {
         });
     }
 
-    /* TODO handle errors */
-    private connectToPeripheralAndInit(peripheral: noble.Peripheral) {
-        peripheral.connect((error: string) => {
+    /**
+     * @param {Noble.Peripheral} peripheral 
+     * 
+     * @memberOf PeripheralService
+     */
+    _connectToPeripheralAndInit(peripheral) {
+        peripheral.connect((error) => {
             if (error) {
                 console.warn(error);
                 return null;
             }
             console.log('connected to lamp ' + peripheral.advertisement.localName);
             /* discover the only writable service */
-            peripheral.discoverServices(['ffe5'], (error: string, services: noble.Service[]) => {
+            peripheral.discoverServices(['ffe5'], (error, services) => {
                 if (error) {
                     console.warn(error);
                     return null;
@@ -95,7 +120,7 @@ export default class PeripheralService {
                     /* on peripheral disconnect, reconnect */
                     peripheral.once('disconnect', () => {
                         console.log('peripheral disconnected...');
-                        const peripheralIndex = this.connectedPeripherals.findIndex((obj: Object) => {
+                        const peripheralIndex = this.connectedPeripherals.findIndex((obj) => {
                             return obj.id === peripheral.id;
                         });
                         if (peripheralIndex >= 0) {
@@ -108,3 +133,5 @@ export default class PeripheralService {
         });
     }
 }
+
+module.exports = PeripheralService;
