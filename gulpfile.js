@@ -26,7 +26,7 @@ gulp.task('watch', () => {
 gulp.task('develop', ['sass'], () => {
     livereload.listen();
     nodemon({
-        script: 'dist/start.js',
+        script: 'app/start.js',
         ext: 'js vue scss',
         stdout: true
     }).on('readable', () => {

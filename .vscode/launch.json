@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}/dist/start.js",
+            "program": "${workspaceRoot}/app/start.js",
             "cwd": "${workspaceRoot}",
             "outFiles": []
         },
