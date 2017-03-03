@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 
-module.exports = () => {
+module.exports.bootstrap = () => {
 
     const UserSchema = new mongoose.Schema({
         email: {
@@ -39,7 +39,7 @@ module.exports = () => {
     });
 
     // MongoDB hash pass middleware
-    UserSchema.pre('save', function(next) {
+    UserSchema.pre('save', function (next) {
         const user = this;
         // only hash the password if it has been modified (or is new)
         if (!user.isModified('password')) {
@@ -62,7 +62,7 @@ module.exports = () => {
         });
     });
 
-    UserSchema.methods.comparePassword = function(candidatePassword, cb) {
+    UserSchema.methods.comparePassword = function (candidatePassword, cb) {
         bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
             if (err) {
                 return cb(err);

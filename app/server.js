@@ -85,7 +85,7 @@ class Server {
         // db connection initiation
         mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
         // create db Schemas
-
+        console.log(Schemas.user.bootstrap());
     }
 
     /**
