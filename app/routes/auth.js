@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const VueScope = require('../models/vueScope');
+
 const User = require('../models/user');
 const FlashMessage = require('../services/flashMessage');
 

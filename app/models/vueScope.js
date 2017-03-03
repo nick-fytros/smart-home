@@ -1,14 +1,14 @@
 /**
- * VueScope class to be passed in Vue views
+ * @export
  * @class VueScope
  */
-import {
-    IScope
-} from '../interfaces/scope';
+class VueScope {
 
-export default class VueScope {
-    public scope: IScope;
-
+    /**
+     * Creates an instance of VueScope.
+     * 
+     * @memberOf VueScope
+     */
     constructor() {
         this.scope = {
             data: {
@@ -17,58 +17,59 @@ export default class VueScope {
                 flash: {}
             },
             vue: {
-                meta: {
+                head: {
                     title: 'Smart Home',
-                    head: [{
-                            name: 'application-name',
-                            content: 'Smart Home by Nikos'
-                        },
-                        {
-                            name: 'description',
-                            content: 'Smart Home by Nikos Fytros',
-                            id: 'desc'
-                        },
-                        {
-                            style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'
-                        },
-                        {
-                            style: 'css/style.css'
-                        }
-                    ]
+                    meta: [{
+                        name: 'application-name',
+                        content: 'Smart Home by Nikos'
+                    },
+                    {
+                        name: 'description',
+                        content: 'Smart Home by Nikos Fytros',
+                        id: 'desc'
+                    },
+                    {
+                        style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'
+                    },
+                    {
+                        style: 'css/style.css'
+                    }]
                 },
                 components: ['smheader', 'smfooter', 'messagebox']
             }
         };
     }
 
-    public changeApplicationTitle(appTitle: string): void {
-        this.scope.vue.meta.title = appTitle;
+    changeApplicationTitle(appTitle) {
+        this.scope.vue.head.title = appTitle;
     }
 
-    public changeApplicationName(appName: string): void {
-        this.scope.vue.meta.head[0].content = appName;
+    changeApplicationName(appName) {
+        this.scope.vue.head.meta[0].content = appName;
     }
 
-    public changeApplicationDescription(appDescription: string): void {
-        this.scope.vue.meta.head[1].content = appDescription;
+    changeApplicationDescription(appDescription) {
+        this.scope.vue.head.meta[1].content = appDescription;
     }
 
-    public addStyleUrl(styleUrl: string): void {
-        this.scope.vue.meta.head.push({
+    addStyleUrl(styleUrl) {
+        this.scope.vue.head.meta.push({
             style: styleUrl
         });
     }
 
-    public addComponent(componentName: string): void {
+    addComponent(componentName) {
         this.scope.vue.components.push(componentName);
     }
 
-    public addData(data: object): void {
+    addData(data) {
         this.scope.data = Object.assign(this.scope.data, data);
     }
 
-    public getScope(): IScope {
+    getScope() {
         return this.scope;
     }
 
 }
+
+module.exports = VueScope;

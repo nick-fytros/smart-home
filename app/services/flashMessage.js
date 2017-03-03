@@ -1,22 +1,35 @@
 /**
+ * @export
  * @class FlashMessage
  */
-
-import {
-    Request
-} from 'express';
-
-export class FlashMessage {
-    public static checkAndInvalidateFlash(req: Request) {
+class FlashMessage {
+    /**
+     * @static
+     * @param {Express.Request} req 
+     * 
+     * @memberOf FlashMessage
+     */
+    static checkAndInvalidateFlash(req) {
         if (req.session && req.session.flash && req.session.flashExpired === false) {
             req.session.flashExpired = true;
-        }else if (req.session && req.session.flash && req.session.flashExpired === true) {
+        } else if (req.session && req.session.flash && req.session.flashExpired === true) {
             req.session.flash = null;
         }
     }
 
-    public static setFlashMessage(req: Request, flashMessage: object) {
+    /**
+     * 
+     * 
+     * @static
+     * @param {Express.Request} req 
+     * @param {Object} flashMessage 
+     * 
+     * @memberOf FlashMessage
+     */
+    static setFlashMessage(req, flashMessage) {
         req.session.flash = flashMessage;
         req.session.flashExpired = false;
     }
 }
+
+module.exports = FlashMessage;

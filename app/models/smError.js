@@ -1,14 +1,22 @@
 /**
- * SmError
+ * @export
+ * @class SmError
+ * @extends {Error}
  */
-export default class SmError extends Error {
+class SmError extends Error {
 
-    public message: string;
-    public status: number;
-
-    constructor(message: string, status: number) {
+    /**
+     * Creates an instance of SmError.
+     * @param {string} message 
+     * @param {number} status 
+     * 
+     * @memberOf SmError
+     */
+    constructor(message, status) {
         super();
         this.message = message;
         this.status = status;
     }
 }
+
+module.exports = SmError;

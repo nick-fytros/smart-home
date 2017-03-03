@@ -1,18 +1,16 @@
 /**
+ * @export
  * @class User
  */
-import {
-    IUser
-} from '../interfaces/user';
+class User {
 
-export default class User {
-    private _email: string;
-    private _password: string;
-    private _createdOn: Date;
-    private _lastLogin: Date;
-    private _role: string;
-
-    constructor(user: IUser) {
+    /**
+     * Creates an instance of User.
+     * @param {Object} user 
+     * 
+     * @memberOf User
+     */
+    constructor(user) {
         this._email = user.email;
         this._password = user.password;
         this._createdOn = user.createdOn;
@@ -20,19 +18,21 @@ export default class User {
         this._role = user.role;
     }
 
-    get email(): string {
+    get email(){
         return this._email;
     }
-    get password(): string {
+    get password() {
         return this._password;
     }
-    get createdOn(): Date {
+    get createdOn() {
         return this._createdOn;
     }
-    get lastLogin(): Date {
+    get lastLogin() {
         return this._lastLogin;
     }
-    get role(): string {
+    get role() {
         return this._role;
     }
 }
+
+module.exports = User;

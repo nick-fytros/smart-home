@@ -1,10 +1,6 @@
-/**
- * @class BleLamps
- * @extends Router Interface
- */
-import * as express from 'express';
-import VueScope from '../models/vueScope';
-import PeripheralService from '../services/peripheralService';
+const express = require('express');
+const VueScope = require('../models/vueScope');
+const PeripheralService = require('../services/peripheralService');
 
 // initialize PeripheralService
 // TODO initialize elsewhere
@@ -15,22 +11,41 @@ try {
     console.warn(err.message);
 }
 
-export class BleLamps {
+/**
+ * @export
+ * @class BleLamps
+ */
+class BleLamps {
 
-    public static bootstrap(app: express.Application) {
+    /**
+     * @static
+     * @param {Express.Application} app 
+     * @returns 
+     * 
+     * @memberOf BleLamps
+     */
+    static bootstrap(app) {
         return new BleLamps(app);
     }
 
-    public app: express.Application;
-    public router: express.Router;
-
-    constructor(app: express.Application) {
+    /**
+     * Creates an instance of BleLamps.
+     * @param {Express.Application} app 
+     * 
+     * @memberOf BleLamps
+     */
+    constructor(app) {
         this.app = app;
         this.router = express.Router();
-        this.addHomeRoute();
+        this._addHomeRoute();
     }
 
-    public attach(pathToAttach ?: string): void {
+    /**
+     * @param {string} [pathToAttach='/'] 
+     * 
+     * @memberOf BleLamps
+     */
+    attach(pathToAttach = '/') {
         if (pathToAttach) {
             this.app.use(pathToAttach, this.router);
         } else {
@@ -38,17 +53,25 @@ export class BleLamps {
         }
     }
 
-    private addHomeRoute(): void {
-        this.router.get('/', (req: express.Request, res: express.Response) => {
+    /**
+     * @memberOf BleLamps
+     */
+    _addHomeRoute() {
+        this.router.get('/', (req, res) => {
             res.end('ok');
         });
 
     }
 
-    private addLampColorRoute(): void {
-        this.router.get('/color/:color', (req: express.Request, res: express.Response) => {
+    /**
+     * @memberOf BleLamps
+     */
+    _addLampColorRoute() {
+        this.router.get('/color/:color', (req, res) => {
             peripheralService.setLampColor(peripheralService.getConnectedPeripherals()[0], req.params.color);
             res.end('ok');
         });
     }
 }
+
+module.exports = BleLamps;
