@@ -88,7 +88,7 @@ class Auth {
             vueScope.addData({
                 title: 'Smart Home - Sign up'
             });
-            res.render('auth/signup', vueScope);
+            res.render('auth/signup', vueScope.getScope());
         });
         this.router.post('/signup', (req, res) => {
             const newUser = new this.MongooseUser({

@@ -58,7 +58,8 @@ class Server {
         this.app.set('view engine', 'vue');
         this.app.set('views', path.join(__dirname, '/views'));
         this.app.set('vue', {
-            componentsDir: path.join(__dirname, '/views/components')
+            componentsDir: path.join(__dirname, '/views/components'),
+            defaultLayout: 'layout'
         });
         this.app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
         this.app.use(logger('dev'));
