@@ -24,4 +24,4 @@ class Security {
     }
 }
 
-module.exports.Security;
+module.exports = Security;
