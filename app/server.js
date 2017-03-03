@@ -83,6 +83,8 @@ class Server {
      * @memberOf Server
      */
     _configfureDatabase() {
+        // use native promises
+        mongoose.Promise = global.Promise;
         // db connection initiation
         mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
         // create db Schemas

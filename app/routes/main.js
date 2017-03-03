@@ -48,9 +48,11 @@ class Main {
         this.router.get('/', (req, res) => {
             const vueScope = new VueScope();
             FlashMessage.checkAndInvalidateFlash(req);
-            vueScope.addData({
-                flash: req.session.flash
-            });
+            if (req.session && req.session.flash) {
+                vueScope.addData({
+                    flash: req.session.flash
+                });
+            }
             res.render('main/main', vueScope.getScope());
         });
     }
