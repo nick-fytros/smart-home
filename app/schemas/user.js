@@ -1,14 +1,8 @@
-/**
- * User Schema
- */
-import * as mongoose from 'mongoose';
-import * as bcrypt from 'bcryptjs';
-import * as validator from 'validator';
-import {
-    IUser
-} from '../interfaces/user';
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
-export default () => {
+module.exports = () => {
 
     const UserSchema = new mongoose.Schema({
         email: {
