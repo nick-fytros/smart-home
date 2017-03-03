@@ -1,39 +1,51 @@
+const express = require('express');
+const VueScope = require('../models/vueScope');
+const FlashMessage = require('../services/flashMessage');
+
 /**
+ * @export
  * @class Main
- * @extends Router Interface
  */
-import * as express from 'express';
-import {
-    FlashMessage
-} from '../services/flashMessage';
-import VueScope from '../models/vueScope';
+class Main {
 
-export class Main {
-
-    public static bootstrap(app: express.Application) {
+    /**
+     * @static
+     * @param {Express.Application} app 
+     * @returns 
+     * 
+     * @memberOf Main
+     */
+    static bootstrap(app) {
         return new Main(app);
     }
 
-    public app: express.Application;
-    public router: express.Router;
-
-    constructor(app: express.Application) {
+    /**
+     * Creates an instance of Main.
+     * @param {Express.Application} app 
+     * 
+     * @memberOf Main
+     */
+    constructor(app) {
         this.app = app;
         this.router = express.Router();
-        this.addHomeRoute();
-        this.addWelcomeRoute();
+        this._addHomeRoute();
+        this._addWelcomeRoute();
     }
 
-    public attach(pathToAttach ?: string): void {
-        if (pathToAttach) {
-            this.app.use(pathToAttach, this.router);
-        } else {
-            this.app.use('/', this.router);
-        }
+    /**
+     * @param {string} [pathToAttach='/'] 
+     * 
+     * @memberOf Main
+     */
+    attach(pathToAttach = '/') {
+        this.app.use(pathToAttach, this.router);
     }
 
-    private addHomeRoute(): void {
-        this.router.get('/', (req: express.Request, res: express.Response) => {
+    /**
+     * @memberOf Main
+     */
+    _addHomeRoute() {
+        this.router.get('/', (req, res) => {
             const vueScope = new VueScope();
             FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
@@ -43,8 +55,11 @@ export class Main {
         });
     }
 
-    private addWelcomeRoute(): void {
-        this.router.get('/welcome', (req: express.Request, res: express.Response) => {
+    /**
+     * @memberOf Main
+     */
+    _addWelcomeRoute() {
+        this.router.get('/welcome', (req, res) => {
             const vueScope = new VueScope();
             FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
@@ -54,3 +69,5 @@ export class Main {
         });
     }
 }
+
+module.exports = Main;

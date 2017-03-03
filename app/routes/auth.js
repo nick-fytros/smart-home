@@ -1,54 +1,63 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const VueScope = require('../models/vueScope');
+const User = require('../models/user');
+const FlashMessage = require('../services/flashMessage');
+
 /**
+ * @export
  * @class Auth
  */
-import * as express from 'express';
-import * as mongoose from 'mongoose';
-import {
-    IUser
-} from '../interfaces/user';
-import VueScope from '../models/vueScope';
-import User from '../models/user';
-import {
-    FlashMessage
-} from '../services/flashMessage';
+class Auth {
 
-export class Auth {
-
-    public static bootstrap(app: express.Application) {
+    /**
+     * @static
+     * @param {Express.Application} app 
+     * @returns 
+     * 
+     * @memberOf Auth
+     */
+    static bootstrap(app) {
         return new Auth(app);
     }
 
-    private app: express.Application;
-    private router: express.Router;
-    private MongooseUser: mongoose.Model < IUser > ;
-
-    constructor(app: express.Application) {
+    /**
+     * Creates an instance of Auth.
+     * @param {Express.Application} app 
+     * 
+     * @memberOf Auth
+     */
+    constructor(app) {
         this.app = app;
         this.router = express.Router();
-        this.MongooseUser = mongoose.model < IUser > ('User');
-        this.addLoginRoute();
-        this.addLogoutRoute();
-        this.addSignupRoute();
+        this.MongooseUser = mongoose.model('User');
+        this._addLoginRoute();
+        this._addLogoutRoute();
+        this._addSignupRoute();
     }
 
-    public attach(pathToAttach ?: string): void {
-        if (pathToAttach) {
-            this.app.use(pathToAttach, this.router);
-        } else {
-            this.app.use('/', this.router);
-        }
+    /**
+     * @param {string} [pathToAttach='/'] 
+     * 
+     * @memberOf Auth
+     */
+    attach(pathToAttach = '/') {
+        this.app.use(pathToAttach, this.router);
     }
 
-    private addLoginRoute(): void {
-        this.router.post('/login', (req: express.Request, res: express.Response) => {
+    /**
+     * @memberOf Auth
+     */
+    _addLoginRoute() {
+        this.router.post('/login', (req, res) => {
             this.MongooseUser.findOne({
                 email: req.body.email
-            }, (err, user: IUser) => {
+            }, (err, user) => {
                 if (err) {
                     throw err;
                 }
                 if (user) {
-                    user.comparePassword(req.session.password, (err: Error, isMatch: boolean) => {
+                    user.comparePassword(req.session.password, (err, isMatch) => {
                         if (err) {
                             throw err;
                         }
@@ -69,15 +78,18 @@ export class Auth {
         });
     }
 
-    private addSignupRoute(): void {
-        this.router.get('/signup', (req: express.Request, res: express.Response) => {
+    /**
+     * @memberOf Auth
+     */
+    _addSignupRoute() {
+        this.router.get('/signup', (req, res) => {
             const vueScope = new VueScope();
             vueScope.addData({
                 title: 'Smart Home - Sign up'
             });
             res.render('auth/signup', vueScope);
         });
-        this.router.post('/signup', (req: express.Request, res: express.Response) => {
+        this.router.post('/signup', (req, res) => {
             const newUser = new this.MongooseUser({
                 email: req.body.email,
                 password: req.body.password
@@ -97,8 +109,11 @@ export class Auth {
         });
     }
 
-    private addLogoutRoute(): void {
-        this.router.post('/logout', (req: express.Request, res: express.Response) => {
+    /**
+     * @memberOf Auth
+     */
+    _addLogoutRoute() {
+        this.router.post('/logout', (req, res) => {
             req.session.user = null;
             FlashMessage.setFlashMessage(req, {
                 success: {
@@ -110,3 +125,5 @@ export class Auth {
         });
     }
 }
+
+module.exports = Auth;
