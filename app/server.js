@@ -75,7 +75,7 @@ class Server {
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         }));
         // add middleware
-        this.app.use(Middleware.Security.checkIfUserLoggedIn);
+        this.app.use(Middleware.security.checkIfUserLoggedIn);
     }
 
     /**
@@ -92,9 +92,9 @@ class Server {
      * @memberOf Server
      */
     _attachRoutes() {
-        Routers.Main.bootstrap(this.app).attach('/');
-        Routers.BleLamps.bootstrap(this.app).attach('/blelamps');
-        Routers.Auth.bootstrap(this.app).attach('/auth');
+        Routers.main.bootstrap(this.app).attach('/');
+        Routers.blelamps.bootstrap(this.app).attach('/blelamps');
+        Routers.auth.bootstrap(this.app).attach('/auth');
     }
 
     /**
