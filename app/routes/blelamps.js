@@ -1,15 +1,15 @@
 const express = require('express');
 const VueScope = require('../models/vueScope');
-const PeripheralService = require('../services/peripheralService');
+// const PeripheralService = require('../services/peripheralService');
 
-// initialize PeripheralService
-// TODO initialize elsewhere
-const peripheralService = new PeripheralService();
-try {
-    peripheralService.startScanAndConnectToBleLamps();
-} catch (err) {
-    console.warn(err.message);
-}
+/*initialize PeripheralService
+TODO initialize elsewhere*/
+// const peripheralService = new PeripheralService();
+// try {
+//     peripheralService.startScanAndConnectToBleLamps();
+// } catch (err) {
+//     console.warn(err.message);
+// }
 
 /**
  * @export
