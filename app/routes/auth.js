@@ -63,12 +63,12 @@ class Auth {
                             throw err;
                         }
                         if (isMatch) {
-                            delete user.password;
                             req.session.user = new User(user);
+                            delete req.session.user.password;
                             res.redirect('/welcome');
                         }
                     });
-                }else {
+                } else {
                     FlashMessage.setFlashMessage(req, {
                         error: {
                             status: 401,
@@ -86,20 +86,26 @@ class Auth {
      */
     _addSignupRoute() {
         this.router.get('/signup', (req, res) => {
-            const vueScope = new VueScope();
-            vueScope.addData({
-                title: 'Smart Home - Sign up'
-            });
-            res.render('auth/signup', vueScope.getScope());
+            /* if user is logged in redirect to welcome page */
+            if (req.session.user) {
+                res.redirect('/welcome');
+            } else {
+                const vueScope = new VueScope();
+                vueScope.addData({
+                    title: 'Smart Home - Sign up'
+                });
+                res.render('auth/signup', vueScope.getScope());
+            }
         });
+
         this.router.post('/signup', (req, res) => {
             const newUser = new this.MongooseUser({
                 email: req.body.email,
                 password: req.body.password
             });
             newUser.save().then((user) => {
-                delete user.password;
                 req.session.user = new User(user);
+                delete req.session.user.password;
                 res.redirect('/welcome');
             }).catch((err) => {
                 FlashMessage.setFlashMessage(req, {
