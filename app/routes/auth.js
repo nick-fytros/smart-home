@@ -58,23 +58,25 @@ class Auth {
                     throw err;
                 }
                 if (user) {
-                    user.comparePassword(req.session.password, (err, isMatch) => {
+                    user.comparePassword(req.body.password, (err, isMatch) => {
                         if (err) {
                             throw err;
                         }
                         if (isMatch) {
+                            delete user.password;
                             req.session.user = new User(user);
                             res.redirect('/welcome');
                         }
                     });
+                }else {
+                    FlashMessage.setFlashMessage(req, {
+                        error: {
+                            status: 401,
+                            message: 'Sorry, the credentials you provided are wrong'
+                        }
+                    });
+                    res.redirect('/');
                 }
-                FlashMessage.setFlashMessage(req, {
-                    error: {
-                        status: 401,
-                        message: 'Sorry, the credentials you provided are wrong'
-                    }
-                });
-                res.redirect('/');
             });
         });
     }
@@ -96,6 +98,7 @@ class Auth {
                 password: req.body.password
             });
             newUser.save().then((user) => {
+                delete user.password;
                 req.session.user = new User(user);
                 res.redirect('/welcome');
             }).catch((err) => {

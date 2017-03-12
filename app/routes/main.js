@@ -53,7 +53,12 @@ class Main {
                     flash: req.session.flash
                 });
             }
-            res.render('main/main', vueScope.getScope());
+            /* if a user is already logged in redirect to welcome page */
+            if (req.session.user) {
+                res.redirect('/welcome');
+            } else {
+                res.render('main/main', vueScope.getScope());
+            }
         });
     }
 
@@ -67,6 +72,7 @@ class Main {
             vueScope.addData({
                 user: req.session.user
             });
+            console.log(vueScope.getScope());
             res.render('main/welcome', vueScope.getScope());
         });
     }

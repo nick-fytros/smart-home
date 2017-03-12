@@ -11,27 +11,11 @@ class User {
      * @memberOf User
      */
     constructor(user) {
-        this._email = user.email;
-        this._password = user.password;
-        this._createdOn = user.createdOn;
-        this._lastLogin = user.lastLogin;
-        this._role = user.role;
-    }
-
-    get email(){
-        return this._email;
-    }
-    get password() {
-        return this._password;
-    }
-    get createdOn() {
-        return this._createdOn;
-    }
-    get lastLogin() {
-        return this._lastLogin;
-    }
-    get role() {
-        return this._role;
+        this.email = user.email;
+        this.password = user.password;
+        this.createdOn = user.createdOn;
+        this.lastLogin = user.lastLogin;
+        this.role = user.role;
     }
 }
 
