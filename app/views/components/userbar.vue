@@ -4,9 +4,23 @@
         <div class="level-right" v-if="user">
             <div class="level-item">
                 <div>
-                    <p>Hello, <a v-on:click="showMenu">{{user.email}}</a></p>
+                    <p>
+                        <a v-on:click="showMenu" class=" button is-link">{{user.email}}</a>
+                        <a v-on:click="showMenu" class=" button is-primary">
+                            <span class="icon">
+                                <i class="fa fa-angle-up" v-bind:class="{ 'fa-angle-down': isHidden }"></i>
+                            </span>
+                        </a>
+                    </p>
                     <div v-bind:class="{ hidden: isHidden }" class="submenu">
-                        <p><a class="button is-link" href="/auth/logout">Sign out</a></p>
+                        <nav class="panel">
+                            <a href="/auth/logout" class="panel-block is-active">
+                                <span class="panel-icon">
+                                <i class="fa fa-sign-out"></i>
+                                </span>
+                                Sign out
+                            </a>
+                        </nav>
                     </div>
                 </div>
             </div>
