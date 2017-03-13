@@ -123,12 +123,12 @@ class Auth {
      * @memberOf Auth
      */
     _addLogoutRoute() {
-        this.router.post('/logout', (req, res) => {
+        this.router.get('/logout', (req, res) => {
             req.session.user = null;
             FlashMessage.setFlashMessage(req, {
                 success: {
                     status: 200,
-                    message: 'You have successfully logged out.'
+                    message: 'You have successfully signed out.'
                 }
             });
             res.redirect('/');

@@ -3,10 +3,10 @@
         <smheader :title="title" :subtitle="subtitle"></smheader>
         <section class="section content">
             <div class="container">
+                <userbar :user="user"></userbar>
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
                         <messagebox :flash="flash"></messagebox>
-                        <p>Hello, {{user.email}}</p>
                     </div>
                 </div>
             </div>

@@ -29,7 +29,7 @@ class VueScope {
                         id: 'desc'
                     }]
                 },
-                components: ['smheader', 'smfooter', 'messagebox']
+                components: ['smheader', 'smfooter', 'messagebox', 'userbar']
             }
         };
     }

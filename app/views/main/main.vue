@@ -17,7 +17,7 @@
                             </p>
                             <div class="control is-grouped">
                                 <p class="control">
-                                    <button class="button is-primary">Login</button>
+                                    <button class="button is-primary">Sign in</button>
                                 </p>
                             </div>
                         </form>

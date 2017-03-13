@@ -72,7 +72,6 @@ class Main {
             vueScope.addData({
                 user: req.session.user
             });
-            console.log(req.session);
             res.render('main/welcome', vueScope.getScope());
         });
     }
