@@ -21,7 +21,13 @@
                             </p>
                             <div class="control is-grouped">
                                 <p class="control">
-                                    <button class="button is-primary">Sign up</button>
+                                    <a class="button is-primary">Sign up</a>
+                                </p>
+                                <p class="control control-or">
+                                    <span>or</span>
+                                </p>
+                                <p class="control">
+                                    <a href="/" class="button is-link">Log in</a>
                                 </p>
                             </div>
                         </form>

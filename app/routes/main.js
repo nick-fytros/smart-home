@@ -48,10 +48,17 @@ class Main {
         this.router.get('/', (req, res) => {
             const vueScope = new VueScope();
             FlashMessage.checkAndInvalidateFlash(req);
-            vueScope.addData({
-                flash: req.session.flash
-            });
-            res.render('main/main', vueScope.getScope());
+            if (req.session && req.session.flash) {
+                vueScope.addData({
+                    flash: req.session.flash
+                });
+            }
+            /* if a user is already logged in redirect to welcome page */
+            if (req.session.user) {
+                res.redirect('/welcome');
+            } else {
+                res.render('main/main', vueScope.getScope());
+            }
         });
     }
 

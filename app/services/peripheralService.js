@@ -1,5 +1,4 @@
 const noble = require('noble');
-
 /**
  * @export
  * @class PeripheralService

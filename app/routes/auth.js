@@ -58,23 +58,25 @@ class Auth {
                     throw err;
                 }
                 if (user) {
-                    user.comparePassword(req.session.password, (err, isMatch) => {
+                    user.comparePassword(req.body.password, (err, isMatch) => {
                         if (err) {
                             throw err;
                         }
                         if (isMatch) {
                             req.session.user = new User(user);
+                            delete req.session.user.password;
                             res.redirect('/welcome');
                         }
                     });
+                } else {
+                    FlashMessage.setFlashMessage(req, {
+                        error: {
+                            status: 401,
+                            message: 'Sorry, the credentials you provided are wrong'
+                        }
+                    });
+                    res.redirect('/');
                 }
-                FlashMessage.setFlashMessage(req, {
-                    error: {
-                        status: 401,
-                        message: 'Sorry, the credentials you provided are wrong'
-                    }
-                });
-                res.redirect('/');
             });
         });
     }
@@ -84,12 +86,18 @@ class Auth {
      */
     _addSignupRoute() {
         this.router.get('/signup', (req, res) => {
-            const vueScope = new VueScope();
-            vueScope.addData({
-                title: 'Smart Home - Sign up'
-            });
-            res.render('auth/signup', vueScope);
+            /* if user is logged in redirect to welcome page */
+            if (req.session.user) {
+                res.redirect('/welcome');
+            } else {
+                const vueScope = new VueScope();
+                vueScope.addData({
+                    title: 'Smart Home - Sign up'
+                });
+                res.render('auth/signup', vueScope.getScope());
+            }
         });
+
         this.router.post('/signup', (req, res) => {
             const newUser = new this.MongooseUser({
                 email: req.body.email,
@@ -97,6 +105,7 @@ class Auth {
             });
             newUser.save().then((user) => {
                 req.session.user = new User(user);
+                delete req.session.user.password;
                 res.redirect('/welcome');
             }).catch((err) => {
                 FlashMessage.setFlashMessage(req, {
@@ -114,12 +123,12 @@ class Auth {
      * @memberOf Auth
      */
     _addLogoutRoute() {
-        this.router.post('/logout', (req, res) => {
+        this.router.get('/logout', (req, res) => {
             req.session.user = null;
             FlashMessage.setFlashMessage(req, {
                 success: {
                     status: 200,
-                    message: 'You have successfully logged out.'
+                    message: 'You have successfully signed out.'
                 }
             });
             res.redirect('/');

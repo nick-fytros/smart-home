@@ -27,15 +27,9 @@ class VueScope {
                         name: 'description',
                         content: 'Smart Home by Nikos Fytros',
                         id: 'desc'
-                    },
-                    {
-                        style: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'
-                    },
-                    {
-                        style: 'css/style.css'
                     }]
                 },
-                components: ['smheader', 'smfooter', 'messagebox']
+                components: ['smheader', 'smfooter', 'messagebox', 'userbar']
             }
         };
     }
@@ -63,7 +57,7 @@ class VueScope {
     }
 
     addData(data) {
-        this.scope.data = Object.assign(this.scope.data, data);
+        Object.assign(this.scope.data, data);
     }
 
     getScope() {
