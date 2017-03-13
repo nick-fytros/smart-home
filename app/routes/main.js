@@ -57,6 +57,9 @@ class Main {
             if (req.session.user) {
                 res.redirect('/welcome');
             } else {
+                vueScope.addData({
+                    title: 'Smart Home - Sign in'
+                });
                 res.render('main/main', vueScope.getScope());
             }
         });

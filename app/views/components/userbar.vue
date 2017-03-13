@@ -14,9 +14,15 @@
                     </p>
                     <div v-bind:class="{ hidden: isHidden }" class="submenu">
                         <nav class="panel">
-                            <a href="/auth/logout" class="panel-block is-active">
+                            <a href="/admin" class="panel-block">
                                 <span class="panel-icon">
-                                <i class="fa fa-sign-out"></i>
+                                    <i class="fa fa-cogs"></i>
+                                </span>
+                                Admin
+                            </a>
+                            <a href="/auth/logout" class="panel-block">
+                                <span class="panel-icon">
+                                    <i class="fa fa-sign-out"></i>
                                 </span>
                                 Sign out
                             </a>
