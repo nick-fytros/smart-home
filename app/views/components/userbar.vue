@@ -14,7 +14,7 @@
                     </p>
                     <div v-bind:class="{ hidden: isHidden }" class="submenu">
                         <nav class="panel">
-                            <a href="/admin" class="panel-block">
+                            <a v-if="user.role == 'admin'" href="/admin" class="panel-block">
                                 <span class="panel-icon">
                                     <i class="fa fa-cogs"></i>
                                 </span>

@@ -102,6 +102,7 @@ class Server {
         Routers.main.bootstrap(this.app).attach('/');
         Routers.blelamps.bootstrap(this.app).attach('/blelamps');
         Routers.auth.bootstrap(this.app).attach('/auth');
+        Routers.admin.bootstrap(this.app).attach('/admin');
     }
 
     /**
