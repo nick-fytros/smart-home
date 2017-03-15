@@ -73,7 +73,8 @@ class Main {
             const vueScope = new VueScope();
             FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
-                user: req.session.user
+                user: req.session.user,
+                applications: req.app.locals.applications
             });
             res.render('main/welcome', vueScope.getScope());
         });

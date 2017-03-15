@@ -15,20 +15,20 @@
                             <article class="media">
                                 <div class="media-left">
                                     <figure class="image is-64x64">
-                                        <img src="http://bulma.io/images/placeholders/128x128.png" alt="Image">
+                                        <img v-bind:src="app.imageUrl" v-bind:alt="app.name">
                                     </figure>
                                 </div>
                                 <div class="media-content">
                                     <div class="content">
                                         <p>
-                                            <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>
+                                            <strong>{{app.name}}</strong>
                                             <br>
-                                            Πρώτη εφαρμογή
+                                            {{app.description}}
                                         </p>
                                     </div>
                                     <nav class="level">
                                         <div class="level-left">
-                                            <a class="level-item">
+                                            <a v-bind:href="app.url" class="level-item">
                                                 <span class="icon"><i class="fa fa-sign-in"></i></span>
                                             </a>
                                         </div>
@@ -46,9 +46,7 @@
 <script>
     export default {
         data: function() {
-            return {
-                applications: ['first', 'second', 'third', 'fourth']
-            }
+            return {}
         }
     }
 
