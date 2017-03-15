@@ -1,5 +1,6 @@
 const express = require('express');
 const VueScope = require('../models/vueScope');
+const FlashMessage = require('../services/flashMessage');
 // const PeripheralService = require('../services/peripheralService');
 
 /*initialize PeripheralService
@@ -37,7 +38,7 @@ class BleLamps {
     constructor(app) {
         this.app = app;
         this.router = express.Router();
-        this._addHomeRoute();
+        this._addRootRoute();
     }
 
     /**
@@ -56,11 +57,12 @@ class BleLamps {
     /**
      * @memberOf BleLamps
      */
-    _addHomeRoute() {
+    _addRootRoute() {
         this.router.get('/', (req, res) => {
-            res.end('ok');
+            const vueScope = new VueScope();
+            vueScope.addData({ user: req.session.user });
+            res.render('blelamps/index', vueScope.getScope());
         });
-
     }
 
     /**
@@ -68,7 +70,7 @@ class BleLamps {
      */
     _addLampColorRoute() {
         this.router.get('/color/:color', (req, res) => {
-            peripheralService.setLampColor(peripheralService.getConnectedPeripherals()[0], req.params.color);
+            //peripheralService.setLampColor(peripheralService.getConnectedPeripherals()[0], req.params.color);
             res.end('ok');
         });
     }
