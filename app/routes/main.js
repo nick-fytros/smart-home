@@ -28,7 +28,7 @@ class Main {
     constructor(app) {
         this.app = app;
         this.router = express.Router();
-        this._addHomeRoute();
+        this._addRootRoute();
         this._addWelcomeRoute();
     }
 
@@ -44,20 +44,19 @@ class Main {
     /**
      * @memberOf Main
      */
-    _addHomeRoute() {
+    _addRootRoute() {
         this.router.get('/', (req, res) => {
             const vueScope = new VueScope();
             FlashMessage.checkAndInvalidateFlash(req);
             if (req.session && req.session.flash) {
-                vueScope.addData({
-                    flash: req.session.flash
-                });
+                vueScope.addData({ flash: req.session.flash });
             }
             /* if a user is already logged in redirect to welcome page */
             if (req.session.user) {
                 res.redirect('/welcome');
             } else {
-                res.render('main/main', vueScope.getScope());
+                vueScope.addData({ title: 'Smart Home - Sign in' });
+                res.render('main/index', vueScope.getScope());
             }
         });
     }
@@ -70,7 +69,8 @@ class Main {
             const vueScope = new VueScope();
             FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
-                user: req.session.user
+                user: req.session.user,
+                applications: req.app.locals.applications
             });
             res.render('main/welcome', vueScope.getScope());
         });

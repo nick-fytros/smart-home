@@ -7,47 +7,54 @@ const FlashMessage = require('../services/flashMessage');
 
 /**
  * @export
- * @class Auth
+ * @class Admin
  */
-class Auth {
+class Admin {
 
     /**
      * @static
      * @param {Express.Application} app 
      * @returns 
      * 
-     * @memberOf Auth
+     * @memberOf Admin
      */
     static bootstrap(app) {
-        return new Auth(app);
+        return new Admin(app);
     }
 
     /**
-     * Creates an instance of Auth.
+     * Creates an instance of Admin.
      * @param {Express.Application} app 
      * 
-     * @memberOf Auth
+     * @memberOf Admin
      */
     constructor(app) {
         this.app = app;
         this.router = express.Router();
         this.MongooseUser = mongoose.model('User');
-        this._addLoginRoute();
-        this._addLogoutRoute();
-        this._addSignupRoute();
+        this._addRootRoute();
     }
 
     /**
      * @param {string} [pathToAttach='/'] 
      * 
-     * @memberOf Auth
+     * @memberOf Admin
      */
     attach(pathToAttach = '/') {
         this.app.use(pathToAttach, this.router);
     }
 
+    // TODO ADD MIDDLEWARE TO ONLY ALLOW ADMIN USER
+    _addRootRoute() {
+        this.router.get('/', (req, res) => {
+            const vueScope = new VueScope();
+            vueScope.addData({ user: req.session.user });
+            res.render('admin/index', vueScope.getScope());
+        });
+    }
+
     /**
-     * @memberOf Auth
+     * @memberOf Admin
      */
     _addLoginRoute() {
         this.router.post('/login', (req, res) => {
@@ -82,7 +89,7 @@ class Auth {
     }
 
     /**
-     * @memberOf Auth
+     * @memberOf Admin
      */
     _addSignupRoute() {
         this.router.get('/signup', (req, res) => {
@@ -92,7 +99,7 @@ class Auth {
             } else {
                 const vueScope = new VueScope();
                 vueScope.addData({ title: 'Smart Home - Sign up' });
-                res.render('auth/signup', vueScope.getScope());
+                res.render('Admin/signup', vueScope.getScope());
             }
         });
 
@@ -116,22 +123,6 @@ class Auth {
             });
         });
     }
-
-    /**
-     * @memberOf Auth
-     */
-    _addLogoutRoute() {
-        this.router.get('/logout', (req, res) => {
-            req.session.user = null;
-            FlashMessage.setFlashMessage(req, {
-                success: {
-                    status: 200,
-                    message: 'You have successfully signed out.'
-                }
-            });
-            res.redirect('/');
-        });
-    }
 }
 
-module.exports = Auth;
+module.exports = Admin;

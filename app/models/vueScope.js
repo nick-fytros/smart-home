@@ -12,7 +12,7 @@ class VueScope {
     constructor() {
         this.scope = {
             data: {
-                title: 'Smart Home - Login',
+                title: 'Smart Home',
                 subtitle: 'Grünerløkka, Oslo',
                 flash: {}
             },
