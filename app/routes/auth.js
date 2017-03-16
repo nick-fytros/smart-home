@@ -65,6 +65,8 @@ class Auth {
                         if (isMatch) {
                             req.session.user = new User(user);
                             delete req.session.user.password;
+                            user.lastLogin = Date.now();
+                            user.save();
                             res.redirect('/welcome');
                         }
                     });

@@ -4,10 +4,12 @@
                   :subtitle="subtitle"></smheader>
         <section class="section content">
             <div class="container">
-                <userbar :isActive="isActive" :user="user"></userbar>
+                <userbar :isActive="isActive"
+                         :user="user"></userbar>
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <messagebox v-if="flash[0]" :flash="flash"></messagebox>
+                        <messagebox v-if="flash[0]"
+                                    :flash="flash"></messagebox>
                     </div>
                 </div>
                 <div class="tabs is-centered">
@@ -19,6 +21,31 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+                <div v-for="user in users"
+                     class="box">
+                    <div class="level">
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <p>{{user.email}}</p>
+                            </div>
+                        </div>
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <p>{{user.createdOn}}</p>
+                            </div>
+                        </div>
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <p>{{user.lastLogin}}</p>
+                            </div>
+                        </div>
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <p>{{user.role}}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

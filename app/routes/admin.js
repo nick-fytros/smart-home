@@ -49,7 +49,14 @@ class Admin {
         this.router.get('/', (req, res) => {
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
-            res.render('admin/index', vueScope.getScope());
+            this.MongooseUser.find().then((users) => {
+                vueScope.addData({
+                    users: users
+                });
+                res.render('admin/index', vueScope.getScope());
+            }).catch((err) => {
+                throw err;
+            });
         });
     }
 
