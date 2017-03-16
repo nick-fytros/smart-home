@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
+                        <messagebox v-if="flash[0]" :flash="flash"></messagebox>
                         <form action="/auth/login" method="post">
                             <p class="control has-icon">
                                 <input class="input" type="email" placeholder="Email" name="email">

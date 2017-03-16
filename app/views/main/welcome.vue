@@ -6,7 +6,7 @@
                 <userbar :user="user"></userbar>
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
+                        <messagebox v-if="flash[0]" :flash="flash"></messagebox>
                     </div>
                 </div>
                 <div class="columns is-multiline">

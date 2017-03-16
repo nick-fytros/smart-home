@@ -1,15 +1,14 @@
 <template>
     <div>
-        <smheader :title="title" :subtitle="subtitle"></smheader>
+        <smheader :title="title"
+                  :subtitle="subtitle"></smheader>
         <section class="section content">
             <div class="container">
                 <userbar :user="user"></userbar>
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
+                        <messagebox v-if="flash[0]" :flash="flash"></messagebox>
                     </div>
-                </div>
-                <div class="columns is-multiline">
                 </div>
             </div>
         </section>
@@ -17,14 +16,13 @@
     </div>
 </template>
 <script>
-    export default {
-        data: function() {
-            return {}
-        }
+export default {
+    data: function () {
+        return {}
     }
+}
 
 </script>
 <style>
-
 
 </style>
