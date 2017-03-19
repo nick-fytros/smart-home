@@ -67,7 +67,7 @@ class Auth {
                             delete req.session.user.password;
                             user.lastLogin = Date.now();
                             user.save();
-                            res.redirect('/welcome');
+                            res.redirect('/apps');
                         }
                     });
                 } else {
@@ -88,9 +88,9 @@ class Auth {
      */
     _addSignupRoute() {
         this.router.get('/signup', (req, res) => {
-            /* if user is logged in redirect to welcome page */
+            /* if user is logged in redirect to apps page */
             if (req.session.user) {
-                res.redirect('/welcome');
+                res.redirect('/apps');
             } else {
                 const vueScope = new VueScope();
                 vueScope.addData({ title: 'Smart Home - Sign up' });
@@ -106,7 +106,7 @@ class Auth {
             newUser.save().then((user) => {
                 req.session.user = new User(user);
                 delete req.session.user.password;
-                res.redirect('/welcome');
+                res.redirect('/apps');
             }).catch((err) => {
                 FlashMessage.setFlashMessage(req, {
                     error: {

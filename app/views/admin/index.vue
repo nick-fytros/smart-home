@@ -4,8 +4,7 @@
                   :subtitle="subtitle"></smheader>
         <section class="section content">
             <div class="container">
-                <userbar :isActive="isActive"
-                         :user="user"></userbar>
+                <userbar :user="user"></userbar>
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
                         <messagebox v-if="flash[0]"
@@ -55,9 +54,7 @@
 <script>
 export default {
     data: function () {
-        return {
-            isActive: 'admin'
-        }
+        return {}
     }
 }
 

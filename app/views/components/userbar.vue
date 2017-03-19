@@ -20,7 +20,7 @@
                         <nav class="panel">
                             <a v-if="user.role == 'admin'"
                                href="/admin"
-                               v-bind:class="{'is-active':isAdmin}" class="panel-block">
+                               class="panel-block">
                                 <span class="panel-icon">
                                     <i class="fa fa-cogs"></i>
                                 </span> Admin
@@ -41,7 +41,7 @@
 
 <script>
 export default {
-    props: ['user', 'isActive'],
+    props: ['user'],
     data: function () {
         return {
             isHidden: true
@@ -50,9 +50,6 @@ export default {
     methods: {
         showMenu: function (event) {
             this.isHidden = !this.isHidden;
-        },
-        isAdmin: function (event){
-            return props.isActive=='admin';
         }
     }
 }
