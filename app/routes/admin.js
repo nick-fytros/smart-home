@@ -44,9 +44,9 @@ class Admin {
         this.app.use(pathToAttach, this.router);
     }
 
-    // TODO ADD MIDDLEWARE TO ONLY ALLOW ADMIN USER
     _addRootRoute() {
         this.router.get('/', (req, res) => {
+            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
@@ -65,6 +65,7 @@ class Admin {
      */
     _addLoginRoute() {
         this.router.post('/login', (req, res) => {
+            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             this.MongooseUser.findOne({
                 email: req.body.email
             }, (err, user) => {
@@ -100,6 +101,7 @@ class Admin {
      */
     _addSignupRoute() {
         this.router.get('/signup', (req, res) => {
+            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             /* if user is logged in redirect to apps page */
             if (req.session.user) {
                 res.redirect('/apps');
@@ -130,6 +132,7 @@ class Admin {
             });
         });
     }
+
 }
 
 module.exports = Admin;

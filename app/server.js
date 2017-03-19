@@ -80,7 +80,7 @@ class Server {
             { id: 0, name: 'BLE Lamps', url: '/blelamps', imageUrl: '/images/blelamps.png', description: 'Turn on/off, change and dimm the colors of your BLE lamps.' }
         ];
         // add middleware
-        this.app.use(Middleware.security.checkIfUserLoggedIn);
+        this.app.use(Middleware.security.checkIfUserIsLoggedIn);
     }
 
     /**
