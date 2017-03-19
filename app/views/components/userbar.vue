@@ -15,7 +15,7 @@
                             </span>
                         </a>
                     </p>
-                    <div v-bind:class="{ hidden: isHidden }"
+                    <div v-bind:class="{ 'is-hidden': isHidden }"
                          class="submenu">
                         <nav class="panel">
                             <a v-if="user.role == 'admin'"

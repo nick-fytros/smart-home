@@ -11,17 +11,25 @@
                                     :flash="flash"></messagebox>
                     </div>
                 </div>
-                <div class="tabs is-centered">
+                <div class="tabs is-right">
                     <ul>
-                        <li class="is-active">
+                        <li v-on:click="activateTab('users')"
+                            v-bind:class="{ 'is-active': tabs['users'] }">
                             <a>
                                 <span class="icon is-small"><i class="fa fa-user"></i></span>
                                 <span>Users</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="/apps">
+                                <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
+                                <span>Back to apps</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
-                <div v-for="user in users"
+                <div v-bind:class="{ 'is-hidden': !tabs['users'] }"
+                     v-for="user in users"
                      class="box">
                     <div class="level">
                         <div class="level-item has-text-centered">
@@ -54,7 +62,18 @@
 <script>
 export default {
     data: function () {
-        return {}
+        return {
+            tabs: {
+                users: true
+            }
+        }
+    },
+    methods: {
+        activateTab: function (tabName) {
+            // hide all tabs and enable the one clicked
+            Object.keys(this.tabs).forEach((key, value) => { return this.tabs[key] = false; });
+            this.tabs[tabName] = true;
+        }
     }
 }
 

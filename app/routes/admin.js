@@ -44,15 +44,16 @@ class Admin {
         this.app.use(pathToAttach, this.router);
     }
 
+    /**
+     * @memberOf Admin
+     */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
             if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
-                vueScope.addData({
-                    users: users
-                });
+                vueScope.addData({ users: users });
                 res.render('admin/index', vueScope.getScope());
             }).catch((err) => {
                 throw err;
