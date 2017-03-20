@@ -7,8 +7,8 @@ const FlashService = require('../services/flashService');
 
 /**
  * @export
- * @class Auth
- */
+* @class Auth
+*/
 class Auth {
 
     /**
@@ -17,7 +17,7 @@ class Auth {
      * @returns 
      * 
      * @memberOf Auth
-     */
+         */
     static bootstrap(app) {
         return new Auth(app);
     }

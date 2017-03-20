@@ -6,8 +6,7 @@
             <div class="container">
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <messagebox v-if="flash[0]"
-                                    :flash="flash"></messagebox>
+                        <messagebox :flash="flash"></messagebox>
                         <form ref="form"
                               action="/auth/signup"
                               method="post">

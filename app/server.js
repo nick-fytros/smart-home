@@ -82,8 +82,8 @@ class Server {
         ];
         this.app.use(csrf({ cookie: true }));
         // add custom middleware
-        this.app.use(Middleware.flash.invalidateFlash);
         this.app.use(Middleware.security.checkIfUserIsLoggedIn);
+        this.app.use(Middleware.flash.invalidateFlash);
     }
 
     /**
