@@ -1,16 +1,16 @@
 /**
  * @export
- * @class SmError
+ * @class AppError
  * @extends {Error}
  */
-class SmError extends Error {
+class AppError extends Error {
 
     /**
-     * Creates an instance of SmError.
+     * Creates an instance of AppError.
      * @param {string} message 
      * @param {number} status 
      * 
-     * @memberOf SmError
+     * @memberOf AppError
      */
     constructor(message, status) {
         super();
@@ -19,4 +19,4 @@ class SmError extends Error {
     }
 }
 
-module.exports = SmError;
+module.exports = AppError;

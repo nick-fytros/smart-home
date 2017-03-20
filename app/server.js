@@ -12,7 +12,7 @@ const expressVue = require('express-vue');
 const requireDir = require('require-dir');
 const csrf = require('csurf');
 
-const SmError = require('./models/smError');
+const AppError = require('./models/appError');
 const VueScope = require('./models/vueScope');
 const Routers = requireDir('./routes');
 const Middleware = requireDir('./middleware');
@@ -116,7 +116,7 @@ class Server {
     _attachErrorHandler() {
         // catch 404 and forward to error handler
         this.app.use((req, res, next) => {
-            const error = new SmError('The page you were looking for is not found', 404);
+            const error = new AppError('The page you were looking for was not found', 404);
             next(error);
         });
         const vueScope = new VueScope();
