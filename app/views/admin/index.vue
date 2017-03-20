@@ -27,7 +27,7 @@
                         </li>
                     </ul>
                 </div>
-                <!-- users tabs -->
+                <!-- users tabs TODO CREATE COMPONENT OF EACH ROW IN ORDER TO STORE EACH USERS STAGE SEPERATELY-->
                 <div v-bind:class="{ 'is-hidden': !tabs['users'] }"
                      v-for="user in users"
                      class="box">
@@ -50,15 +50,17 @@
                         <div class="level-item has-text-centered">
                             <div class="field">
                                 <p class="control">
-                                    <span class="select"><select :disabled="!editMode"><option v-for="role in config.availableRoles" :selected="role === user.role">{{role}}</option></select></span>
+                                    <span class="select"><select :disabled="!editMode"><option v-for="role in config.availableRoles" :selected="role === user.role" :value="role">{{role}}</option></select></span>
                                 </p>
                             </div>
                         </div>
                         <div class="level-item has-text-centered">
-                            <a><span class="icon"><i class="fa fa-pencil"></i></span></a>
-                            <a><span class="icon"><i class="fa fa-check"></i></span></a>
-                            <br>
-                            <a><span class="icon"><i class="fa fa-trash"></i></span></a>
+                            <a v-on:click="editMode = true"
+                               :class="{'is-hidden' : editMode}"><span class="icon"><i class="fa fa-pencil"></i></span></a>
+                            <a v-on:click="saveNewData(user)"
+                               :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-check"></i></span></a>
+                            <a v-on:click="deleteUser(user)"
+                               :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
                         </div>
                     </div>
                 </div>
@@ -77,7 +79,15 @@ export default {
             tabs: {
                 users: true
             },
-            editMode: false
+            editMode: false,
+
+        }
+    },
+    computed: {
+        sortKey: {
+            get: function () {
+                return this.sorting.split(' ')[0]; // return the key part
+            }
         }
     },
     methods: {
@@ -88,6 +98,16 @@ export default {
         },
         formatDate: function (date) {
             return moment(date).format('D MMM YYYY, H:mm:ss');
+        },
+        saveNewData: function (user) {
+            // if something has changed then post on server to save data
+            if (this.roleSelected !== user.role) {
+                // do a post to update user
+            }
+            this.editMode = false;
+        },
+        deleteUser: function (user) {
+
         }
     }
 }
