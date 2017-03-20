@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
-const moment = require('moment');
 
 module.exports.bootstrap = () => {
 
@@ -16,9 +15,7 @@ module.exports.bootstrap = () => {
                 },
                 message: '{VALUE} is not a valid email address!'
             },
-            index: {
-                unique: true
-            }
+            unique: true
         },
         password: {
             type: String,
@@ -26,13 +23,11 @@ module.exports.bootstrap = () => {
         },
         createdOn: {
             type: Date,
-            default: Date.now,
-            get: date => moment(date).format('ddd MMM YYYY, hh:mm:ss')
+            default: Date.now
         },
         lastLogin: {
             type: Date,
-            default: Date.now,
-            get: date => moment(date).format('ddd MMM YYYY, hh:mm:ss')
+            default: Date.now
         },
         role: {
             type: String,

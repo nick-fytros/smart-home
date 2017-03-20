@@ -39,12 +39,12 @@
                         </div>
                         <div class="level-item has-text-centered">
                             <div>
-                                <p>{{user.createdOn}}</p>
+                                <p>{{formatDate(user.createdOn)}}</p>
                             </div>
                         </div>
                         <div class="level-item has-text-centered">
                             <div>
-                                <p>{{user.lastLogin}}</p>
+                                <p>{{formatDate(user.lastLogin)}}</p>
                             </div>
                         </div>
                         <div class="level-item has-text-centered">
@@ -66,6 +66,9 @@
     </div>
 </template>
 <script>
+
+let moment = require('moment');
+
 export default {
     data: function () {
         return {
@@ -79,6 +82,9 @@ export default {
             // hide all tabs and enable the one clicked
             Object.keys(this.tabs).forEach((key, value) => { return this.tabs[key] = false; });
             this.tabs[tabName] = true;
+        },
+        formatDate: function (date) {
+            return moment(date).format('D MMM YYYY, H:mm:ss')
         }
     }
 }

@@ -19,15 +19,11 @@ class VueScope {
             vue: {
                 head: {
                     title: 'Smart Home',
-                    meta: [{
-                        name: 'application-name',
-                        content: 'Smart Home by Nikos'
-                    },
-                    {
-                        name: 'description',
-                        content: 'Smart Home by Nikos Fytros',
-                        id: 'desc'
-                    }]
+                    meta: [
+                        { name: 'application-name', content: 'Smart Home by Nikos' },
+                        { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' },
+                        { script: '/js/moment.js' }
+                    ]
                 },
                 components: ['smheader', 'smfooter', 'messagebox', 'userbar']
             }
