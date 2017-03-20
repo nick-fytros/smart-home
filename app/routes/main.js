@@ -1,6 +1,6 @@
 const express = require('express');
 const VueScope = require('../models/vueScope');
-const FlashMessage = require('../services/flashMessage');
+const FlashService = require('../services/flashService');
 
 /**
  * @export
@@ -47,7 +47,6 @@ class Main {
     _addRootRoute() {
         this.router.get('/', (req, res) => {
             const vueScope = new VueScope();
-            FlashMessage.checkAndInvalidateFlash(req);
             if (req.session && req.session.flash) {
                 vueScope.addData({ flash: req.session.flash });
             }
@@ -55,7 +54,7 @@ class Main {
             if (req.session.user) {
                 res.redirect('/apps');
             } else {
-                vueScope.addData({ title: 'Smart Home - Sign in' });
+                vueScope.addData({ csrfToken: req.csrfToken() });
                 res.render('main/index', vueScope.getScope());
             }
         });
@@ -67,7 +66,6 @@ class Main {
     _addAppsRoute() {
         this.router.get('/apps', (req, res) => {
             const vueScope = new VueScope();
-            FlashMessage.checkAndInvalidateFlash(req);
             vueScope.addData({
                 user: req.session.user,
                 applications: req.app.locals.applications

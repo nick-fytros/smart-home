@@ -10,6 +10,7 @@ const fs = require('fs');
 const cookieSession = require('cookie-session');
 const expressVue = require('express-vue');
 const requireDir = require('require-dir');
+const csrf = require('csurf');
 
 const SmError = require('./models/smError');
 const VueScope = require('./models/vueScope');
@@ -67,6 +68,7 @@ class Server {
         this.app.use(bodyParser.urlencoded({
             extended: true
         }));
+        this.app.use(csrf({ cookie: true }));
         this.app.use(cookieParser());
         this.app.use(express.static(path.join(__dirname, '../public')));
         this.app.use(cookieSession({
@@ -79,7 +81,8 @@ class Server {
         this.app.locals.applications = [
             { id: 0, name: 'BLE Lamps', url: '/blelamps', imageUrl: '/images/blelamps.png', description: 'Turn on/off, change and dimm the colors of your BLE lamps.' }
         ];
-        // add middleware
+        // add custom middleware
+        this.app.use(Middleware.flash.invalidateFlash);
         this.app.use(Middleware.security.checkIfUserIsLoggedIn);
     }
 

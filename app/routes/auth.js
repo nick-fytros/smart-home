@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const VueScope = require('../models/vueScope');
 
 const User = require('../models/user');
-const FlashMessage = require('../services/flashMessage');
+const FlashService = require('../services/flashService');
 
 /**
  * @export
@@ -71,7 +71,7 @@ class Auth {
                         }
                     });
                 } else {
-                    FlashMessage.setFlashMessage(req, {
+                    FlashService.setFlashData(req, {
                         error: {
                             status: 401,
                             message: 'Sorry, the credentials you provided are wrong'
@@ -108,7 +108,7 @@ class Auth {
                 delete req.session.user.password;
                 res.redirect('/apps');
             }).catch((err) => {
-                FlashMessage.setFlashMessage(req, {
+                FlashService.setFlashData(req, {
                     error: {
                         status: 401,
                         message: err.message
@@ -125,7 +125,7 @@ class Auth {
     _addLogoutRoute() {
         this.router.get('/logout', (req, res) => {
             req.session.user = null;
-            FlashMessage.setFlashMessage(req, {
+            FlashService.setFlashData(req, {
                 success: {
                     status: 200,
                     message: 'You have successfully signed out.'

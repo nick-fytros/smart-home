@@ -1,6 +1,6 @@
 const express = require('express');
 const VueScope = require('../models/vueScope');
-const FlashMessage = require('../services/flashMessage');
+const flashService = require('../services/flashService');
 // const PeripheralService = require('../services/peripheralService');
 
 /*initialize PeripheralService

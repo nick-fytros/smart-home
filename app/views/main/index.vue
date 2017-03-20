@@ -8,6 +8,7 @@
                         <messagebox v-if="flash[0]" :flash="flash"></messagebox>
                         <form action="/auth/login" method="post">
                             <p class="control has-icon">
+                                <input type="hidden" name="_csrf" :value="csrfToken">
                                 <input class="input" type="email" placeholder="Email" name="email">
                                 <span class="icon is-small"><i class="fa fa-envelope"></i></span>
                             </p>
@@ -28,15 +29,15 @@
         <smfooter></smfooter>
     </div>
 </template>
+
 <script>
     export default {
         data() {
             return {}
         }
     }
-
 </script>
+
 <style>
-
-
+    
 </style>

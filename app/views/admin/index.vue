@@ -28,6 +28,7 @@
                         </li>
                     </ul>
                 </div>
+                <!-- users tabs -->
                 <div v-bind:class="{ 'is-hidden': !tabs['users'] }"
                      v-for="user in users"
                      class="box">
@@ -51,6 +52,12 @@
                             <div>
                                 <p>{{user.role}}</p>
                             </div>
+                        </div>
+                        <div class="level-item has-text-centered">
+                            <a><span class="icon"><i class="fa fa-pencil"></i></span></a>
+                            <a><span class="icon"><i class="fa fa-check"></i></span></a>
+                            <br>
+                            <a><span class="icon"><i class="fa fa-trash"></i></span></a>
                         </div>
                     </div>
                 </div>
