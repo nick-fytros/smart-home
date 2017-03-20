@@ -27,42 +27,10 @@
                         </li>
                     </ul>
                 </div>
-                <!-- users tabs TODO CREATE COMPONENT OF EACH ROW IN ORDER TO STORE EACH USERS STAGE SEPERATELY-->
                 <div v-bind:class="{ 'is-hidden': !tabs['users'] }"
                      v-for="user in users"
                      class="box">
-                    <div class="level">
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p>{{user.email}}</p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p>{{formatDate(user.createdOn)}}</p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p>{{formatDate(user.lastLogin)}}</p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div class="field">
-                                <p class="control">
-                                    <span class="select"><select :disabled="!editMode"><option v-for="role in config.availableRoles" :selected="role === user.role" :value="role">{{role}}</option></select></span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <a v-on:click="editMode = true"
-                               :class="{'is-hidden' : editMode}"><span class="icon"><i class="fa fa-pencil"></i></span></a>
-                            <a v-on:click="saveNewData(user)"
-                               :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-check"></i></span></a>
-                            <a v-on:click="deleteUser(user)"
-                               :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
-                        </div>
-                    </div>
+                     <userrow :user="user" :config="config"></userrow>
                 </div>
             </div>
         </section>
@@ -71,22 +39,11 @@
 </template>
 <script>
 
-let moment = require('moment');
-
 export default {
     data: function () {
         return {
             tabs: {
                 users: true
-            },
-            editMode: false,
-
-        }
-    },
-    computed: {
-        sortKey: {
-            get: function () {
-                return this.sorting.split(' ')[0]; // return the key part
             }
         }
     },
@@ -95,19 +52,6 @@ export default {
             // hide all tabs and enable the one clicked
             Object.keys(this.tabs).forEach((key, value) => { return this.tabs[key] = false; });
             this.tabs[tabName] = true;
-        },
-        formatDate: function (date) {
-            return moment(date).format('D MMM YYYY, H:mm:ss');
-        },
-        saveNewData: function (user) {
-            // if something has changed then post on server to save data
-            if (this.roleSelected !== user.role) {
-                // do a post to update user
-            }
-            this.editMode = false;
-        },
-        deleteUser: function (user) {
-
         }
     }
 }

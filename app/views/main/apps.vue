@@ -11,7 +11,7 @@
                     </div>
                 </div>
                 <div class="columns is-multiline">
-                    <div v-for="app in applications"
+                    <div v-for="app in config.applications"
                          class="column is-half">
                         <div class="box">
                             <article class="media">

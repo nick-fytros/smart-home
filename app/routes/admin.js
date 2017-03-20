@@ -54,6 +54,7 @@ class Admin {
             vueScope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
                 vueScope.addData({ users: users });
+                vueScope.addComponent('userrow');
                 res.render('admin/index', vueScope.getScope());
             }).catch((err) => {
                 throw err;
