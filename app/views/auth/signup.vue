@@ -8,6 +8,7 @@
                         <messagebox v-if="flash[0]" :flash="flash"></messagebox>
                         <form action="/auth/signup" method="post">
                             <p class="control has-icon">
+                                <input type="hidden" name="_csrf" :value="csrfToken">
                                 <input class="input" type="email" placeholder="Email" name="email">
                                 <span class="icon is-small"><i class="fa fa-envelope"></i></span>
                             </p>
@@ -21,7 +22,7 @@
                             </p>
                             <div class="control is-grouped">
                                 <p class="control">
-                                    <a class="button is-primary">Sign up</a>
+                                    <input type="submit" value="Sign up" v-on:click="loading" v-bind:class="{ 'is-loading': isLoading }" class="button is-primary">
                                 </p>
                                 <p class="control control-or">
                                     <span>or</span>
@@ -38,15 +39,22 @@
         <smfooter></smfooter>
     </div>
 </template>
+
 <script>
     export default {
         data: function() {
-            return {}
+            return {
+                isLoading: false
+            }
+        },
+        methods: {
+            loading: function (){
+                this.isLoading = !this.isLoading;
+            }
         }
     }
-
 </script>
+
 <style>
-
-
+    
 </style>

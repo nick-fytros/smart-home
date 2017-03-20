@@ -93,7 +93,7 @@ class Auth {
                 res.redirect('/apps');
             } else {
                 const vueScope = new VueScope();
-                vueScope.addData({ title: 'Smart Home - Sign up' });
+                vueScope.addData({ csrfToken: req.csrfToken() });
                 res.render('auth/signup', vueScope.getScope());
             }
         });

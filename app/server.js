@@ -68,7 +68,6 @@ class Server {
         this.app.use(bodyParser.urlencoded({
             extended: true
         }));
-        this.app.use(csrf({ cookie: true }));
         this.app.use(cookieParser());
         this.app.use(express.static(path.join(__dirname, '../public')));
         this.app.use(cookieSession({
@@ -81,6 +80,7 @@ class Server {
         this.app.locals.applications = [
             { id: 0, name: 'BLE Lamps', url: '/blelamps', imageUrl: '/images/blelamps.png', description: 'Turn on/off, change and dimm the colors of your BLE lamps.' }
         ];
+        this.app.use(csrf({ cookie: true }));
         // add custom middleware
         this.app.use(Middleware.flash.invalidateFlash);
         this.app.use(Middleware.security.checkIfUserIsLoggedIn);
