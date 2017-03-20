@@ -1,3 +1,5 @@
+const config = require('../config');
+
 /**
  * @export
  * @class VueScope
@@ -14,20 +16,17 @@ class VueScope {
             data: {
                 title: 'Smart Home',
                 subtitle: 'Grünerløkka, Oslo',
+                config: config,
                 flash: {}
             },
             vue: {
                 head: {
                     title: 'Smart Home',
-                    meta: [{
-                        name: 'application-name',
-                        content: 'Smart Home by Nikos'
-                    },
-                    {
-                        name: 'description',
-                        content: 'Smart Home by Nikos Fytros',
-                        id: 'desc'
-                    }]
+                    meta: [
+                        { name: 'application-name', content: 'Smart Home by Nikos' },
+                        { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' },
+                        { script: '/js/moment.js' }
+                    ]
                 },
                 components: ['smheader', 'smfooter', 'messagebox', 'userbar']
             }

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const config = require('../config');
 
 module.exports.bootstrap = () => {
 
@@ -15,9 +16,7 @@ module.exports.bootstrap = () => {
                 },
                 message: '{VALUE} is not a valid email address!'
             },
-            index: {
-                unique: true
-            }
+            unique: true
         },
         password: {
             type: String,
@@ -33,7 +32,7 @@ module.exports.bootstrap = () => {
         },
         role: {
             type: String,
-            enum: ['user', 'admin'],
+            enum: config.availableRoles,
             default: 'user'
         }
     });

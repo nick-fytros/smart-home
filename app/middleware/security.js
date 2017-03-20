@@ -14,7 +14,7 @@ class Security {
      * 
      * @memberOf Security
      */
-    static checkIfUserLoggedIn(req, res, next) {
+    static checkIfUserIsLoggedIn(req, res, next) {
         // exclude the login path
         if (req.session.user || req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/') {
             next();

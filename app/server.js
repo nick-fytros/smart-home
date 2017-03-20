@@ -10,8 +10,9 @@ const fs = require('fs');
 const cookieSession = require('cookie-session');
 const expressVue = require('express-vue');
 const requireDir = require('require-dir');
+const csrf = require('csurf');
 
-const SmError = require('./models/smError');
+const AppError = require('./models/appError');
 const VueScope = require('./models/vueScope');
 const Routers = requireDir('./routes');
 const Middleware = requireDir('./middleware');
@@ -75,12 +76,10 @@ class Server {
             // Cookie Options
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         }));
-        // declare the applications
-        this.app.locals.applications = [
-            { id: 0, name: 'BLE Lamps', url: '/blelamps', imageUrl: '/images/blelamps.png', description: 'Turn on/off, change and dimm the colors of your BLE lamps.' }
-        ];
-        // add middleware
-        this.app.use(Middleware.security.checkIfUserLoggedIn);
+        this.app.use(csrf({ cookie: true }));
+        // add custom middleware
+        this.app.use(Middleware.security.checkIfUserIsLoggedIn);
+        this.app.use(Middleware.flash.invalidateFlash);
     }
 
     /**
@@ -113,7 +112,7 @@ class Server {
     _attachErrorHandler() {
         // catch 404 and forward to error handler
         this.app.use((req, res, next) => {
-            const error = new SmError('The page you were looking for is not found', 404);
+            const error = new AppError('The page you were looking for was not found', 404);
             next(error);
         });
         const vueScope = new VueScope();

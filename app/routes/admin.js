@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const VueScope = require('../models/vueScope');
 
 const User = require('../models/user');
-const FlashMessage = require('../services/flashMessage');
+const FlashService = require('../services/flashService');
 
 /**
  * @export
@@ -44,12 +44,20 @@ class Admin {
         this.app.use(pathToAttach, this.router);
     }
 
-    // TODO ADD MIDDLEWARE TO ONLY ALLOW ADMIN USER
+    /**
+     * @memberOf Admin
+     */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
+            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
-            res.render('admin/index', vueScope.getScope());
+            this.MongooseUser.find().then((users) => {
+                vueScope.addData({ users: users });
+                res.render('admin/index', vueScope.getScope());
+            }).catch((err) => {
+                throw err;
+            });
         });
     }
 
@@ -58,6 +66,7 @@ class Admin {
      */
     _addLoginRoute() {
         this.router.post('/login', (req, res) => {
+            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             this.MongooseUser.findOne({
                 email: req.body.email
             }, (err, user) => {
@@ -72,11 +81,11 @@ class Admin {
                         if (isMatch) {
                             req.session.user = new User(user);
                             delete req.session.user.password;
-                            res.redirect('/welcome');
+                            res.redirect('/apps');
                         }
                     });
                 } else {
-                    FlashMessage.setFlashMessage(req, {
+                    FlashService.setFlashData(req, {
                         error: {
                             status: 401,
                             message: 'Sorry, the credentials you provided are wrong'
@@ -93,9 +102,10 @@ class Admin {
      */
     _addSignupRoute() {
         this.router.get('/signup', (req, res) => {
-            /* if user is logged in redirect to welcome page */
+            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
+            /* if user is logged in redirect to apps page */
             if (req.session.user) {
-                res.redirect('/welcome');
+                res.redirect('/apps');
             } else {
                 const vueScope = new VueScope();
                 vueScope.addData({ title: 'Smart Home - Sign up' });
@@ -111,9 +121,9 @@ class Admin {
             newUser.save().then((user) => {
                 req.session.user = new User(user);
                 delete req.session.user.password;
-                res.redirect('/welcome');
+                res.redirect('/apps');
             }).catch((err) => {
-                FlashMessage.setFlashMessage(req, {
+                FlashService.setFlashData(req, {
                     error: {
                         status: 401,
                         message: err.message
@@ -123,6 +133,7 @@ class Admin {
             });
         });
     }
+
 }
 
 module.exports = Admin;

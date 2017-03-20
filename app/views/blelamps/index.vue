@@ -1,6 +1,7 @@
 <template>
     <div>
-        <smheader :title="title" :subtitle="subtitle"></smheader>
+        <smheader :title="title"
+                  :subtitle="subtitle"></smheader>
         <section class="section content">
             <div class="container">
                 <userbar :user="user"></userbar>
@@ -9,22 +10,19 @@
                         <messagebox :flash="flash"></messagebox>
                     </div>
                 </div>
-                <div class="columns is-multiline">
-                </div>
             </div>
         </section>
         <smfooter></smfooter>
     </div>
 </template>
 <script>
-    export default {
-        data: function() {
-            return {}
-        }
+export default {
+    data: function () {
+        return {}
     }
+}
 
 </script>
 <style>
-
 
 </style>
