@@ -10,19 +10,13 @@
                         <messagebox :flash="flash"></messagebox>
                     </div>
                 </div>
-                <div class="tabs is-right">
+                <div class="tabs is-centered">
                     <ul>
                         <li v-on:click="activateTab('users')"
                             v-bind:class="{ 'is-active': tabs['users'] }">
                             <a>
                                 <span class="icon is-small"><i class="fa fa-user"></i></span>
                                 <span>Users</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/apps">
-                                <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
-                                <span>Back to apps</span>
                             </a>
                         </li>
                     </ul>

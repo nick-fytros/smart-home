@@ -18,6 +18,12 @@
                     <div v-bind:class="{ 'is-hidden': isHidden }"
                          class="submenu">
                         <nav class="panel">
+                            <a href="/apps"
+                               class="panel-block">
+                                <span class="panel-icon">
+                                    <i class="fa fa-rocket"></i>
+                                </span> Apps
+                            </a>
                             <a v-if="user.role == 'admin'"
                                href="/admin"
                                class="panel-block">
