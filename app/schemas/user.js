@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const moment = require('moment');
 
 module.exports.bootstrap = () => {
 
@@ -25,11 +26,13 @@ module.exports.bootstrap = () => {
         },
         createdOn: {
             type: Date,
-            default: Date.now
+            default: Date.now,
+            get: date => moment(date).format('ddd MMM YYYY, hh:mm:ss')
         },
         lastLogin: {
             type: Date,
-            default: Date.now
+            default: Date.now,
+            get: date => moment(date).format('ddd MMM YYYY, hh:mm:ss')
         },
         role: {
             type: String,
