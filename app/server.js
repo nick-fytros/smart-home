@@ -76,10 +76,6 @@ class Server {
             // Cookie Options
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         }));
-        // declare the applications
-        this.app.locals.applications = [
-            { id: 0, name: 'BLE Lamps', url: '/blelamps', imageUrl: '/images/blelamps.png', description: 'Turn on/off, change and dimm the colors of your BLE lamps.' }
-        ];
         this.app.use(csrf({ cookie: true }));
         // add custom middleware
         this.app.use(Middleware.security.checkIfUserIsLoggedIn);

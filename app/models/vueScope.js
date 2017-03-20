@@ -1,3 +1,5 @@
+const config = require('../config');
+
 /**
  * @export
  * @class VueScope
@@ -14,6 +16,7 @@ class VueScope {
             data: {
                 title: 'Smart Home',
                 subtitle: 'Grünerløkka, Oslo',
+                config: config,
                 flash: {}
             },
             vue: {

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const config = require('../config');
 
 module.exports.bootstrap = () => {
 
@@ -31,7 +32,7 @@ module.exports.bootstrap = () => {
         },
         role: {
             type: String,
-            enum: ['user', 'admin'],
+            enum: config.availableRoles,
             default: 'user'
         }
     });

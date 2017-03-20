@@ -48,8 +48,10 @@
                             </div>
                         </div>
                         <div class="level-item has-text-centered">
-                            <div>
-                                <p>{{user.role}}</p>
+                            <div class="field">
+                                <p class="control">
+                                    <span class="select"><select :disabled="!editMode"><option v-for="role in config.availableRoles" :selected="role === user.role">{{role}}</option></select></span>
+                                </p>
                             </div>
                         </div>
                         <div class="level-item has-text-centered">
@@ -74,7 +76,8 @@ export default {
         return {
             tabs: {
                 users: true
-            }
+            },
+            editMode: false
         }
     },
     methods: {
@@ -84,7 +87,7 @@ export default {
             this.tabs[tabName] = true;
         },
         formatDate: function (date) {
-            return moment(date).format('D MMM YYYY, H:mm:ss')
+            return moment(date).format('D MMM YYYY, H:mm:ss');
         }
     }
 }

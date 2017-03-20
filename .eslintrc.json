@@ -7,7 +7,6 @@
         }
     },
     "rules": {
-        "indent": ["error", 4],
         "linebreak-style": "off",
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
