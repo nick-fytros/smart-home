@@ -24,11 +24,15 @@
 		</div>
 		<div class="level-item has-text-centered">
 			<a v-on:click="editMode = true"
-			   :class="{'is-hidden' : editMode}"><span class="icon"><i class="fa fa-pencil"></i></span></a>
+			   :class="{'is-hidden': editMode}"><span class="icon"><i class="fa fa-pencil"></i></span></a>
 			<a v-on:click="saveNewData(user)"
-			   :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-check"></i></span></a>
+			   :class="{'is-hidden': !editMode}"><span class="icon"><i class="fa fa-check"></i></span></a>
 			<a v-on:click="deleteUser(user)"
-			   :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
+			   :class="{'is-hidden': !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
+		</div>
+		<div :class="{'is-hidden': updateStatus === '', 'is-success': updateStatus === 'Updated', 'is-danger': updateStatus === 'Error'}"
+		     class="level-item has-text-centered notification is-small">
+			<p>{{updateStatus}}</p>
 		</div>
 	</div>
 </template>
@@ -39,7 +43,8 @@ export default {
 	data: function () {
 		return {
 			editMode: false,
-			roleSelected: ''
+			roleSelected: '',
+			updateStatus: ''
 		}
 	},
 	props: ['user', 'config', 'csrf'],
@@ -65,8 +70,9 @@ export default {
 					update: { role: this.roleSelected }
 				}).then((response) => {
 					user.role = response.data.user.role;
+					this.updateStatus = 'Updated';
 				}).catch((error) => {
-					
+					this.updateStatus = 'Error';
 				});
 			}
 			this.editMode = false;
