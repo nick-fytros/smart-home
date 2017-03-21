@@ -15,6 +15,13 @@
                                        name="_csrf"
                                        :value="csrfToken">
                                 <input class="input"
+                                       type="text"
+                                       placeholder="One time code"
+                                       name="onetimecode">
+                                <span class="icon is-small"><i class="fa fa-terminal"></i></span>
+                            </p>
+                            <p class="control has-icon">
+                                <input class="input"
                                        :class="{ 'is-danger': form.email.hasError }"
                                        type="email"
                                        placeholder="Email"

@@ -35,7 +35,7 @@
 
 <script>
 
-let moment = require('moment');
+const moment = require('moment');
 
 export default {
 	data: function () {

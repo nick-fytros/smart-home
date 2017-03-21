@@ -92,6 +92,26 @@ class Server {
         mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
         // create db Schemas
         Schemas.user.bootstrap();
+        // create the admin user if he doesn't exist
+        const MongooseUser = mongoose.model('User');
+        if (process.env.APP_ADMIN_EMAIL && process.env.APP_ADMIN_PASS) {
+            this.MongooseUser.findOne({
+                email: process.env.APP_ADMIN_EMAIL
+            }).then((user) => {
+                if (!user || user == null) {
+                    const newUser = new MongooseUser({
+                        email: process.env.APP_ADMIN_EMAIL,
+                        password: process.env.APP_ADMIN_PASS
+                    });
+                    newUser.save().then((user) => {
+                    }).catch((error) => {
+                        throw error;
+                    });
+                }
+            }).catch((error) => {
+                throw error;
+            });
+        }
     }
 
     /**

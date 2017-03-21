@@ -53,10 +53,7 @@ class Auth {
         this.router.post('/login', (req, res) => {
             this.MongooseUser.findOne({
                 email: req.body.email
-            }, (err, user) => {
-                if (err) {
-                    throw err;
-                }
+            }).then((user) => {
                 if (user) {
                     user.comparePassword(req.body.password, (err, isMatch) => {
                         if (err) {
@@ -79,6 +76,8 @@ class Auth {
                     });
                     res.redirect('/');
                 }
+            }).catch((error) => {
+                throw error;
             });
         });
     }
