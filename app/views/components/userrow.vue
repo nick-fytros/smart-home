@@ -58,14 +58,13 @@ export default {
 			return moment(date).format('D MMM YYYY, H:mm:ss');
 		},
 		saveNewData: function (user) {
-			// if something has changed then post on server to save data
-			if (this.roleSelected !== user.role) {
+			if (this.roleSelected && this.roleSelected !== user.role) {
 				axios.post('/admin/update/user', {
 					_csrf: this.csrf,
 					user: user,
 					update: { role: this.roleSelected }
 				}).then((response) => {
-					
+					user.role = response.data.user.role;
 				}).catch((error) => {
 					
 				});

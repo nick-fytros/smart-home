@@ -71,14 +71,14 @@ class Admin {
      */
     _addUserUpdateRoute() {
         this.router.post('/update/user', (req, res) => {
-            console.log(req.body);
             this.MongooseUser.findOne({
                 email: req.body.user.email
             }).then((user) => {
                 // only role can be updated for now
+                if (!req.body.update.role) res.status(400).send({ error: 'Wrong input data'});
                 user.role = req.body.update.role;
                 user.save().then((user) => {
-                    res.status(204).send({ result: 'ok' });
+                    res.status(200).send({ user: user });
                 }).catch((error) => {
                     res.status(500).send({ error: 'Server error'});
                 });
