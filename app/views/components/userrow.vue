@@ -6,12 +6,12 @@
 			</div>
 		</div>
 		<div class="level-item has-text-centered">
-			<div>
+			<div title="Created on">
 				<p>{{formatDate(user.createdOn)}}</p>
 			</div>
 		</div>
 		<div class="level-item has-text-centered">
-			<div>
+			<div title="Last login">
 				<p>{{formatDate(user.lastLogin)}}</p>
 			</div>
 		</div>
