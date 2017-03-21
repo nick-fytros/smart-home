@@ -1,7 +1,7 @@
 <template>
     <div>
         <smheader :title="title" :subtitle="subtitle"></smheader>
-        <section class="section content">
+        <section class="section content main-section">
             <div class="container">
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">

@@ -12,22 +12,21 @@ $family-primary: $family-serif; // Use the new serif family
 @import 'partials/smheader';
 @import 'partials/smfooter';
 @import 'partials/messagebox';
+@import 'partials/userbar';
 body {
     min-height: 100vh;
     background: #ffe761;
     color: #000;
     font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
-    .content{
-        .no-margin{
+    .main-section {
+        min-height: 600px;
+    }
+    .content {
+        .no-margin {
             margin: 0;
         }
-        .control-or{
+        .control-or {
             padding: 8px 0px;
-        }
-        .submenu {
-            position: absolute;
-            right: 0px;
-            z-index: 100;
         }
     }
 }
