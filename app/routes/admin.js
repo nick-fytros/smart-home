@@ -33,6 +33,7 @@ class Admin {
         this.router = express.Router();
         this.MongooseUser = mongoose.model('User');
         this._addRootRoute();
+        this._addUserUpdateRoute();
     }
 
     /**
@@ -53,7 +54,10 @@ class Admin {
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
-                vueScope.addData({ users: users });
+                vueScope.addData({
+                    users: users,
+                    csrfToken: req.csrfToken()
+                });
                 vueScope.addComponent('userrow');
                 res.render('admin/index', vueScope.getScope());
             }).catch((err) => {
@@ -65,35 +69,21 @@ class Admin {
     /**
      * @memberOf Admin
      */
-    _addLoginRoute() {
-        this.router.post('/login', (req, res) => {
-            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
+    _addUserUpdateRoute() {
+        this.router.post('/update/user', (req, res) => {
+            console.log(req.body);
             this.MongooseUser.findOne({
-                email: req.body.email
-            }, (err, user) => {
-                if (err) {
-                    throw err;
-                }
-                if (user) {
-                    user.comparePassword(req.body.password, (err, isMatch) => {
-                        if (err) {
-                            throw err;
-                        }
-                        if (isMatch) {
-                            req.session.user = new User(user);
-                            delete req.session.user.password;
-                            res.redirect('/apps');
-                        }
-                    });
-                } else {
-                    FlashService.setFlashData(req, {
-                        error: {
-                            status: 401,
-                            message: 'Sorry, the credentials you provided are wrong'
-                        }
-                    });
-                    res.redirect('/');
-                }
+                email: req.body.user.email
+            }).then((user) => {
+                // only role can be updated for now
+                user.role = req.body.update.role;
+                user.save().then((user) => {
+                    res.status(204).send({ result: 'ok' });
+                }).catch((error) => {
+                    res.status(500).send({ error: 'Server error'});
+                });
+            }).catch((error) => {
+                res.status(404).send({ error: 'User not found'});
             });
         });
     }

@@ -24,7 +24,7 @@
                 <div v-bind:class="{ 'is-hidden': !tabs['users'] }"
                      v-for="user in users"
                      class="box">
-                     <userrow :user="user" :config="config"></userrow>
+                     <userrow :user="user" :config="config" :csrf="csrfToken"></userrow>
                 </div>
             </div>
         </section>

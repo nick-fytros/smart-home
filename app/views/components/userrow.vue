@@ -42,7 +42,7 @@ export default {
 			roleSelected: ''
 		}
 	},
-	props: ['user', 'config'],
+	props: ['user', 'config', 'csrf'],
 	computed: {
 		selectedRole: {
 			get: function () {
@@ -60,7 +60,15 @@ export default {
 		saveNewData: function (user) {
 			// if something has changed then post on server to save data
 			if (this.roleSelected !== user.role) {
-				// post to save new data
+				axios.post('/admin/update/user', {
+					_csrf: this.csrf,
+					user: user,
+					update: { role: this.roleSelected }
+				}).then((response) => {
+					
+				}).catch((error) => {
+					
+				});
 			}
 			this.editMode = false;
 		},
