@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const SecurityMiddleware = require('../middleware/security');
-const VueScope = require('../models/vueScope');
+const VueScope = require('../models/vue-scope');
 
 const User = require('../models/user');
-const FlashService = require('../services/flashService');
+const FlashService = require('../services/flash-service');
 
 /**
  * @export
@@ -71,17 +71,17 @@ class Admin {
      * @memberOf Admin
      */
     _addUserUpdateRoute() {
-        this.router.post('/update/user', (req, res) => {
+        this.router.post('/update/user', (req, res, next) => {
             this.MongooseUser.findOne({
                 email: req.body.user.email
             }).then((user) => {
                 // only role can be updated for now
                 if (!req.body.update.role) res.status(400).send({ error: 'Wrong input data'});
-                user.role = req.body.update.role;
+                Object.assign(user, req.body.update);
                 user.save().then((user) => {
                     res.status(200).send({ user: user });
                 }).catch((error) => {
-                    res.status(500).send({ error: 'Server error'});
+                    res.status(500).send({ error: 'Server error. Could not save user.'});
                 });
             }).catch((error) => {
                 res.status(404).send({ error: 'User not found'});

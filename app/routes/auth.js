@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const VueScope = require('../models/vueScope');
+const VueScope = require('../models/vue-scope');
 
 const User = require('../models/user');
-const FlashService = require('../services/flashService');
+const FlashService = require('../services/flash-service');
 
 /**
  * @export

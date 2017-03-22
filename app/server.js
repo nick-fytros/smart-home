@@ -13,11 +13,11 @@ const requireDir = require('require-dir');
 const csrf = require('csurf');
 const helmet = require('helmet');
 
-const AppError = require('./models/appError');
-const VueScope = require('./models/vueScope');
-const Routers = requireDir('./routes');
-const Middleware = requireDir('./middleware');
-const Schemas = requireDir('./schemas');
+const AppError = require('./models/app-error');
+const VueScope = require('./models/vue-scope');
+const Routers = requireDir('./routes', { camelcase: true });
+const Middleware = requireDir('./middleware', { camelcase: true });
+const Schemas = requireDir('./schemas', { camelcase: true });
 
 /**
  * @export
@@ -123,7 +123,7 @@ class Server {
      */
     _attachRoutes() {
         Routers.main.bootstrap(this.app).attach('/');
-        Routers.blelamps.bootstrap(this.app).attach('/blelamps');
+        Routers.bleLamps.bootstrap(this.app).attach('/blelamps');
         Routers.auth.bootstrap(this.app).attach('/auth');
         Routers.admin.bootstrap(this.app).attach('/admin');
     }

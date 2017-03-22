@@ -1,5 +1,5 @@
 const test = require('ava');
-const AppError = require('../../app/models/appError');
+const AppError = require('../../app/models/app-error');
 
 let error;
 test.beforeEach(t => {

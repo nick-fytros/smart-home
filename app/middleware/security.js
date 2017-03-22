@@ -1,4 +1,4 @@
-const VueScope = require('../models/vueScope');
+const VueScope = require('../models/vue-scope');
 
 /**
  * @export

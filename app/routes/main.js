@@ -1,6 +1,6 @@
 const express = require('express');
-const VueScope = require('../models/vueScope');
-const FlashService = require('../services/flashService');
+const VueScope = require('../models/vue-scope');
+const FlashService = require('../services/flash-service');
 
 /**
  * @export
