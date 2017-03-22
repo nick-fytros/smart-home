@@ -65,6 +65,14 @@ class Auth {
                             user.lastLogin = Date.now();
                             user.save();
                             res.redirect('/apps');
+                        } else {
+                            FlashService.setFlashData(req, {
+                                error: {
+                                    status: 401,
+                                    message: 'Sorry, the credentials you provided are wrong'
+                                }
+                            });
+                            res.redirect('/');
                         }
                     });
                 } else {
@@ -99,7 +107,7 @@ class Auth {
 
         this.router.post('/signup', (req, res) => {
             const filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-            if (!filter.test(req.body.email) || req.body.password === '' || req.body.password !== req.body.repeatpassword ){
+            if (!filter.test(req.body.email) || req.body.password === '' || req.body.password !== req.body.repeatpassword) {
                 FlashService.setFlashData(req, {
                     error: {
                         status: 422,

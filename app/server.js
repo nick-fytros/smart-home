@@ -11,6 +11,7 @@ const cookieSession = require('cookie-session');
 const expressVue = require('express-vue');
 const requireDir = require('require-dir');
 const csrf = require('csurf');
+const helmet = require('helmet');
 
 const AppError = require('./models/appError');
 const VueScope = require('./models/vueScope');
@@ -54,6 +55,8 @@ class Server {
         dotenv.config();
         this.app.locals.env = process.env.NODE_ENV || 'development';
         this.app.locals.isEnvDevelopment = this.app.locals.ENV === 'development';
+        // express security middleware
+        this.app.use(helmet());
         // view engine setup
         this.app.engine('vue', expressVue);
         this.app.set('view engine', 'vue');

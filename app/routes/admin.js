@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const SecurityMiddleware = require('../middleware/security');
 const VueScope = require('../models/vueScope');
 
 const User = require('../models/user');
@@ -31,6 +32,7 @@ class Admin {
     constructor(app) {
         this.app = app;
         this.router = express.Router();
+        this.router.use(SecurityMiddleware.checkIfUserIsAdmin);
         this.MongooseUser = mongoose.model('User');
         this._addRootRoute();
         this._addUserUpdateRoute();
@@ -50,7 +52,6 @@ class Admin {
      */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
-            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
