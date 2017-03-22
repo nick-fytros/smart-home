@@ -95,6 +95,7 @@ class Server {
         mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
         // create db Schemas
         Schemas.user.bootstrap();
+        Schemas.token.bootstrap();
         // create the admin user if he doesn't exist
         const MongooseUser = mongoose.model('User');
         if (process.env.APP_ADMIN_EMAIL && process.env.APP_ADMIN_PASS) {

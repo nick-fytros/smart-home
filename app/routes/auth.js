@@ -32,6 +32,7 @@ class Auth {
         this.app = app;
         this.router = express.Router();
         this.MongooseUser = mongoose.model('User');
+        this.MongooseToken = mongoose.model('Token');
         this._addLoginRoute();
         this._addLogoutRoute();
         this._addSignupRoute();
@@ -107,31 +108,34 @@ class Auth {
 
         this.router.post('/signup', (req, res) => {
             const filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-            if (!filter.test(req.body.email) || req.body.password === '' || req.body.password !== req.body.repeatpassword) {
-                FlashService.setFlashData(req, {
-                    error: {
-                        status: 422,
-                        message: 'The info you provided are not following the rules.'
-                    }
+            // one time token check and ivalidate
+            this.MongooseToken.findOneAndRemove({ val: req.body.onetimecode }).then((token) => {
+                if (!filter.test(req.body.email) ||
+                    req.body.password === '' ||
+                    req.body.password !== req.body.repeatpassword ||
+                    !token ||
+                    token.hasExpired()) {
+                    FlashService.setFlashData(req, {
+                        error: {
+                            status: 422,
+                            message: 'The info you provided are not following the rules.'
+                        }
+                    });
+                    res.redirect('/auth/signup');
+                }
+                const newUser = new this.MongooseUser({
+                    email: req.body.email,
+                    password: req.body.password
                 });
+                newUser.save().then((user) => {
+                    req.session.user = new User(user);
+                    delete req.session.user.password;
+                    res.redirect('/apps');
+                }).catch((err) => {
+                    res.redirect('/auth/signup');
+                });
+            }).catch((error) => {
                 res.redirect('/auth/signup');
-            }
-            const newUser = new this.MongooseUser({
-                email: req.body.email,
-                password: req.body.password
-            });
-            newUser.save().then((user) => {
-                req.session.user = new User(user);
-                delete req.session.user.password;
-                res.redirect('/apps');
-            }).catch((err) => {
-                FlashService.setFlashData(req, {
-                    error: {
-                        status: 401,
-                        message: err.message
-                    }
-                });
-                res.redirect('/');
             });
         });
     }
