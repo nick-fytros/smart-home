@@ -9,6 +9,7 @@
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" type="text/css">
         <link rel="stylesheet" href="/css/style.css" type="text/css">
+        <link rel="shortcut icon" href="/images/favicon.ico" />
     </head>
 
     <body>
