@@ -64,7 +64,7 @@ export default {
 		},
 		saveNewData: function (user) {
 			if (this.roleSelected && this.roleSelected !== user.role) {
-				axios.post('/admin/update/user', {
+				axios.post(this.config.routes.admin.user.update, {
 					_csrf: this.csrf,
 					user: user,
 					update: { role: this.roleSelected }
@@ -79,6 +79,14 @@ export default {
 		},
 		deleteUser: function (user) {
 			// post to delete the user
+			axios.post(this.config.routes.admin.user.delete, {
+				_csrf: this.csrf,
+				user: user
+			}).then((response) => {
+			}).catch((error) => {
+				this.updateStatus = 'Error';
+			});
+			this.editMode = false;
 		}
 	}
 }

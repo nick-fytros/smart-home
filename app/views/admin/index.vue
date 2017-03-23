@@ -19,12 +19,36 @@
                                 <span>Users</span>
                             </a>
                         </li>
+                        <li v-on:click="activateTab('onetimetokens')"
+                            v-bind:class="{ 'is-active': tabs['onetimetokens'] }">
+                            <a>
+                                <span class="icon is-small"><i class="fa fa-user"></i></span>
+                                <span>Tokens</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
-                <div v-bind:class="{ 'is-hidden': !tabs['users'] }"
-                     v-for="user in users"
-                     class="box">
-                     <userrow :user="user" :config="config" :csrf="csrfToken"></userrow>
+                <div v-bind:class="{ 'is-hidden': !tabs['users'] }">
+                    <div v-for="user in users"
+                         class="box">
+                        <userrow :user="user"
+                                 :config="config"
+                                 :csrf="csrfToken"></userrow>
+                    </div>
+                </div>
+                <div v-bind:class="{ 'is-hidden': !tabs['onetimetokens'] }">
+                    <div class="box">
+                        <div class="block">
+                            <a v-on:click="generateToken"
+                               class="button is-primary">Generate token</a>
+                        </div>
+                    </div>
+                    <div v-for="token in tokens"
+                         class="box">
+                        <tokenrow :token="token"
+                                  :config="config"
+                                  :csrf="csrfToken"></tokenrow>
+                    </div>
                 </div>
             </div>
         </section>
@@ -37,15 +61,28 @@ export default {
     data: function () {
         return {
             tabs: {
-                users: true
+                users: true,
+                onetimetokens: false
             }
         }
     },
     methods: {
         activateTab: function (tabName) {
             // hide all tabs and enable the one clicked
-            Object.keys(this.tabs).forEach((key, value) => { return this.tabs[key] = false; });
+            Object.keys(this.tabs).forEach((key, value) => {
+                return this.tabs[key] = false;
+            });
             this.tabs[tabName] = true;
+        },
+        generateToken: function () {
+            axios.post(this.config.routes.admin.token.generate, {
+                _csrf: this.csrfToken
+            }).then((response) => {
+                this.tokens.push(response.data.token);
+            }).catch((error) => {
+                this.updateStatus = 'Error';
+            });
+            this.editMode = false;
         }
     }
 }

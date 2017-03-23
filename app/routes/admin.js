@@ -34,8 +34,12 @@ class Admin {
         this.router = express.Router();
         this.router.use(SecurityMiddleware.checkIfUserIsAdmin);
         this.MongooseUser = mongoose.model('User');
+        this.MongooseToken = mongoose.model('Token');
         this._addRootRoute();
         this._addUserUpdateRoute();
+        this._addUserDeleteRoute();
+        this._addTokenGenerateRoute();
+        this._addTokenDeleteRoute();
     }
 
     /**
@@ -55,14 +59,20 @@ class Admin {
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
-                vueScope.addData({
-                    users: users,
-                    csrfToken: req.csrfToken()
+                this.MongooseToken.find().then((tokens) => {
+                    vueScope.addData({
+                        users: users,
+                        tokens: tokens,
+                        csrfToken: req.csrfToken()
+                    });
+                    vueScope.addComponent('userrow');
+                    vueScope.addComponent('tokenrow');
+                    res.render('admin/index', vueScope.getScope());
+                }).catch((err) => {
+                    res.status(500).send({ error: 'Tokens get failed' });
                 });
-                vueScope.addComponent('userrow');
-                res.render('admin/index', vueScope.getScope());
             }).catch((err) => {
-                throw err;
+                res.status(500).send({ error: 'Users get failed' });
             });
         });
     }
@@ -71,20 +81,21 @@ class Admin {
      * @memberOf Admin
      */
     _addUserUpdateRoute() {
-        this.router.post('/update/user', (req, res, next) => {
-            this.MongooseUser.findOne({
-                email: req.body.user.email
-            }).then((user) => {
-                // only role can be updated for now
-                if (!req.body.update.role) res.status(400).send({ error: 'Wrong input data'});
-                Object.assign(user, req.body.update);
-                user.save().then((user) => {
+        this.router.post('/user/update', (req, res, next) => {
+            // only role can be updated for now
+            if (!req.body.update.role) res.status(400).send({ error: 'Wrong input data' });
+            this.MongooseUser.findOneAndUpdate(
+                { email: req.body.user.email },
+                { $set: { role: req.body.update.role } },
+                { new: true }
+            ).then((user) => {
+                if (user) {
                     res.status(200).send({ user: user });
-                }).catch((error) => {
-                    res.status(500).send({ error: 'Server error. Could not save user.'});
-                });
+                } else {
+                    res.status(404).send({ error: 'User not found' });
+                }
             }).catch((error) => {
-                res.status(404).send({ error: 'User not found'});
+                res.status(500).send({ error: 'User update failed' });
             });
         });
     }
@@ -92,36 +103,55 @@ class Admin {
     /**
      * @memberOf Admin
      */
-    _addSignupRoute() {
-        this.router.get('/signup', (req, res) => {
-            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
-            /* if user is logged in redirect to apps page */
-            if (req.session.user) {
-                res.redirect('/apps');
-            } else {
-                const vueScope = new VueScope();
-                vueScope.addData({ title: 'Smart Home - Sign up' });
-                res.render('Admin/signup', vueScope.getScope());
-            }
-        });
-
-        this.router.post('/signup', (req, res) => {
-            const newUser = new this.MongooseUser({
-                email: req.body.email,
-                password: req.body.password
+    _addUserDeleteRoute() {
+        this.router.post('/user/delete', (req, res, next) => {
+            this.MongooseUser.findOneAndDelete(
+                { email: req.body.user.email }
+            ).then((user) => {
+                if (user) {
+                    res.status(200).send({ user: user });
+                } else {
+                    res.status(404).send({ error: 'User not found' });
+                }
+            }).catch((error) => {
+                res.status(500).send({ error: 'User delete failed' });
             });
-            newUser.save().then((user) => {
-                req.session.user = new User(user);
-                delete req.session.user.password;
-                res.redirect('/apps');
+        });
+    }
+
+    /**
+     * @memberOf Admin
+     */
+    _addTokenGenerateRoute() {
+        this.router.post('/token/generate', (req, res, next) => {
+            const newToken = new this.MongooseToken();
+            newToken.save().then((token) => {
+                if (token) {
+                    res.status(200).send({ token: token });
+                } else {
+                    res.status(404).send({ error: 'Token not found' });
+                }
             }).catch((err) => {
-                FlashService.setFlashData(req, {
-                    error: {
-                        status: 401,
-                        message: err.message
-                    }
-                });
-                res.redirect('/');
+                res.status(500).send({ error: 'Token generation failed' });
+            });
+        });
+    }
+
+    /**
+     * @memberOf Admin
+     */
+    _addTokenDeleteRoute() {
+        this.router.post('/token/delete', (req, res, next) => {
+            this.MongooseToken.findOneAndDelete(
+                { val: req.body.token.val }
+            ).then((token) => {
+                if (token) {
+                    res.status(200).send({ token: token });
+                } else {
+                    res.status(404).send({ error: 'Token not found' });
+                }
+            }).catch((error) => {
+                res.status(500).send({ error: 'Token delete failed' });
             });
         });
     }
