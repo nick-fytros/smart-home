@@ -81,7 +81,7 @@ class Admin {
      * @memberOf Admin
      */
     _addUserUpdateRoute() {
-        this.router.post('/user/update', (req, res, next) => {
+        this.router.post('/user/update', (req, res) => {
             // only role can be updated for now
             if (!req.body.update.role) res.status(400).send({ error: 'Wrong input data' });
             this.MongooseUser.findOneAndUpdate(
@@ -104,8 +104,8 @@ class Admin {
      * @memberOf Admin
      */
     _addUserDeleteRoute() {
-        this.router.post('/user/delete', (req, res, next) => {
-            this.MongooseUser.findOneAndDelete(
+        this.router.post('/user/delete', (req, res) => {
+            this.MongooseUser.findOneAndRemove(
                 { email: req.body.user.email }
             ).then((user) => {
                 if (user) {
@@ -123,7 +123,7 @@ class Admin {
      * @memberOf Admin
      */
     _addTokenGenerateRoute() {
-        this.router.post('/token/generate', (req, res, next) => {
+        this.router.post('/token/generate', (req, res) => {
             const newToken = new this.MongooseToken();
             newToken.save().then((token) => {
                 if (token) {
@@ -131,7 +131,8 @@ class Admin {
                 } else {
                     res.status(404).send({ error: 'Token not found' });
                 }
-            }).catch((err) => {
+            }).catch((error) => {
+                console.log(error);
                 res.status(500).send({ error: 'Token generation failed' });
             });
         });
@@ -141,8 +142,8 @@ class Admin {
      * @memberOf Admin
      */
     _addTokenDeleteRoute() {
-        this.router.post('/token/delete', (req, res, next) => {
-            this.MongooseToken.findOneAndDelete(
+        this.router.post('/token/delete', (req, res) => {
+            this.MongooseToken.findOneAndRemove(
                 { val: req.body.token.val }
             ).then((token) => {
                 if (token) {

@@ -30,10 +30,6 @@
 			<a v-on:click="deleteUser(user)"
 			   :class="{'is-hidden': !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
 		</div>
-		<div :class="{'is-hidden': updateStatus === '', 'is-success': updateStatus === 'Updated', 'is-danger': updateStatus === 'Error'}"
-		     class="level-item has-text-centered notification is-small">
-			<p>{{updateStatus}}</p>
-		</div>
 	</div>
 </template>
 
@@ -43,8 +39,7 @@ export default {
 	data: function () {
 		return {
 			editMode: false,
-			roleSelected: '',
-			updateStatus: ''
+			roleSelected: ''
 		}
 	},
 	props: ['user', 'config', 'csrf'],
@@ -64,28 +59,12 @@ export default {
 		},
 		saveNewData: function (user) {
 			if (this.roleSelected && this.roleSelected !== user.role) {
-				axios.post(this.config.routes.admin.user.update, {
-					_csrf: this.csrf,
-					user: user,
-					update: { role: this.roleSelected }
-				}).then((response) => {
-					user.role = response.data.user.role;
-					this.updateStatus = 'Updated';
-				}).catch((error) => {
-					this.updateStatus = 'Error';
-				});
+				this.$emit('updateuser', { user: user, roleSelected: this.roleSelected });
 			}
 			this.editMode = false;
 		},
 		deleteUser: function (user) {
-			// post to delete the user
-			axios.post(this.config.routes.admin.user.delete, {
-				_csrf: this.csrf,
-				user: user
-			}).then((response) => {
-			}).catch((error) => {
-				this.updateStatus = 'Error';
-			});
+			this.$emit('deleteuser', { user: user });
 			this.editMode = false;
 		}
 	}

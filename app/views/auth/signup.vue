@@ -17,7 +17,9 @@
                                 <input class="input"
                                        type="text"
                                        placeholder="One time code"
-                                       name="onetimecode">
+                                       name="onetimecode"
+                                       required
+                                       pattern="[A-Za-z0-9]{8}">
                                 <span class="icon is-small"><i class="fa fa-terminal"></i></span>
                             </p>
                             <p class="control has-icon">
@@ -26,7 +28,9 @@
                                        type="email"
                                        placeholder="Email"
                                        name="email"
-                                       v-model="email">
+                                       v-model="email"
+                                       required
+                                       autocomplete="email">
                                 <span class="icon is-small"><i class="fa fa-envelope"></i></span>
                             </p>
                             <p :class="{ 'is-hidden': !form.email.hasError }"
@@ -37,6 +41,7 @@
                                        type="password"
                                        placeholder="Password"
                                        name="password"
+                                       required
                                        v-model="password">
                                 <span class="icon is-small"><i class="fa fa-lock"></i></span>
                             </p>
@@ -48,6 +53,7 @@
                                        type="password"
                                        placeholder="Repeat password"
                                        name="repeatpassword"
+                                       required
                                        v-model="repeatpassword">
                                 <span class="icon is-small"><i class="fa fa-lock"></i></span>
                             </p>
@@ -64,7 +70,7 @@
                                 </p>
                                 <p class="control">
                                     <a href="/"
-                                       class="button is-link">Log in</a>
+                                       class="button is-link">Sign in</a>
                                 </p>
                             </div>
                         </form>

@@ -55,6 +55,6 @@
     "gulp-sass": "^3.0.0",
     "pre-push": "^0.1.1",
     "should": "^11.2.0",
-    "supertest": "^2.0.0"
+    "supertest": "^2.0.1"
   }
 }

@@ -122,18 +122,19 @@ class Auth {
                         }
                     });
                     res.redirect('/auth/signup');
+                } else {
+                    const newUser = new this.MongooseUser({
+                        email: req.body.email,
+                        password: req.body.password
+                    });
+                    newUser.save().then((user) => {
+                        req.session.user = new User(user);
+                        delete req.session.user.password;
+                        res.redirect('/apps');
+                    }).catch((err) => {
+                        res.redirect('/auth/signup');
+                    });
                 }
-                const newUser = new this.MongooseUser({
-                    email: req.body.email,
-                    password: req.body.password
-                });
-                newUser.save().then((user) => {
-                    req.session.user = new User(user);
-                    delete req.session.user.password;
-                    res.redirect('/apps');
-                }).catch((err) => {
-                    res.redirect('/auth/signup');
-                });
             }).catch((error) => {
                 res.redirect('/auth/signup');
             });

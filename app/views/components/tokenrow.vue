@@ -23,10 +23,6 @@
 			<a v-on:click="deleteToken(token)"
 			   :class="{'is-hidden': !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
 		</div>
-		<div :class="{'is-hidden': updateStatus === '', 'is-success': updateStatus === 'Updated', 'is-danger': updateStatus === 'Error'}"
-		     class="level-item has-text-centered notification is-small">
-			<p>{{updateStatus}}</p>
-		</div>
 	</div>
 </template>
 
@@ -35,8 +31,7 @@
 export default {
 	data: function () {
 		return {
-			editMode: false,
-			updateStatus: ''
+			editMode: false
 		}
 	},
 	props: ['token', 'config', 'csrf'],
@@ -48,17 +43,7 @@ export default {
 			this.editMode = false;
 		},
 		deleteToken: function (token) {
-			// post to delete the token
-			if (this.roleSelected && this.roleSelected !== token.role) {
-				axios.post(this.config.routes.admin.token.delete, {
-					_csrf: this.csrf,
-					token: token
-				}).then((response) => {
-				}).catch((error) => {
-					this.updateStatus = 'Error';
-				});
-			}
-			this.editMode = false;
+			this.$emit('deletetoken', { token: token });
 		},
 		hasExpired: function (token) {
 			const today = new Date();

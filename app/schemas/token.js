@@ -6,7 +6,6 @@ module.exports.bootstrap = () => {
     const TokenSchema = new mongoose.Schema({
         val: {
             type: String,
-            default: randtoken.generate(8),
             unique: true
         },
         createdOn: {
@@ -17,6 +16,17 @@ module.exports.bootstrap = () => {
             type: Number,
             default: 60 * 60 * 1000 // 1 hour
         }
+    });
+
+    // MongoDB hash pass middleware
+    TokenSchema.pre('save', function (next) {
+        const token = this;
+        // only add the token value if its a new token
+        if (!token.isNew) {
+            return next();
+        }
+        token.val = randtoken.generate(8);
+        next();
     });
 
     TokenSchema.methods.hasExpired = function () {
