@@ -21,7 +21,7 @@
 			<a v-on:click="saveNewData(token)"
 			   :class="{'is-hidden': !editMode}"><span class="icon"><i class="fa fa-check"></i></span></a>
 			<a v-on:click="deleteToken(token)"
-			   :class="{'is-hidden': !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
+			   class="left-gap"><span class="icon"><i class="fa fa-trash"></i></span></a>
 		</div>
 	</div>
 </template>
