@@ -42,7 +42,7 @@ export default {
 			roleSelected: ''
 		}
 	},
-	props: ['user', 'config', 'csrf'],
+	props: ['user', 'config'],
 	computed: {
 		selectedRole: {
 			get: function () {

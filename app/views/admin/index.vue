@@ -5,11 +5,7 @@
         <section class="section content main-section">
             <div class="container">
                 <userbar :user="user"></userbar>
-                <div class="columns">
-                    <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
-                    </div>
-                </div>
+                <messagebox :flash="flash"></messagebox>
                 <div class="tabs is-centered">
                     <ul>
                         <li v-on:click="activateTab('users')"
@@ -34,7 +30,6 @@
                          class="box">
                         <userrow :user="user"
                                  :config="config"
-                                 :csrf="csrfToken"
                                  v-on:updateuser="updateUser"
                                  v-on:deleteuser="deleteUser"></userrow>
                     </div>
@@ -50,8 +45,6 @@
                          :key="token._id"
                          class="box">
                         <tokenrow :token="token"
-                                  :config="config"
-                                  :csrf="csrfToken"
                                   v-on:deletetoken="deleteToken"></tokenrow>
                     </div>
                 </div>

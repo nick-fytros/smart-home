@@ -5,11 +5,7 @@
         <section class="section content main-section">
             <div class="container">
                 <userbar :user="user"></userbar>
-                <div class="columns">
-                    <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
-                    </div>
-                </div>
+                <messagebox :flash="flash"></messagebox>
             </div>
         </section>
         <smfooter></smfooter>

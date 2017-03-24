@@ -4,9 +4,9 @@
                   :subtitle="subtitle"></smheader>
         <section class="section content main-section">
             <div class="container">
+                <messagebox :flash="flash"></messagebox>
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
                         <form ref="form"
                               action="/auth/signup"
                               method="post">

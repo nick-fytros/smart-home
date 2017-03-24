@@ -34,7 +34,7 @@ export default {
 			editMode: false
 		}
 	},
-	props: ['token', 'config', 'csrf'],
+	props: ['token'],
 	methods: {
 		formatDate: function (date) {
 			return moment(date).format('D MMM YYYY, H:mm:ss');
