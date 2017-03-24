@@ -19,7 +19,7 @@ gulp.task('sass', () => {
 
 gulp.task('watch', () => {
     livereload.listen();
-    gulp.watch(['./assets/scss/*.scss'], ['sass']);
+    gulp.watch(['./assets/scss/**/*.scss'], ['sass']);
 });
 
 gulp.task('develop', ['sass'], () => {
