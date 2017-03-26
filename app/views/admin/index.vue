@@ -4,10 +4,10 @@
                    :subtitle="subtitle"></appheader>
         <section class="section content main-section">
             <div class="container">
-                <notification :message="message"
-                              :timeout="3000"
-                              class="notification-absolute"></notification>
-                <userbar :user="user"></userbar>
+                <!-- message and timeout needed for notification component -->
+                <userbar :message="message"
+                         :timeout="3000"
+                         :user="user"></userbar>
                 <div class="tabs is-centered">
                     <ul>
                         <li v-on:click="activateTab('users')"
