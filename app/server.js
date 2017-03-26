@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
-const logger = require('morgan');
+const morgan = require('morgan');
 const path = require('path');
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
@@ -66,7 +66,15 @@ class Server {
             defaultLayout: 'layout'
         });
         this.app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
-        this.app.use(logger('dev'));
+        /* PROD access log */
+        if (this.app.locals.env === 'production') {
+            // create a write stream (in append mode)
+            const accessLogStream = fs.createWriteStream(path.join(__dirname, '../logs/access.log'), { flags: 'a' });
+            // setup the logger
+            this.app.use(morgan('combined', { stream: accessLogStream }));
+        }else {
+            this.app.use(morgan('dev'));
+        }
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({
             extended: true

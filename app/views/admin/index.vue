@@ -1,7 +1,7 @@
 <template>
     <div>
-        <smheader :title="title"
-                  :subtitle="subtitle"></smheader>
+        <appheader :title="title"
+                   :subtitle="subtitle"></appheader>
         <section class="section content main-section">
             <div class="container">
                 <userbar :user="user"></userbar>
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </section>
-        <smfooter></smfooter>
+        <appfooter></appfooter>
     </div>
 </template>
 <script>
@@ -92,15 +92,17 @@ export default {
             });
         },
         deleteUser: function (data) {
-            axios.post(this.config.routes.admin.user.delete, {
-                _csrf: this.csrfToken,
-                user: data.user
-            }).then((response) => {
-                this.users.splice(_.findIndex(this.users, (u) => {
-                    return u._id === response.data.user._id;
-                }), 1);
-            }).catch((error) => {
-            });
+            if (confirm(`Are you sure you want to delete! ${data.user.email}`) === true) {
+                axios.post(this.config.routes.admin.user.delete, {
+                    _csrf: this.csrfToken,
+                    user: data.user
+                }).then((response) => {
+                    this.users.splice(_.findIndex(this.users, (u) => {
+                        return u._id === response.data.user._id;
+                    }), 1);
+                }).catch((error) => {
+                });
+            }
         },
         deleteToken: function (data) {
             axios.post(this.config.routes.admin.token.delete, {

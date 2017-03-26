@@ -1,6 +1,6 @@
 <template>
     <div>
-        <smheader :title="title" :subtitle="subtitle"></smheader>
+        <appheader :title="title" :subtitle="subtitle"></appheader>
         <section class="section content main-section">
             <div class="container">
                 <div class="columns">
@@ -10,16 +10,15 @@
                 </div>
             </div>
         </section>
-        <smfooter></smfooter>
+        <appfooter></appfooter>
     </div>
 </template>
 <script>
-    export default {
-        data() {
-            return {}
-        }
+export default {
+    data: function () {
+        return {}
     }
-
+}
 </script>
 <style>
 

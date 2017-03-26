@@ -1,7 +1,7 @@
 <template>
     <div>
-        <smheader :title="title"
-                  :subtitle="subtitle"></smheader>
+        <appheader :title="title"
+                  :subtitle="subtitle"></appheader>
         <section class="section content main-section">
             <div class="container">
                 <messagebox :flash="flash"></messagebox>
@@ -46,13 +46,13 @@
                 </div>
             </div>
         </section>
-        <smfooter></smfooter>
+        <appfooter></appfooter>
     </div>
 </template>
 
 <script>
 export default {
-    data() {
+    data: function () {
         return {}
     }
 }

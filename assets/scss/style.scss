@@ -9,8 +9,8 @@ serif; // Add a serif family
 // You can change these values:
 $family-primary: $family-serif; // Use the new serif family
 @import './node_modules/bulma/bulma';
-@import 'partials/smheader';
-@import 'partials/smfooter';
+@import 'partials/appheader';
+@import 'partials/appfooter';
 @import 'partials/messagebox';
 @import 'partials/userbar';
 body {
