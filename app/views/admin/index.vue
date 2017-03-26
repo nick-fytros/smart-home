@@ -4,8 +4,10 @@
                    :subtitle="subtitle"></appheader>
         <section class="section content main-section">
             <div class="container">
+                <notification :message="message"
+                              :timeout="3000"
+                              class="notification-absolute"></notification>
                 <userbar :user="user"></userbar>
-                <messagebox :flash="flash"></messagebox>
                 <div class="tabs is-centered">
                     <ul>
                         <li v-on:click="activateTab('users')"
@@ -61,6 +63,9 @@ export default {
             tabs: {
                 users: true,
                 onetimetokens: false
+            },
+            message: {
+                text: ''
             }
         }
     },
@@ -77,7 +82,9 @@ export default {
                 _csrf: this.csrfToken
             }).then((response) => {
                 this.tokens.push(response.data.token);
+                this._setMessage('success', 'Token generated successfully');
             }).catch((error) => {
+                this._setMessage('error', 'Token generation failed');
             });
             this.editMode = false;
         },
@@ -88,7 +95,9 @@ export default {
                 update: { role: data.roleSelected }
             }).then((response) => {
                 user.role = response.data.user.role;
+                this._setMessage('success', 'User data updated successfully');
             }).catch((error) => {
+                this._setMessage('error', 'User data update failed');
             });
         },
         deleteUser: function (data) {
@@ -100,7 +109,9 @@ export default {
                     this.users.splice(_.findIndex(this.users, (u) => {
                         return u._id === response.data.user._id;
                     }), 1);
+                    this._setMessage('success', 'User deleted successfully');
                 }).catch((error) => {
+                    this._setMessage('error', 'User delete failed');
                 });
             }
         },
@@ -112,8 +123,18 @@ export default {
                 this.tokens.splice(_.findIndex(this.tokens, (t) => {
                     return t._id === response.data.token._id;
                 }), 1);
+                this._setMessage('success', 'Token deleted successfully');
             }).catch((error) => {
+                this._setMessage('error', 'Token delete failed');
             });
+        },
+        _setMessage: function (status, text) {
+            this.message.error = false;
+            this.message.success = false;
+            this.message.waring = false;
+            this.message.info = false;
+            this.message[status] = true;
+            this.message.text = text;
         }
     }
 }

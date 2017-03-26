@@ -28,7 +28,7 @@ class VueScope {
                         { script: '/js/moment.js' }
                     ]
                 },
-                components: ['appheader', 'appfooter', 'messagebox', 'userbar']
+                components: ['appheader', 'appfooter', 'messagebox', 'userbar', 'notification']
             }
         };
     }

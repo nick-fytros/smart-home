@@ -13,11 +13,15 @@ $family-primary: $family-serif; // Use the new serif family
 @import 'partials/appfooter';
 @import 'partials/messagebox';
 @import 'partials/userbar';
+@import 'partials/notification';
 body {
     min-height: 100vh;
     background: #ffe761;
     color: #000;
     font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+    .is-invisible{
+        visibility: hidden;
+    }
     a.left-gap{
         margin-left: 10px;
     }
