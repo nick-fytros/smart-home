@@ -44,7 +44,17 @@ class Server {
         this._configfureDatabase();
         this._attachRoutes();
         this._attachErrorHandler();
-        this._startServer();
+    }
+
+    /**
+     * @memberOf Server
+     */
+    startServer() {
+        this.app.set('port', process.env.PORT || 3000);
+
+        const server = this.app.listen(this.app.get('port'), () => {
+            console.info('Express server listening on port ' + server.address().port);
+        });
     }
 
     /**
@@ -132,7 +142,7 @@ class Server {
      */
     _attachRoutes() {
         Routers.main.bootstrap(this.app).attach('/');
-        Routers.bleLamps.bootstrap(this.app).attach('/blelamps');
+        Routers.bleBulbs.bootstrap(this.app).attach('/blebulbs');
         Routers.auth.bootstrap(this.app).attach('/auth');
         Routers.admin.bootstrap(this.app).attach('/admin');
     }
@@ -168,17 +178,6 @@ class Server {
             delete err.stack;
             vueScope.addData(err);
             res.render('error', vueScope);
-        });
-    }
-
-    /**
-     * @memberOf Server
-     */
-    _startServer() {
-        this.app.set('port', process.env.PORT || 3000);
-
-        const server = this.app.listen(this.app.get('port'), () => {
-            console.info('Express server listening on port ' + server.address().port);
         });
     }
 }

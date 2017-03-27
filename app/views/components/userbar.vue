@@ -2,7 +2,7 @@
     <nav class="level">
         <div class="level-left">
             <notification :message="message"
-                          :timeout="3000"></notification>
+                          :timeout="timeout"></notification>
         </div>
         <div class="level-right"
              v-if="user">

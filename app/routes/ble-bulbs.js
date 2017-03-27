@@ -1,50 +1,41 @@
 const express = require('express');
 const VueScope = require('../models/vue-scope');
-const flashService = require('../services/flash-service');
-// const PeripheralService = require('../services/peripheralService');
-
-/*initialize PeripheralService
-TODO initialize elsewhere*/
-// const peripheralService = new PeripheralService();
-// try {
-//     peripheralService.startScanAndConnectToBleLamps();
-// } catch (err) {
-//     console.warn(err.message);
-// }
+const PeripheralService = require('../services/peripheral-service');
 
 /**
  * @export
- * @class BleLamps
+ * @class BleBulbs
  */
-class BleLamps {
+class BleBulbs {
 
     /**
      * @static
      * @param {Express.Application} app 
      * @returns 
      * 
-     * @memberOf BleLamps
+     * @memberOf BleBulbs
      */
     static bootstrap(app) {
-        return new BleLamps(app);
+        return new BleBulbs(app);
     }
 
     /**
-     * Creates an instance of BleLamps.
+     * Creates an instance of BleBulbs.
      * @param {Express.Application} app 
      * 
-     * @memberOf BleLamps
+     * @memberOf BleBulbs
      */
     constructor(app) {
         this.app = app;
         this.router = express.Router();
         this._addRootRoute();
+        this._addScanRoute();
     }
 
     /**
      * @param {string} [pathToAttach='/'] 
      * 
-     * @memberOf BleLamps
+     * @memberOf BleBulbs
      */
     attach(pathToAttach = '/') {
         if (pathToAttach) {
@@ -55,18 +46,35 @@ class BleLamps {
     }
 
     /**
-     * @memberOf BleLamps
+     * @memberOf BleBulbs
      */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
             const vueScope = new VueScope();
-            vueScope.addData({ user: req.session.user });
-            res.render('blelamps/index', vueScope.getScope());
+            vueScope.addData({
+                user: req.session.user,
+                csrfToken: req.csrfToken()
+            });
+            res.render('blebulbs/index', vueScope.getScope());
         });
     }
 
     /**
-     * @memberOf BleLamps
+     * @memberOf BleBulbs
+     */
+    _addScanRoute() {
+        this.router.post('/scan', (req, res) => {
+            try {
+                const peripheralService = new PeripheralService();
+                res.status(200).send('ok');
+            } catch (error) {
+                res.status(200).send({ error: error.message });
+            }
+        });
+    }
+
+    /**
+     * @memberOf BleBulbs
      */
     _addLampColorRoute() {
         this.router.get('/color/:color', (req, res) => {
@@ -76,4 +84,4 @@ class BleLamps {
     }
 }
 
-module.exports = BleLamps;
+module.exports = BleBulbs;

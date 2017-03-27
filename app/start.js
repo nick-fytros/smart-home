@@ -1,3 +1,3 @@
 const Server = require('./server');
 
-Server.bootstrap();
+Server.bootstrap().startServer();

@@ -1,4 +1,4 @@
-const noble = require('noble');
+let noble;
 /**
  * @export
  * @class PeripheralService
@@ -11,19 +11,23 @@ class PeripheralService {
      * @memberOf PeripheralService
      */
     constructor() {
+        try {
+            noble = require('noble');
+        } catch (error) {
+            throw error;
+        }
         this.connectedPeripherals = [];
         noble.stopScanning();
         noble.on('stateChange', (state) => {
             // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
             if (state === 'poweredOn') {
-                console.log('Noble started scanning');
                 noble.startScanning();
             } else {
                 noble.stopScanning();
             }
         });
         noble.on('discover', (peripheral) => {
-            /* find and connect to all the Ble lamps */
+            /* find and connect to all the Ble bulbs */
             if (typeof peripheral.advertisement.localName !== 'undefined' &&
                 peripheral.advertisement.localName.includes('LEDBLE-')) {
                 noble.stopScanning();
@@ -44,7 +48,7 @@ class PeripheralService {
     /**
      * @memberOf PeripheralService
      */
-    startScanAndConnectToBleLamps() {
+    startScanAndConnectToBleBulbs() {
         noble.stopScanning();
         /* reset the connected peripherals array */
         this.connectedPeripherals = [];
