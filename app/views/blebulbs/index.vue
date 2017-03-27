@@ -15,7 +15,7 @@
                                     <!--<p class="title">Vertical...</p>-->
                                     <div class="block">
                                         <a v-on:click="scanForMagicBlueBulbs"
-                                           class="button is-primary">Scan and connect to Magic Blue BLE light bulbs</a>
+                                           class="button is-primary">Scan and connect</a>
                                     </div>
                                 </article>
                                 <article class="tile is-child notification">

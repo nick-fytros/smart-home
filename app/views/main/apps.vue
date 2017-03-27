@@ -4,7 +4,9 @@
                   :subtitle="subtitle"></appheader>
         <section class="section content main-section">
             <div class="container">
-                <userbar :user="user"></userbar>
+                <userbar :message="message"
+                         :timeout="3000"
+                         :user="user"></userbar>
                 <messagebox :flash="flash"></messagebox>
                 <div class="columns is-multiline">
                     <div v-for="app in config.applications"
@@ -45,7 +47,11 @@
 <script>
 export default {
     data: function () {
-        return {}
+        return {
+            message: {
+                text: ''
+            }
+        }
     }
 }
 
