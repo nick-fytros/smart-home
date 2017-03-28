@@ -14,7 +14,7 @@
                         <div class="box">
                             <article class="media">
                                 <div class="media-left">
-                                    <figure class="image is-64x64">
+                                    <figure class="image is-96x96">
                                         <img v-bind:src="app.imageUrl"
                                              v-bind:alt="app.name">
                                     </figure>
