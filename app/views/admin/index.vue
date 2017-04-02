@@ -1,16 +1,14 @@
 <template>
     <div>
-        <smheader :title="title"
-                  :subtitle="subtitle"></smheader>
-        <section class="section content">
+        <appheader :title="title"
+                   :subtitle="subtitle"></appheader>
+        <section class="section content main-section">
             <div class="container">
-                <userbar :user="user"></userbar>
-                <div class="columns">
-                    <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
-                    </div>
-                </div>
-                <div class="tabs is-right">
+                <!-- message and timeout needed for notification component -->
+                <userbar :message="message"
+                         :timeout="3000"
+                         :user="user"></userbar>
+                <div class="tabs is-centered">
                     <ul>
                         <li v-on:click="activateTab('users')"
                             v-bind:class="{ 'is-active': tabs['users'] }">
@@ -19,95 +17,124 @@
                                 <span>Users</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="/apps">
-                                <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
-                                <span>Back to apps</span>
+                        <li v-on:click="activateTab('onetimetokens')"
+                            v-bind:class="{ 'is-active': tabs['onetimetokens'] }">
+                            <a>
+                                <span class="icon is-small"><i class="fa fa-user"></i></span>
+                                <span>Tokens</span>
                             </a>
                         </li>
                     </ul>
                 </div>
-                <!-- users tabs TODO CREATE COMPONENT OF EACH ROW IN ORDER TO STORE EACH USERS STAGE SEPERATELY-->
-                <div v-bind:class="{ 'is-hidden': !tabs['users'] }"
-                     v-for="user in users"
-                     class="box">
-                    <div class="level">
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p>{{user.email}}</p>
-                            </div>
+                <div v-bind:class="{ 'is-hidden': !tabs['users'] }">
+                    <div v-for="user in users"
+                         :key="user._id"
+                         class="box">
+                        <userrow :user="user"
+                                 :config="config"
+                                 v-on:updateuser="updateUser"
+                                 v-on:deleteuser="deleteUser"></userrow>
+                    </div>
+                </div>
+                <div v-bind:class="{ 'is-hidden': !tabs['onetimetokens'] }">
+                    <div class="box">
+                        <div class="block">
+                            <a v-on:click="generateToken"
+                               class="button is-primary">Generate token</a>
                         </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p>{{formatDate(user.createdOn)}}</p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div>
-                                <p>{{formatDate(user.lastLogin)}}</p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <div class="field">
-                                <p class="control">
-                                    <span class="select"><select :disabled="!editMode"><option v-for="role in config.availableRoles" :selected="role === user.role" :value="role">{{role}}</option></select></span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="level-item has-text-centered">
-                            <a v-on:click="editMode = true"
-                               :class="{'is-hidden' : editMode}"><span class="icon"><i class="fa fa-pencil"></i></span></a>
-                            <a v-on:click="saveNewData(user)"
-                               :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-check"></i></span></a>
-                            <a v-on:click="deleteUser(user)"
-                               :class="{'is-hidden' : !editMode}"><span class="icon"><i class="fa fa-trash"></i></span></a>
-                        </div>
+                    </div>
+                    <div v-for="token in tokens"
+                         :key="token._id"
+                         class="box">
+                        <tokenrow :token="token"
+                                  v-on:deletetoken="deleteToken"></tokenrow>
                     </div>
                 </div>
             </div>
         </section>
-        <smfooter></smfooter>
+        <appfooter></appfooter>
     </div>
 </template>
 <script>
-
-let moment = require('moment');
 
 export default {
     data: function () {
         return {
             tabs: {
-                users: true
+                users: true,
+                onetimetokens: false
             },
-            editMode: false,
-
-        }
-    },
-    computed: {
-        sortKey: {
-            get: function () {
-                return this.sorting.split(' ')[0]; // return the key part
+            message: {
+                text: ''
             }
         }
     },
     methods: {
         activateTab: function (tabName) {
             // hide all tabs and enable the one clicked
-            Object.keys(this.tabs).forEach((key, value) => { return this.tabs[key] = false; });
+            Object.keys(this.tabs).forEach((key, value) => {
+                return this.tabs[key] = false;
+            });
             this.tabs[tabName] = true;
         },
-        formatDate: function (date) {
-            return moment(date).format('D MMM YYYY, H:mm:ss');
-        },
-        saveNewData: function (user) {
-            // if something has changed then post on server to save data
-            if (this.roleSelected !== user.role) {
-                // do a post to update user
-            }
+        generateToken: function () {
+            axios.post(this.config.routes.admin.token.generate, {
+                _csrf: this.csrfToken
+            }).then((response) => {
+                this.tokens.push(response.data.token);
+                this._setMessage('success', 'Token generated successfully');
+            }).catch((error) => {
+                this._setMessage('error', 'Token generation failed');
+            });
             this.editMode = false;
         },
-        deleteUser: function (user) {
-
+        updateUser: function (data) {
+            axios.post(this.config.routes.admin.user.update, {
+                _csrf: this.csrfToken,
+                user: data.user,
+                update: { role: data.roleSelected }
+            }).then((response) => {
+                user.role = response.data.user.role;
+                this._setMessage('success', 'User data updated successfully');
+            }).catch((error) => {
+                this._setMessage('error', 'User data update failed');
+            });
+        },
+        deleteUser: function (data) {
+            if (confirm(`Are you sure you want to delete! ${data.user.email}`) === true) {
+                axios.post(this.config.routes.admin.user.delete, {
+                    _csrf: this.csrfToken,
+                    user: data.user
+                }).then((response) => {
+                    this.users.splice(_.findIndex(this.users, (u) => {
+                        return u._id === response.data.user._id;
+                    }), 1);
+                    this._setMessage('success', 'User deleted successfully');
+                }).catch((error) => {
+                    this._setMessage('error', 'User delete failed');
+                });
+            }
+        },
+        deleteToken: function (data) {
+            axios.post(this.config.routes.admin.token.delete, {
+                _csrf: this.csrfToken,
+                token: data.token
+            }).then((response) => {
+                this.tokens.splice(_.findIndex(this.tokens, (t) => {
+                    return t._id === response.data.token._id;
+                }), 1);
+                this._setMessage('success', 'Token deleted successfully');
+            }).catch((error) => {
+                this._setMessage('error', 'Token delete failed');
+            });
+        },
+        _setMessage: function (status, text) {
+            this.message.error = false;
+            this.message.success = false;
+            this.message.waring = false;
+            this.message.info = false;
+            this.message[status] = true;
+            this.message.text = text;
         }
     }
 }

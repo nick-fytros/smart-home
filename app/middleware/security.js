@@ -1,4 +1,4 @@
-const VueScope = require('../models/vueScope');
+const VueScope = require('../models/vue-scope');
 
 /**
  * @export
@@ -19,7 +19,23 @@ class Security {
         if (req.session.user || req.path === '/auth/login' || req.path === '/auth/signup' || req.path === '/') {
             next();
         } else {
-            res.redirect('/');
+            if (req.xhr) {
+                res.status(401).send('Not authorized');
+            } else {
+                res.redirect('/');
+            }
+        }
+    }
+
+    static checkIfUserIsAdmin(req, res, next) {
+        if (req.session && req.session.user && req.session.user.role === 'admin') {
+            next();
+        } else {
+            if (req.xhr) {
+                res.status(401).send('Not authorized');
+            } else {
+                res.redirect('/');
+            }
         }
     }
 }

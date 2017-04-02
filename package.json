@@ -5,11 +5,21 @@
   "main": "./app/start.js",
   "scripts": {
     "start": "pm2 start app/start.js -i 0",
-    "test": "mocha --recursive test",
-    "test:coverage": "nyc npm test",
-    "test:unit": "mocha --recursive test/middleware test/models test/routes",
-    "test:integration": "mocha --recursive test/integration"
+    "test": "ava"
   },
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ],
+    "verbose": true,
+    "concurrency": 5,
+    "failFast": true,
+    "tap": false,
+    "powerAssert": false
+  },
+  "pre-push": [
+    "test"
+  ],
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.13.3",
@@ -22,29 +32,29 @@
     "dotenv": "^4.0.0",
     "express": "^4.13.3",
     "express-vue": "^3.9.0",
+    "helmet": "^3.5.0",
     "lodash": "^4.17.4",
-    "moment": "^2.18.0",
     "mongoose": "^4.8.4",
     "morgan": "^1.6.1",
     "noble": "^1.7.0",
+    "rand-token": "^0.3.0",
     "require-dir": "^0.3.1",
     "serve-favicon": "^2.3.0",
     "validator": "^7.0.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "ava": "^0.18.2",
     "debug": "^2.2.0",
     "eslint": "^3.17.1",
     "gulp": "^3.9.1",
+    "gulp-ava": "^0.16.0",
     "gulp-clean-css": "^3.0.3",
     "gulp-livereload": "^3.8.0",
-    "gulp-mocha": "^3.0.1",
     "gulp-nodemon": "^2.0.2",
     "gulp-plumber": "^1.0.0",
     "gulp-sass": "^3.0.0",
-    "mocha": "^3.0.2",
-    "nyc": "^10.0.0",
+    "pre-push": "^0.1.1",
     "should": "^11.2.0",
-    "supertest": "^2.0.0"
+    "supertest": "^2.0.1"
   }
 }

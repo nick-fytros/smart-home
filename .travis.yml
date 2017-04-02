@@ -5,7 +5,7 @@ notifications:
   email: false
   webhooks: 
     urls: 
-      - http://efyges.ddns.net/travisci
+      - http://kati.katiallo.nn/travisci
     on_success: always
     on_failure: never
     on_start: never
@@ -18,7 +18,6 @@ branches:
 
 # Versions to test
 node_js:
-  - "5"
   - "6"
   - "7"
 

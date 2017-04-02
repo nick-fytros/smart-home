@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
-const logger = require('morgan');
+const morgan = require('morgan');
 const path = require('path');
 const favicon = require('serve-favicon');
 const mongoose = require('mongoose');
@@ -11,12 +11,13 @@ const cookieSession = require('cookie-session');
 const expressVue = require('express-vue');
 const requireDir = require('require-dir');
 const csrf = require('csurf');
+const helmet = require('helmet');
 
-const AppError = require('./models/appError');
-const VueScope = require('./models/vueScope');
-const Routers = requireDir('./routes');
-const Middleware = requireDir('./middleware');
-const Schemas = requireDir('./schemas');
+const AppError = require('./models/app-error');
+const VueScope = require('./models/vue-scope');
+const Routers = requireDir('./routes', { camelcase: true });
+const Middleware = requireDir('./middleware', { camelcase: true });
+const Schemas = requireDir('./schemas', { camelcase: true });
 
 /**
  * @export
@@ -43,7 +44,17 @@ class Server {
         this._configfureDatabase();
         this._attachRoutes();
         this._attachErrorHandler();
-        this._startServer();
+    }
+
+    /**
+     * @memberOf Server
+     */
+    startServer() {
+        this.app.set('port', process.env.PORT || 3000);
+
+        const server = this.app.listen(this.app.get('port'), () => {
+            console.info('Express server listening on port ' + server.address().port);
+        });
     }
 
     /**
@@ -54,6 +65,8 @@ class Server {
         dotenv.config();
         this.app.locals.env = process.env.NODE_ENV || 'development';
         this.app.locals.isEnvDevelopment = this.app.locals.ENV === 'development';
+        // express security middleware
+        this.app.use(helmet());
         // view engine setup
         this.app.engine('vue', expressVue);
         this.app.set('view engine', 'vue');
@@ -63,7 +76,15 @@ class Server {
             defaultLayout: 'layout'
         });
         this.app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
-        this.app.use(logger('dev'));
+        /* PROD access log */
+        if (this.app.locals.env === 'production') {
+            // create a write stream (in append mode)
+            const accessLogStream = fs.createWriteStream(path.join(__dirname, '../logs/access.log'), { flags: 'a' });
+            // setup the logger
+            this.app.use(morgan('combined', { stream: accessLogStream }));
+        }else {
+            this.app.use(morgan('dev'));
+        }
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({
             extended: true
@@ -92,6 +113,28 @@ class Server {
         mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`);
         // create db Schemas
         Schemas.user.bootstrap();
+        Schemas.token.bootstrap();
+        // create the admin user if he doesn't exist
+        const MongooseUser = mongoose.model('User');
+        if (process.env.APP_ADMIN_EMAIL && process.env.APP_ADMIN_PASS) {
+            MongooseUser.findOne({
+                email: process.env.APP_ADMIN_EMAIL
+            }).then((user) => {
+                if (!user || user == null) {
+                    const newUser = new MongooseUser({
+                        email: process.env.APP_ADMIN_EMAIL,
+                        password: process.env.APP_ADMIN_PASS,
+                        role: 'admin'
+                    });
+                    newUser.save().then((user) => {
+                    }).catch((error) => {
+                        throw error;
+                    });
+                }
+            }).catch((error) => {
+                throw error;
+            });
+        }
     }
 
     /**
@@ -99,7 +142,7 @@ class Server {
      */
     _attachRoutes() {
         Routers.main.bootstrap(this.app).attach('/');
-        Routers.blelamps.bootstrap(this.app).attach('/blelamps');
+        Routers.bleBulbs.bootstrap(this.app).attach('/blebulbs');
         Routers.auth.bootstrap(this.app).attach('/auth');
         Routers.admin.bootstrap(this.app).attach('/admin');
     }
@@ -135,17 +178,6 @@ class Server {
             delete err.stack;
             vueScope.addData(err);
             res.render('error', vueScope);
-        });
-    }
-
-    /**
-     * @memberOf Server
-     */
-    _startServer() {
-        this.app.set('port', process.env.PORT || 3000);
-
-        const server = this.app.listen(this.app.get('port'), () => {
-            console.info('Express server listening on port ' + server.address().port);
         });
     }
 }

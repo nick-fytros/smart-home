@@ -1,12 +1,12 @@
 <template>
     <div>
-        <smheader :title="title"
-                  :subtitle="subtitle"></smheader>
-        <section class="section content">
+        <appheader :title="title"
+                  :subtitle="subtitle"></appheader>
+        <section class="section content main-section">
             <div class="container">
+                <messagebox :flash="flash"></messagebox>
                 <div class="columns">
                     <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
                         <form ref="form"
                               action="/auth/signup"
                               method="post">
@@ -15,11 +15,22 @@
                                        name="_csrf"
                                        :value="csrfToken">
                                 <input class="input"
+                                       type="text"
+                                       placeholder="One time code"
+                                       name="onetimecode"
+                                       required
+                                       pattern="[A-Za-z0-9]{8}">
+                                <span class="icon is-small"><i class="fa fa-terminal"></i></span>
+                            </p>
+                            <p class="control has-icon">
+                                <input class="input"
                                        :class="{ 'is-danger': form.email.hasError }"
                                        type="email"
                                        placeholder="Email"
                                        name="email"
-                                       v-model="email">
+                                       v-model="email"
+                                       required
+                                       autocomplete="email">
                                 <span class="icon is-small"><i class="fa fa-envelope"></i></span>
                             </p>
                             <p :class="{ 'is-hidden': !form.email.hasError }"
@@ -30,6 +41,7 @@
                                        type="password"
                                        placeholder="Password"
                                        name="password"
+                                       required
                                        v-model="password">
                                 <span class="icon is-small"><i class="fa fa-lock"></i></span>
                             </p>
@@ -41,6 +53,7 @@
                                        type="password"
                                        placeholder="Repeat password"
                                        name="repeatpassword"
+                                       required
                                        v-model="repeatpassword">
                                 <span class="icon is-small"><i class="fa fa-lock"></i></span>
                             </p>
@@ -57,7 +70,7 @@
                                 </p>
                                 <p class="control">
                                     <a href="/"
-                                       class="button is-link">Log in</a>
+                                       class="button is-link">Sign in</a>
                                 </p>
                             </div>
                         </form>
@@ -65,7 +78,7 @@
                 </div>
             </div>
         </section>
-        <smfooter></smfooter>
+        <appfooter></appfooter>
     </div>
 </template>
 

@@ -1,11 +1,10 @@
-var gulp = require('gulp');
-var nodemon = require('gulp-nodemon');
-var plumber = require('gulp-plumber');
-var livereload = require('gulp-livereload');
-var sass = require('gulp-sass');
-var mocha = require('gulp-mocha');
-var cleanCSS = require('gulp-clean-css');
-var chai = require('chai');
+const gulp = require('gulp');
+const nodemon = require('gulp-nodemon');
+const plumber = require('gulp-plumber');
+const livereload = require('gulp-livereload');
+const sass = require('gulp-sass');
+const ava = require('gulp-ava');
+const cleanCSS = require('gulp-clean-css');
 
 gulp.task('sass', () => {
     return gulp.src('./assets/scss/*.scss')
@@ -20,7 +19,7 @@ gulp.task('sass', () => {
 
 gulp.task('watch', () => {
     livereload.listen();
-    gulp.watch(['./assets/scss/*.scss'], ['sass']);
+    gulp.watch(['./assets/scss/**/*.scss'], ['sass']);
 });
 
 gulp.task('develop', ['sass'], () => {
@@ -42,26 +41,16 @@ gulp.task('develop', ['sass'], () => {
     });
 });
 
-gulp.task('mocha', function () {
-    return gulp.src(['test/*.js'], {
+gulp.task('test', function () {
+    return gulp.src(['test/**/*.js'], {
             read: false
         })
-        .pipe(mocha({
-            reporter: 'spec',
-            globals: {
-                should: require('should')
-            }
-        }));
+        .pipe(ava({verbose: true}));
 });
-
-gulp.task('test', [
-    'sass',
-    'mocha'
-]);
 
 gulp.task('default', [
     'sass',
-    'mocha',
+    'test',
     'develop',
     'watch'
 ]);

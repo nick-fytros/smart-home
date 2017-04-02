@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const VueScope = require('../models/vueScope');
+const SecurityMiddleware = require('../middleware/security');
+const VueScope = require('../models/vue-scope');
 
 const User = require('../models/user');
-const FlashService = require('../services/flashService');
+const FlashService = require('../services/flash-service');
 
 /**
  * @export
@@ -31,8 +32,14 @@ class Admin {
     constructor(app) {
         this.app = app;
         this.router = express.Router();
+        this.router.use(SecurityMiddleware.checkIfUserIsAdmin);
         this.MongooseUser = mongoose.model('User');
+        this.MongooseToken = mongoose.model('Token');
         this._addRootRoute();
+        this._addUserUpdateRoute();
+        this._addUserDeleteRoute();
+        this._addTokenGenerateRoute();
+        this._addTokenDeleteRoute();
     }
 
     /**
@@ -49,87 +56,102 @@ class Admin {
      */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
-            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
             const vueScope = new VueScope();
             vueScope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
-                vueScope.addData({ users: users });
-                res.render('admin/index', vueScope.getScope());
-            }).catch((err) => {
-                throw err;
-            });
-        });
-    }
-
-    /**
-     * @memberOf Admin
-     */
-    _addLoginRoute() {
-        this.router.post('/login', (req, res) => {
-            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
-            this.MongooseUser.findOne({
-                email: req.body.email
-            }, (err, user) => {
-                if (err) {
-                    throw err;
-                }
-                if (user) {
-                    user.comparePassword(req.body.password, (err, isMatch) => {
-                        if (err) {
-                            throw err;
-                        }
-                        if (isMatch) {
-                            req.session.user = new User(user);
-                            delete req.session.user.password;
-                            res.redirect('/apps');
-                        }
+                this.MongooseToken.find().then((tokens) => {
+                    vueScope.addData({
+                        users: users,
+                        tokens: tokens,
+                        csrfToken: req.csrfToken()
                     });
-                } else {
-                    FlashService.setFlashData(req, {
-                        error: {
-                            status: 401,
-                            message: 'Sorry, the credentials you provided are wrong'
-                        }
-                    });
-                    res.redirect('/');
-                }
-            });
-        });
-    }
-
-    /**
-     * @memberOf Admin
-     */
-    _addSignupRoute() {
-        this.router.get('/signup', (req, res) => {
-            if (!(req.session.user && req.session.user.role === 'admin')) res.redirect('/');
-            /* if user is logged in redirect to apps page */
-            if (req.session.user) {
-                res.redirect('/apps');
-            } else {
-                const vueScope = new VueScope();
-                vueScope.addData({ title: 'Smart Home - Sign up' });
-                res.render('Admin/signup', vueScope.getScope());
-            }
-        });
-
-        this.router.post('/signup', (req, res) => {
-            const newUser = new this.MongooseUser({
-                email: req.body.email,
-                password: req.body.password
-            });
-            newUser.save().then((user) => {
-                req.session.user = new User(user);
-                delete req.session.user.password;
-                res.redirect('/apps');
-            }).catch((err) => {
-                FlashService.setFlashData(req, {
-                    error: {
-                        status: 401,
-                        message: err.message
-                    }
+                    vueScope.addComponent('userrow');
+                    vueScope.addComponent('tokenrow');
+                    res.render('admin/index', vueScope.getScope());
+                }).catch((err) => {
+                    res.status(500).send({ error: 'Tokens get failed' });
                 });
-                res.redirect('/');
+            }).catch((err) => {
+                res.status(500).send({ error: 'Users get failed' });
+            });
+        });
+    }
+
+    /**
+     * @memberOf Admin
+     */
+    _addUserUpdateRoute() {
+        this.router.post('/user/update', (req, res) => {
+            // only role can be updated for now
+            if (!req.body.update.role) res.status(400).send({ error: 'Wrong input data' });
+            this.MongooseUser.findOneAndUpdate(
+                { email: req.body.user.email },
+                { $set: { role: req.body.update.role } },
+                { new: true }
+            ).then((user) => {
+                if (user) {
+                    res.status(200).send({ user: user });
+                } else {
+                    res.status(404).send({ error: 'User not found' });
+                }
+            }).catch((error) => {
+                res.status(500).send({ error: 'User update failed' });
+            });
+        });
+    }
+
+    /**
+     * @memberOf Admin
+     */
+    _addUserDeleteRoute() {
+        this.router.post('/user/delete', (req, res) => {
+            this.MongooseUser.findOneAndRemove(
+                { email: req.body.user.email }
+            ).then((user) => {
+                if (user) {
+                    res.status(200).send({ user: user });
+                } else {
+                    res.status(404).send({ error: 'User not found' });
+                }
+            }).catch((error) => {
+                res.status(500).send({ error: 'User delete failed' });
+            });
+        });
+    }
+
+    /**
+     * @memberOf Admin
+     */
+    _addTokenGenerateRoute() {
+        this.router.post('/token/generate', (req, res) => {
+            const newToken = new this.MongooseToken();
+            newToken.save().then((token) => {
+                if (token) {
+                    res.status(200).send({ token: token });
+                } else {
+                    res.status(404).send({ error: 'Token not found' });
+                }
+            }).catch((error) => {
+                res.status(500).send({ error: 'Token generation failed' });
+            });
+        });
+    }
+
+    /**
+     * @memberOf Admin
+     */
+    _addTokenDeleteRoute() {
+        this.router.post('/token/delete', (req, res) => {
+            this.MongooseToken.findOneAndRemove(
+                { val: req.body.token.val }
+            ).then((token) => {
+                if (token) {
+                    res.status(200).send({ token: token });
+                } else {
+                    res.status(404).send({ error: 'Token not found' });
+                }
+            }).catch((error) => {
+                res.status(500).send({ error: 'Token delete failed' });
             });
         });
     }

@@ -1,33 +1,40 @@
 // Override variables here
-// You can add new ones or update existing ones:
-$blue: #72d0eb; // Update blue
-$pink: #ffb3b3; // Add pink
 $family-serif: 'Georgia',
 serif; // Add a serif family
-// Override generated variables here
-// For example, by default, the $danger color is $red and the font is sans-serif
-// You can change these values:
 $family-primary: $family-serif; // Use the new serif family
+$primary: #314c81;
 @import './node_modules/bulma/bulma';
-@import 'partials/smheader';
-@import 'partials/smfooter';
+@import 'partials/appheader';
+@import 'partials/appfooter';
 @import 'partials/messagebox';
+@import 'partials/userbar';
+@import 'partials/notification';
 body {
     min-height: 100vh;
-    background: #ffe761;
+    background: #fcea83;
     color: #000;
     font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
-    .content{
-        .no-margin{
+    .is-invisible {
+        visibility: hidden;
+    }
+    a.left-gap {
+        margin-left: 10px;
+    }
+    .main-section {
+        min-height: 600px;
+    }
+    .content {
+        .no-margin {
             margin: 0;
         }
-        .control-or{
+        .control-or {
             padding: 8px 0px;
         }
-        .submenu {
-            position: absolute;
-            right: 0px;
-            z-index: 100;
+    }
+    div.is-small {
+        padding: 0.9rem 1rem 0.9rem 1rem;
+        p {
+            font-size: 0.8rem;
         }
     }
 }

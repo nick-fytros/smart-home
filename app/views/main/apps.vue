@@ -1,22 +1,20 @@
 <template>
     <div>
-        <smheader :title="title"
-                  :subtitle="subtitle"></smheader>
-        <section class="section content">
+        <appheader :title="title"
+                  :subtitle="subtitle"></appheader>
+        <section class="section content main-section">
             <div class="container">
-                <userbar :user="user"></userbar>
-                <div class="columns">
-                    <div class="column is-one-third is-offset-one-third">
-                        <messagebox :flash="flash"></messagebox>
-                    </div>
-                </div>
+                <userbar :message="message"
+                         :timeout="3000"
+                         :user="user"></userbar>
+                <messagebox :flash="flash"></messagebox>
                 <div class="columns is-multiline">
-                    <div v-for="app in applications"
+                    <div v-for="app in config.applications"
                          class="column is-half">
                         <div class="box">
                             <article class="media">
                                 <div class="media-left">
-                                    <figure class="image is-64x64">
+                                    <figure class="image is-96x96">
                                         <img v-bind:src="app.imageUrl"
                                              v-bind:alt="app.name">
                                     </figure>
@@ -43,13 +41,17 @@
                 </div>
             </div>
         </section>
-        <smfooter></smfooter>
+        <appfooter></appfooter>
     </div>
 </template>
 <script>
 export default {
     data: function () {
-        return {}
+        return {
+            message: {
+                text: ''
+            }
+        }
     }
 }
 
