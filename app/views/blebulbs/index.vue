@@ -48,7 +48,9 @@ export default {
         return {
             message: {
                 text: ''
-            }
+            },
+            peripherals: [],
+            intervalId: 0
         }
     },
     methods: {
@@ -59,10 +61,22 @@ export default {
                 if (response.data.error) {
                     this._setMessage('warning', response.data.error);
                 } else {
-                    console.warn(response);
+                    if (this.intervalId !== 0) {
+                        clearInterval(this.intervalId);
+                    }
+                    this.intervalId = setInterval(this.fetchBleBulbsDiscovered, 3000);
                 }
             }).catch((error) => {
-                this._setMessage('error', 'Failed to scan for devices');
+                this._setMessage('error', 'Failed to scan for BLE bulbs');
+            });
+        },
+        fetchBleBulbsDiscovered: function () {
+            axios.get(this.config.routes.bleBulbs.discoveredBulbs, {
+                params: { _csrf: this.csrfToken }
+            }).then((response) => {
+                console.log(response.data);
+            }).catch((error) => {
+                this._setMessage('error', 'Failed to fetch BLE bulb data');
             });
         },
         _setMessage: function (status, text) {
@@ -73,6 +87,10 @@ export default {
             this.message[status] = true;
             this.message.text = text;
         }
+    },
+    beforeDestroy: function () {
+        console.log('destroy');
+        window.clearInterval(this.intervalId);
     }
 }
 </script>

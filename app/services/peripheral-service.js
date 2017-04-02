@@ -1,4 +1,3 @@
-let noble;
 /**
  * @export
  * @class PeripheralService
@@ -10,30 +9,35 @@ class PeripheralService {
      * 
      * @memberOf PeripheralService
      */
-    constructor() {
-        try {
-            noble = require('noble');
-        } catch (error) {
-            throw error;
-        }
+    constructor(req) {
         this.connectedPeripherals = [];
-        noble.stopScanning();
-        noble.on('stateChange', (state) => {
-            // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
-            if (state === 'poweredOn') {
-                noble.startScanning();
-            } else {
-                noble.stopScanning();
+        this.bleBulbPeripheralsDiscovered = [];
+        this.noble;
+        let noble = req.app.locals.noble;
+        if (noble === null || noble === undefined || noble === {}) {
+            try {
+                req.app.locals.noble = require('noble');
+                noble = req.app.locals.noble;
+                this.noble = noble;
+                this.noble.on('stateChange', (state) => {
+                    // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
+                    if (state === 'poweredOn') {
+                        this.noble.startScanning();
+                    } else {
+                        this.noble.stopScanning();
+                    }
+                });
+                this.noble.on('discover', (peripheral) => {
+                    /* find and connect to all the Ble bulbs */
+                    if (typeof peripheral.advertisement.localName !== 'undefined' &&
+                        peripheral.advertisement.localName.includes('LEDBLE-')) {
+                        this.bleBulbPeripheralsDiscovered[peripheral.id] = peripheral;
+                    }
+                });
+            } catch (error) {
+                throw error;
             }
-        });
-        noble.on('discover', (peripheral) => {
-            /* find and connect to all the Ble bulbs */
-            if (typeof peripheral.advertisement.localName !== 'undefined' &&
-                peripheral.advertisement.localName.includes('LEDBLE-')) {
-                noble.stopScanning();
-                this._connectToPeripheralAndInit(peripheral);
-            }
-        });
+        }
     }
 
     /**
@@ -46,18 +50,21 @@ class PeripheralService {
     }
 
     /**
+     * @returns peripheral info array
+     * 
      * @memberOf PeripheralService
      */
-    startScanAndConnectToBleBulbs() {
-        noble.stopScanning();
-        /* reset the connected peripherals array */
-        this.connectedPeripherals = [];
-        if (noble.state === 'poweredOn') {
-            noble.startScanning();
-            console.log('Noble started scanning');
-        } else {
-            throw new Error(`Noble state is ${noble.state} and can't start scanning.`);
+    getDiscoveredBleBulbPeripherals() {
+        let discoveredPeripheralData = [];
+        for (const peripheral of this.bleBulbPeripheralsDiscovered) {
+            discoveredPeripheralData.push({
+                id: peripheral.id,
+                name: peripheral.advertisement.localName,
+                connectable: peripheral.connectable
+            });
         }
+        console.log(this.discoveredPeripheralData);
+        return this.discoveredPeripheralData;
     }
 
     /**
@@ -94,7 +101,7 @@ class PeripheralService {
     _connectToPeripheralAndInit(peripheral) {
         peripheral.connect((error) => {
             if (error) {
-                console.warn(error);
+                console.error(error);
                 return null;
             }
             console.log('connected to lamp ' + peripheral.advertisement.localName);

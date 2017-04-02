@@ -30,6 +30,7 @@ class BleBulbs {
         this.router = express.Router();
         this._addRootRoute();
         this._addScanRoute();
+        this._addDiscoveredBulbsRoute();
     }
 
     /**
@@ -64,12 +65,31 @@ class BleBulbs {
      */
     _addScanRoute() {
         this.router.post('/scan', (req, res) => {
-            try {
-                const peripheralService = new PeripheralService();
+            if (req.app.locals.peripheralService) {
                 res.status(200).send('ok');
-            } catch (error) {
-                res.status(200).send({ error: error.message });
+            } else {
+                try {
+                    req.app.locals.peripheralService = new PeripheralService(req);
+                    res.status(200).send('ok');
+                } catch (error) {
+                    res.status(200).send({ error: error.message });
+                }
             }
+        });
+    }
+
+    /**
+     * @memberOf BleBulbs
+     */
+    _addDiscoveredBulbsRoute() {
+        this.router.get('/discovered', (req, res) => {
+            if (req.app.locals.peripheralService) {
+                const discoveredBulbsData = req.app.locals.peripheralService.getDiscoveredBleBulbPeripherals();
+                res.status(200).send({ bulbs: discoveredBulbsData });
+            } else {
+                res.status(200).send({ error: 'err' });
+            }
+
         });
     }
 

@@ -24,7 +24,8 @@
 			}
 		},
 		"bleBulbs": {
-			"scanAndConnect": "/blebulbs/scan"
+			"scanAndConnect": "/blebulbs/scan",
+			"discoveredBulbs": "/blebulbs/discovered"
 		}
 	}
 }

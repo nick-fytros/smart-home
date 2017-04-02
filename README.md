@@ -25,3 +25,7 @@ VUE_DEV=true
 APP_ADMIN_EMAIL=your@email.com
 APP_ADMIN_PASS=s1mpl3p@ss
 ```
+
+## Before running
+
+- Follow the installation instrucions on [noble](https://github.com/sandeepmistry/noble) for your operating system
