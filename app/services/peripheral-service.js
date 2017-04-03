@@ -13,31 +13,36 @@ class PeripheralService {
         this.connectedPeripherals = [];
         this.bleBulbPeripheralsDiscovered = [];
         this.noble;
-        let noble = req.app.locals.noble;
+        let noble = req.app.locals.noble;//.removeAllListeners
         if (noble === null || noble === undefined || noble === {}) {
             try {
                 req.app.locals.noble = require('noble');
                 noble = req.app.locals.noble;
                 this.noble = noble;
-                this.noble.on('stateChange', (state) => {
-                    // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
-                    if (state === 'poweredOn') {
-                        this.noble.startScanning();
-                    } else {
-                        this.noble.stopScanning();
-                    }
-                });
-                this.noble.on('discover', (peripheral) => {
-                    /* find and connect to all the Ble bulbs */
-                    if (typeof peripheral.advertisement.localName !== 'undefined' &&
-                        peripheral.advertisement.localName.includes('LEDBLE-')) {
-                        this.bleBulbPeripheralsDiscovered[peripheral.id] = peripheral;
-                    }
-                });
             } catch (error) {
                 throw error;
             }
         }
+        this.noble.removeAllListeners('stageChange');
+        this.noble.removeAllListeners('discover');
+        this.noble.on('stateChange', (state) => {
+            // possible state values: "unknown", "resetting", "unsupported", "unauthorized", "poweredOff", "poweredOn"
+            if (state === 'poweredOn') {
+                this.noble.startScanning();
+            } else {
+                this.noble.stopScanning();
+            }
+        });
+        this.noble.on('discover', (peripheral) => {
+            /* find and connect to all the Ble bulbs */
+            console.log(peripheral);
+            if (typeof peripheral.advertisement.localName !== 'undefined' &&
+                peripheral.advertisement.localName.includes('LEDBLE-')) {
+                console.log(this.bleBulbPeripheralsDiscovered);
+                this.bleBulbPeripheralsDiscovered[peripheral.id] = peripheral;
+                console.log(this.bleBulbPeripheralsDiscovered);
+            }
+        });
     }
 
     /**
@@ -56,15 +61,14 @@ class PeripheralService {
      */
     getDiscoveredBleBulbPeripherals() {
         let discoveredPeripheralData = [];
-        for (const peripheral of this.bleBulbPeripheralsDiscovered) {
+        for (let peripheral of this.bleBulbPeripheralsDiscovered) {
             discoveredPeripheralData.push({
                 id: peripheral.id,
                 name: peripheral.advertisement.localName,
                 connectable: peripheral.connectable
             });
         }
-        console.log(this.discoveredPeripheralData);
-        return this.discoveredPeripheralData;
+        return discoveredPeripheralData;
     }
 
     /**
