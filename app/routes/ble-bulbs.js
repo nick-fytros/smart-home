@@ -1,3 +1,4 @@
+// @ts-check
 const express = require('express');
 const VueScope = require('../models/vue-scope');
 const PeripheralService = require('../services/peripheral-service');
