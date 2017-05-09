@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const SecurityMiddleware = require('../middleware/security');
-const VueScope = require('../models/vue-scope');
 
 const User = require('../models/user');
 const FlashService = require('../services/flash-service');
@@ -56,18 +55,17 @@ class Admin {
      */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
-            const vueScope = new VueScope();
-            vueScope.addData({ user: req.session.user });
+            req.scope.addData({ user: req.session.user });
             this.MongooseUser.find().then((users) => {
                 this.MongooseToken.find().then((tokens) => {
-                    vueScope.addData({
+                    req.scope.addData({
                         users: users,
                         tokens: tokens,
                         csrfToken: req.csrfToken()
                     });
-                    vueScope.addComponent('userrow');
-                    vueScope.addComponent('tokenrow');
-                    res.render('admin/index', vueScope.getScope());
+                    req.scope.addComponent('userrow');
+                    req.scope.addComponent('tokenrow');
+                    res.render('admin/index', req.scope.getScope());
                 }).catch((err) => {
                     res.status(500).send({ error: 'Tokens get failed' });
                 });

@@ -1,6 +1,4 @@
-// @ts-check
 const express = require('express');
-const VueScope = require('../models/vue-scope');
 const PeripheralService = require('../services/peripheral-service');
 
 /**
@@ -52,12 +50,11 @@ class BleBulbs {
      */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
-            const vueScope = new VueScope();
-            vueScope.addData({
+            req.scope.addData({
                 user: req.session.user,
                 csrfToken: req.csrfToken()
             });
-            res.render('blebulbs/index', vueScope.getScope());
+            res.render('blebulbs/index', req.scope.getScope());
         });
     }
 

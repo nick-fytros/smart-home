@@ -14,7 +14,6 @@ const csrf = require('csurf');
 const helmet = require('helmet');
 
 const AppError = require('./models/app-error');
-const VueScope = require('./models/vue-scope');
 const Routers = requireDir('./routes', { camelcase: true });
 const Middleware = requireDir('./middleware', { camelcase: true });
 const Schemas = requireDir('./schemas', { camelcase: true });
@@ -65,8 +64,6 @@ class Server {
         dotenv.config();
         this.app.locals.env = process.env.NODE_ENV || 'development';
         this.app.locals.isEnvDevelopment = this.app.locals.ENV === 'development';
-        // express security middleware
-        this.app.use(helmet());
         // view engine setup
         this.app.engine('vue', expressVue);
         this.app.set('view engine', 'vue');
@@ -75,6 +72,8 @@ class Server {
             componentsDir: path.join(__dirname, '/views/components'),
             defaultLayout: 'layout'
         });
+        // express security middleware
+        this.app.use(helmet());
         this.app.use(favicon(path.join(__dirname, '../public/images/favicon.ico')));
         /* PROD access log */
         if (this.app.locals.env === 'production') {
@@ -99,6 +98,7 @@ class Server {
         }));
         this.app.use(csrf({ cookie: true }));
         // add custom middleware
+        this.app.use(Middleware.scope.setScope);
         this.app.use(Middleware.security.checkIfUserIsLoggedIn);
         this.app.use(Middleware.flash.invalidateFlash);
     }
@@ -158,14 +158,13 @@ class Server {
             const error = new AppError('The page you were looking for was not found', 404);
             next(error);
         });
-        const vueScope = new VueScope();
         if (this.app.get('env') === 'development') {
             this.app.use((err, req, res, next) => {
-                vueScope.addData({
+                req.scope.addData({
                     error: err
                 });
                 res.status(err.status || 500);
-                res.render('error', vueScope);
+                res.render('error', req.scope);
             });
         }
 
@@ -176,8 +175,8 @@ class Server {
         this.app.use((err, req, res, next) => {
             res.status(err.status || 500);
             delete err.stack;
-            vueScope.addData(err);
-            res.render('error', vueScope);
+            req.scope.addData(err);
+            res.render('error', req.scope);
         });
     }
 }
