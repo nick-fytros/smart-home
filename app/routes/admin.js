@@ -14,9 +14,6 @@ class Admin {
     /**
      * @static
      * @param {Express.Application} app 
-     * @returns 
-     * 
-     * @memberOf Admin
      */
     static bootstrap(app) {
         return new Admin(app);
@@ -25,8 +22,6 @@ class Admin {
     /**
      * Creates an instance of Admin.
      * @param {Express.Application} app 
-     * 
-     * @memberOf Admin
      */
     constructor(app) {
         this.app = app;
@@ -43,16 +38,11 @@ class Admin {
 
     /**
      * @param {string} [pathToAttach='/'] 
-     * 
-     * @memberOf Admin
      */
     attach(pathToAttach = '/') {
         this.app.use(pathToAttach, this.router);
     }
 
-    /**
-     * @memberOf Admin
-     */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
             req.scope.addData({ user: req.session.user });
@@ -63,8 +53,7 @@ class Admin {
                         tokens: tokens,
                         csrfToken: req.csrfToken()
                     });
-                    req.scope.addComponent('userrow');
-                    req.scope.addComponent('tokenrow');
+                    req.scope.addComponents(['userrow', 'tokenrow']);
                     res.render('admin/index', req.scope.getScope());
                 }).catch((err) => {
                     res.status(500).send({ error: 'Tokens get failed' });
@@ -75,9 +64,6 @@ class Admin {
         });
     }
 
-    /**
-     * @memberOf Admin
-     */
     _addUserUpdateRoute() {
         this.router.post('/user/update', (req, res) => {
             // only role can be updated for now
@@ -98,9 +84,6 @@ class Admin {
         });
     }
 
-    /**
-     * @memberOf Admin
-     */
     _addUserDeleteRoute() {
         this.router.post('/user/delete', (req, res) => {
             this.MongooseUser.findOneAndRemove(
@@ -117,9 +100,6 @@ class Admin {
         });
     }
 
-    /**
-     * @memberOf Admin
-     */
     _addTokenGenerateRoute() {
         this.router.post('/token/generate', (req, res) => {
             const newToken = new this.MongooseToken();
@@ -135,9 +115,6 @@ class Admin {
         });
     }
 
-    /**
-     * @memberOf Admin
-     */
     _addTokenDeleteRoute() {
         this.router.post('/token/delete', (req, res) => {
             this.MongooseToken.findOneAndRemove(

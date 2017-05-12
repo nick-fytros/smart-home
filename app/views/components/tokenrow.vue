@@ -7,7 +7,7 @@
 		</div>
 		<div class="level-item has-text-centered">
 			<div title="Created on">
-				<p>{{formatDate(token.createdOn)}}</p>
+				<p>{{token.createdOn}}</p>
 			</div>
 		</div>
 		<div class="level-item has-text-centered">
@@ -36,9 +36,6 @@ export default {
 	},
 	props: ['token'],
 	methods: {
-		formatDate: function (date) {
-			return moment(date).format('D MMM YYYY, H:mm:ss');
-		},
 		saveNewData: function (token) {
 			this.editMode = false;
 		},
@@ -50,6 +47,10 @@ export default {
 			const created = new Date(token.createdOn);
 			return today.getTime() - created.getTime() > token.ttl ? true : false;
 		}
+	},
+	mounted: function() {
+		/* format dates on the client because moment lib is not available during render */
+		this.token.createdOn = moment(this.token.createdOn).format('D MMM YYYY, H:mm:ss');
 	}
 }
 

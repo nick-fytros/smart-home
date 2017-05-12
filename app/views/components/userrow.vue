@@ -7,12 +7,12 @@
 		</div>
 		<div class="level-item has-text-centered">
 			<div title="Created on">
-				<p>{{formatDate(user.createdOn)}}</p>
+				<p>{{user.createdOn}}</p>
 			</div>
 		</div>
 		<div class="level-item has-text-centered">
 			<div title="Last login">
-				<p>{{formatDate(user.lastLogin)}}</p>
+				<p>{{user.lastLogin}}</p>
 			</div>
 		</div>
 		<div class="level-item has-text-centered">
@@ -54,9 +54,6 @@ export default {
 		}
 	},
 	methods: {
-		formatDate: function (date) {
-			return moment(date).format('D MMM YYYY, H:mm:ss');
-		},
 		saveNewData: function (user) {
 			if (this.roleSelected && this.roleSelected !== user.role) {
 				this.$emit('updateuser', { user: user, roleSelected: this.roleSelected });
@@ -67,6 +64,11 @@ export default {
 			this.$emit('deleteuser', { user: user });
 			this.editMode = false;
 		}
+	},
+	mounted: function() {
+		/* format dates on the client because moment lib is not available during render */
+		this.user.createdOn = moment(this.user.createdOn).format('D MMM YYYY, H:mm:ss');
+		this.user.lastLogin = moment(this.user.lastLogin).format('D MMM YYYY, H:mm:ss');
 	}
 }
 

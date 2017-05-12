@@ -8,8 +8,6 @@ class VueScope {
 
     /**
      * Creates an instance of VueScope.
-     * 
-     * @memberOf VueScope
      */
     constructor() {
         this.scope = {
@@ -24,8 +22,7 @@ class VueScope {
                     title: 'Smart Home',
                     meta: [
                         { name: 'application-name', content: 'Smart Home by Nikos' },
-                        { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' },
-                        { script: '/js/moment.js' }
+                        { name: 'description', content: 'Smart Home by Nikos Fytros', id: 'desc' }
                     ]
                 },
                 components: ['appheader', 'appfooter', 'messagebox', 'userbar', 'notification']
@@ -51,8 +48,14 @@ class VueScope {
         });
     }
 
-    addComponent(componentName) {
-        this.scope.vue.components.push(componentName);
+    addScriptUrl(scriptUrl) {
+        this.scope.vue.head.meta.push({
+            script: scriptUrl
+        });
+    }
+
+    addComponents(componentsNameArray) {
+        this.scope.vue.components = this.scope.vue.components.concat(componentsNameArray);
     }
 
     addData(data) {

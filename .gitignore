@@ -8,5 +8,6 @@ logs
 .sass-cache
 .env
 .vscode
+.vs
 
 npm-debug.log
