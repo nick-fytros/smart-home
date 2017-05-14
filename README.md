@@ -26,6 +26,40 @@ APP_ADMIN_EMAIL=your@email.com
 APP_ADMIN_PASS=s1mpl3p@ss
 ```
 
+## Ble peripheral data array as saved in app
+```json
+[ f81d78604bcd: Peripheral {
+    _noble:
+     Noble {
+       state: 'poweredOn',
+       address: '5c:f3:70:80:70:e4',
+       _bindings: [Object],
+       _peripherals: [Object],
+       _services: [Object],
+	   _characteristics: [Object],
+       _descriptors: [Object],
+       _discoveredPeripheralUUids: [Object],
+       _events: [Object],
+       _eventsCount: 3,
+       _allowDuplicates: undefined },
+    id: 'f81d78604bcd',
+    uuid: 'f81d78604bcd',
+    address: 'f8:1d:78:60:4b:cd',
+    addressType: 'public',
+    connectable: true,
+    advertisement:
+     { localName: 'LEDBLE-78604BCD',
+       txPowerLevel: undefined,
+       manufacturerData: undefined,
+       serviceData: [],
+       serviceUuids: [Object],
+       solicitationServiceUuids: [],
+       serviceSolicitationUuids: [] },
+    rssi: -65,
+    services: null,
+    state: 'disconnected' } 
+]
+```
 ## Before running
 
 - Follow the installation instrucions on [noble](https://github.com/sandeepmistry/noble) for your operating system
