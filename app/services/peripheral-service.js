@@ -35,12 +35,9 @@ class PeripheralService {
         });
         this.noble.on('discover', (peripheral) => {
             /* find and connect to all the Ble bulbs */
-            console.log(peripheral);
-            if (typeof peripheral.advertisement.localName !== 'undefined' &&
+            if (typeof(peripheral.advertisement.localName) !== 'undefined' &&
                 peripheral.advertisement.localName.includes('LEDBLE-')) {
-                console.log(this.bleBulbPeripheralsDiscovered);
                 this.bleBulbPeripheralsDiscovered[peripheral.id] = peripheral;
-                console.log(this.bleBulbPeripheralsDiscovered);
             }
         });
     }
@@ -61,11 +58,12 @@ class PeripheralService {
      */
     getDiscoveredBleBulbPeripherals() {
         let discoveredPeripheralData = [];
-        for (let peripheral of this.bleBulbPeripheralsDiscovered) {
+        for (let peripheralId in this.bleBulbPeripheralsDiscovered) {
             discoveredPeripheralData.push({
-                id: peripheral.id,
-                name: peripheral.advertisement.localName,
-                connectable: peripheral.connectable
+                id: this.bleBulbPeripheralsDiscovered[peripheralId].id,
+                name: this.bleBulbPeripheralsDiscovered[peripheralId].advertisement.localName,
+                connectable: this.bleBulbPeripheralsDiscovered[peripheralId].connectable,
+                state: this.bleBulbPeripheralsDiscovered[peripheralId].state
             });
         }
         return discoveredPeripheralData;

@@ -19,8 +19,14 @@
                                     </div>
                                 </article>
                                 <article class="tile is-child notification">
-                                    <p class="title">...tiles</p>
-                                    <p class="subtitle">Bottom tile</p>
+                                    <p class="title">Magic Blue BLE Bulbs</p>
+                                    <p class="subtitle">
+                                        <ul id="example-1">
+                                            <li v-for="bulb in bleBulbsFound">
+                                                {{ bulb.name }}
+                                            </li>
+                                        </ul>
+                                    </p>
                                 </article>
                             </div>
                         </div>
@@ -49,7 +55,7 @@ export default {
             message: {
                 text: ''
             },
-            peripherals: [],
+            bleBulbsFound: [],
             intervalId: 0
         }
     },
@@ -64,7 +70,7 @@ export default {
                     if (this.intervalId !== 0) {
                         clearInterval(this.intervalId);
                     }
-                    this.intervalId = setInterval(this.fetchBleBulbsDiscovered, 3000);
+                    this.intervalId = setInterval(this.fetchBleBulbsDiscovered, 10000);
                 }
             }).catch((error) => {
                 this._setMessage('error', 'Failed to scan for BLE bulbs');
@@ -74,9 +80,10 @@ export default {
             axios.get(this.config.routes.bleBulbs.discoveredBulbs, {
                 params: { _csrf: this.csrfToken }
             }).then((response) => {
-                console.log(response.data);
+                this.bleBulbsFound = response.data.bulbs;
             }).catch((error) => {
                 this._setMessage('error', 'Failed to fetch BLE bulb data');
+                clearInterval(this.intervalId);
             });
         },
         _setMessage: function (status, text) {
@@ -89,8 +96,7 @@ export default {
         }
     },
     beforeDestroy: function () {
-        console.log('destroy');
-        window.clearInterval(this.intervalId);
+        clearInterval(this.intervalId);
     }
 }
 </script>
