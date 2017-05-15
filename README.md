@@ -27,7 +27,7 @@ APP_ADMIN_PASS=s1mpl3p@ss
 ```
 
 ## Ble peripheral data array as saved in app
-```json
+```
 [ f81d78604bcd: Peripheral {
     _noble:
      Noble {

@@ -6,8 +6,6 @@ class PeripheralService {
 
     /**
      * Creates an instance of PeripheralService.
-     * 
-     * @memberOf PeripheralService
      */
     constructor(req) {
         this.connectedPeripherals = [];
@@ -43,9 +41,14 @@ class PeripheralService {
     }
 
     /**
-     * @returns 
-     * 
-     * @memberOf PeripheralService
+     * @returns all the discovered ble bulb peripherals
+     */
+    getDiscoveredPeripherals() {
+        return this.bleBulbPeripheralsDiscovered;
+    }
+
+    /**
+     * @returns all the connected ble bulb peripherals
      */
     getConnectedPeripherals() {
         return this.connectedPeripherals;
@@ -53,8 +56,6 @@ class PeripheralService {
 
     /**
      * @returns peripheral info array
-     * 
-     * @memberOf PeripheralService
      */
     getDiscoveredBleBulbPeripherals() {
         let discoveredPeripheralData = [];
@@ -71,9 +72,7 @@ class PeripheralService {
 
     /**
      * @param {Noble.Peripheral} peripheral 
-     * @param {String} color 
-     * 
-     * @memberOf PeripheralService
+     * @param {String} color
      */
     setLampColor(peripheral, color) {
         let colorCommand = '56' + color + '00f0aa';
@@ -96,52 +95,46 @@ class PeripheralService {
     }
 
     /**
-     * @param {Noble.Peripheral} peripheral 
-     * 
-     * @memberOf PeripheralService
+     * @param {Noble.Peripheral} peripheral
      */
-    _connectToPeripheralAndInit(peripheral) {
-        peripheral.connect((error) => {
+    connectToPeripheralAndInit(peripheral) {
+        return new Promise((resolve, reject) => {
+           peripheral.connect((error) => {
             if (error) {
-                console.error(error);
-                return null;
+                reject(error);
             }
             console.log('connected to lamp ' + peripheral.advertisement.localName);
             /* discover the only writable service */
             peripheral.discoverServices(['ffe5'], (error, services) => {
                 if (error) {
-                    console.warn(error);
-                    return null;
+                    reject(error);
                 }
                 const colorService = services[0];
                 console.log('discovered service ' + colorService);
                 /* discover the only writable characteristic */
                 colorService.discoverCharacteristics(['ffe9'], (error, characteristics) => {
                     if (error) {
-                        console.warn(error);
-                        return null;
+                        reject(error);
                     }
                     const colorCharecteristic = characteristics[0];
                     console.log('discovered characteristic ' + colorCharecteristic);
                     /* save the connected peripheral with its writable characteristic */
-                    this.connectedPeripherals.push({
-                        'peripheral': peripheral,
-                        'colorCharecteristic': colorCharecteristic,
-                        'currentColor': ''
-                    });
+                    this.connectedPeripherals[peripheral.id] = {
+                        id: peripheral.id,
+                        name: peripheral.advertisement.localName,
+                        currentColor: ''
+                    };
                     /* on peripheral disconnect, reconnect */
                     peripheral.once('disconnect', () => {
                         console.log('peripheral disconnected...');
-                        const peripheralIndex = this.connectedPeripherals.findIndex((obj) => {
-                            return obj.id === peripheral.id;
-                        });
-                        if (peripheralIndex >= 0) {
-                            this.connectedPeripherals.splice(peripheralIndex, 1);
-                        }
+                        delete this.connectedPeripherals[peripheral.id];
                         this.connectToPeripheralAndInit(peripheral);
                     });
+
+                    resolve(this.connectedPeripherals);
                 });
             });
+        }); 
         });
     }
 }

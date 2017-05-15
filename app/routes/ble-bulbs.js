@@ -11,8 +11,6 @@ class BleBulbs {
      * @static
      * @param {Express.Application} app 
      * @returns 
-     * 
-     * @memberOf BleBulbs
      */
     static bootstrap(app) {
         return new BleBulbs(app);
@@ -21,8 +19,6 @@ class BleBulbs {
     /**
      * Creates an instance of BleBulbs.
      * @param {Express.Application} app 
-     * 
-     * @memberOf BleBulbs
      */
     constructor(app) {
         this.app = app;
@@ -30,12 +26,11 @@ class BleBulbs {
         this._addRootRoute();
         this._addScanRoute();
         this._addDiscoveredBulbsRoute();
+        this._addConnectToBulbRoute();
     }
 
     /**
      * @param {string} [pathToAttach='/'] 
-     * 
-     * @memberOf BleBulbs
      */
     attach(pathToAttach = '/') {
         if (pathToAttach) {
@@ -45,9 +40,6 @@ class BleBulbs {
         }
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
             req.scope.addData({
@@ -58,9 +50,6 @@ class BleBulbs {
         });
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
     _addScanRoute() {
         this.router.post('/scan', (req, res) => {
             if (req.app.locals.peripheralService) {
@@ -70,30 +59,42 @@ class BleBulbs {
                     req.app.locals.peripheralService = new PeripheralService(req);
                     res.status(200).send('ok');
                 } catch (error) {
-                    res.status(200).send({ error: error.message });
+                    res.status(200).json({ error: error.message });
                 }
             }
         });
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
     _addDiscoveredBulbsRoute() {
         this.router.get('/discovered', (req, res) => {
             if (req.app.locals.peripheralService) {
                 const discoveredBulbsData = req.app.locals.peripheralService.getDiscoveredBleBulbPeripherals();
-                res.status(200).send({ bulbs: discoveredBulbsData });
+                res.status(200).json({ bulbs: discoveredBulbsData });
             } else {
-                res.status(200).send({ error: 'err' });
+                res.status(200).json({ error: 'Please run scan again' });
             }
 
         });
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
+    _addConnectToBulbRoute() {
+        this.router.post('/connect', (req, res) => {
+            const bublId = req.body.bulbId;
+            if (req.app.locals.peripheralService) {
+                const discoveredBulbPeripherals = req.app.locals.peripheralService.getDiscoveredPeripherals();
+                req.app.locals.peripheralService.connectToPeripheralAndInit(discoveredBulbPeripherals[bublId]).then((connectedBulbs) => {
+                    console.log(connectedBulbs);
+                    res.status(200).json({ bulbs: connectedBulbs });
+                }).catch((error) => {
+                    res.status(200).json({ error: error.message });
+                });
+            } else {
+                res.status(200).json({ error: 'Please run scan again' });
+            }
+
+        });
+    }
+
     _addLampColorRoute() {
         this.router.get('/color/:color', (req, res) => {
             //peripheralService.setLampColor(peripheralService.getConnectedPeripherals()[0], req.params.color);

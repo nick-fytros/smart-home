@@ -12,21 +12,20 @@
                         <div class="tile">
                             <div class="tile is-parent is-vertical">
                                 <article class="tile is-child notification">
-                                    <!--<p class="title">Vertical...</p>-->
                                     <div class="block">
                                         <a v-on:click="scanForMagicBlueBulbs"
-                                           class="button is-primary">Scan and connect</a>
+                                           class="button is-primary" :class="{'is-loading': loading.scan}">Scan for bulbs</a>
                                     </div>
                                 </article>
                                 <article class="tile is-child notification">
-                                    <p class="title">Magic Blue BLE Bulbs</p>
-                                    <p class="subtitle">
-                                        <ul id="example-1">
-                                            <li v-for="bulb in bleBulbsFound">
-                                                {{ bulb.name }}
-                                            </li>
-                                        </ul>
-                                    </p>
+                                    <p class="subtitle">Discovered Magic Blue BLE Bulbs</p>
+                                    <div v-for="bulb in bleBulbsFound" class="content">
+                                        <a v-on:click="connectToBulb(bulb.id)" class="button is-primary is-outlined" :class="{'is-loading': loading.connect}" title="Press to connect">
+                                            <span class="icon">
+                                                <i class="fa fa-bluetooth-b"></i>
+                                            </span>
+                                            <span> {{ bulb.name }} </a>
+                                    </div>
                                 </article>
                             </div>
                         </div>
@@ -34,8 +33,7 @@
                     <div class="tile is-parent">
                         <article class="tile is-child notification">
                             <div class="content">
-                                <p class="title">Tall tile</p>
-                                <p class="subtitle">With even more content</p>
+                                <p class="subtitle">Connected Magic Blue BLE Bulbs</p>
                                 <div class="content">
                                     <!-- Content -->
                                 </div>
@@ -56,12 +54,17 @@ export default {
                 text: ''
             },
             bleBulbsFound: [],
-            intervalId: 0
+            intervalId: 0,
+            loading: {
+                scan: false,
+                connect: false
+            }
         }
     },
     methods: {
         scanForMagicBlueBulbs: function () {
-            axios.post(this.config.routes.bleBulbs.scanAndConnect, {
+            this.loading.scan = true;
+            axios.post(this.config.routes.bleBulbs.scan, {
                 _csrf: this.csrfToken
             }).then((response) => {
                 if (response.data.error) {
@@ -70,7 +73,8 @@ export default {
                     if (this.intervalId !== 0) {
                         clearInterval(this.intervalId);
                     }
-                    this.intervalId = setInterval(this.fetchBleBulbsDiscovered, 10000);
+                    //this.intervalId = setInterval(this.fetchBleBulbsDiscovered, 10000);
+                    setTimeout(this.fetchBleBulbsDiscovered, 1000);
                 }
             }).catch((error) => {
                 this._setMessage('error', 'Failed to scan for BLE bulbs');
@@ -80,10 +84,29 @@ export default {
             axios.get(this.config.routes.bleBulbs.discoveredBulbs, {
                 params: { _csrf: this.csrfToken }
             }).then((response) => {
+                this.loading.scan = false;
                 this.bleBulbsFound = response.data.bulbs;
+                console.log(this.bleBulbsFound);
             }).catch((error) => {
                 this._setMessage('error', 'Failed to fetch BLE bulb data');
                 clearInterval(this.intervalId);
+            });
+        },
+        connectToBulb: function (bulbId) {
+            this.loading.connect = true;
+            axios.post(this.config.routes.bleBulbs.connect, {
+                _csrf: this.csrfToken,
+                bulbId: bulbId
+            }).then((response) => {
+                if (response.data.error) {
+                    console.log(response.data.error);
+                    this._setMessage('warning', response.data.error);
+                } else {
+                    console.log(response.data);
+                    this.loading.connect = false;
+                }
+            }).catch((error) => {
+                this._setMessage('error', 'Failed to connect to BLE bulb');
             });
         },
         _setMessage: function (status, text) {
@@ -96,7 +119,9 @@ export default {
         }
     },
     beforeDestroy: function () {
-        clearInterval(this.intervalId);
+        if (this.intervalId !== 0) {
+            clearInterval(this.intervalId);
+        }
     }
 }
 </script>
