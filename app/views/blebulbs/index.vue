@@ -38,7 +38,7 @@
                                 <p class="subtitle">Connected Magic Blue BLE Bulbs</p>
                                 <div v-for="bulb in bleBulbsConnected" class="content">
                                     {{ bulb.name }}
-                                    <input type="color" :value="{{ bulb.color }}" v-on:change="changeColor(bulb.id)">
+                                    <input type="color" :value="bulb.color" v-on:input="changeColor">
                                 </div>
                             </div>
                         </article>
@@ -110,8 +110,8 @@ export default {
                 this._setMessage('error', 'Failed to connect to BLE bulb');
             });
         },
-        changeColor: function (bulbId, event) {
-            console.log(event);
+        changeColor: function (bulbId) {
+            console.log(bulbId);
             axios.post(this.config.routes.bleBulbs.changeColor, {
                 _csrf: this.csrfToken,
                 bulbId: bulbId,

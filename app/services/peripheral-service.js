@@ -120,21 +120,21 @@ class PeripheralService {
             if (error) {
                 reject(error);
             }
-            console.log('connected to lamp ' + peripheral.advertisement.localName);
+            // console.log('connected to lamp ' + peripheral.advertisement.localName);
             /* discover the only writable service */
             peripheral.discoverServices(['ffe5'], (error, services) => {
                 if (error) {
                     reject(error);
                 }
                 const colorService = services[0];
-                console.log('discovered service ' + colorService);
+                // console.log('discovered service ' + colorService);
                 /* discover the only writable characteristic */
                 colorService.discoverCharacteristics(['ffe9'], (error, characteristics) => {
                     if (error) {
                         reject(error);
                     }
                     const colorCharecteristic = characteristics[0];
-                    console.log('discovered characteristic ' + colorCharecteristic);
+                    // console.log('discovered characteristic ' + colorCharecteristic);
                     /* save the connected peripheral with its writable characteristic */
                     this.connectedPeripherals[peripheral.id] = {
                         peripheral: peripheral,
