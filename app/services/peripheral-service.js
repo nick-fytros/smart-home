@@ -55,7 +55,7 @@ class PeripheralService {
     }
 
     /**
-     * @returns peripheral info array
+     * @returns discovered peripheral info array
      */
     getDiscoveredBleBulbPeripherals() {
         let discoveredPeripheralData = [];
@@ -68,6 +68,23 @@ class PeripheralService {
             });
         }
         return discoveredPeripheralData;
+    }
+
+    /**
+     * @returns connected peripheral info array
+     */
+    getConnectedBleBulbPeripherals() {
+        let connectedPeripheralData = [];
+        for (let peripheralId in this.connectedPeripherals) {
+            connectedPeripheralData.push({
+                id: this.connectedPeripherals[peripheralId].peripheral.id,
+                name: this.connectedPeripherals[peripheralId].peripheral.advertisement.localName,
+                connectable: this.connectedPeripherals[peripheralId].peripheral.connectable,
+                state: this.connectedPeripherals[peripheralId].peripheral.state,
+                color: this.connectedPeripherals[peripheralId].color
+            });
+        }
+        return connectedPeripheralData;
     }
 
     /**
@@ -120,9 +137,8 @@ class PeripheralService {
                     console.log('discovered characteristic ' + colorCharecteristic);
                     /* save the connected peripheral with its writable characteristic */
                     this.connectedPeripherals[peripheral.id] = {
-                        id: peripheral.id,
-                        name: peripheral.advertisement.localName,
-                        currentColor: ''
+                        peripheral: peripheral,
+                        color: ''
                     };
                     /* on peripheral disconnect, reconnect */
                     peripheral.once('disconnect', () => {
@@ -131,7 +147,7 @@ class PeripheralService {
                         this.connectToPeripheralAndInit(peripheral);
                     });
 
-                    resolve(this.connectedPeripherals);
+                    resolve(this.getConnectedBleBulbPeripherals());
                 });
             });
         }); 

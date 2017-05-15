@@ -24,7 +24,9 @@
                                             <span class="icon">
                                                 <i class="fa fa-bluetooth-b"></i>
                                             </span>
-                                            <span> {{ bulb.name }} </a>
+                                            <span> {{ bulb.name }} </span>
+                                            <span v-if="bulb.state === 'connected'" class="color-success"> > connected</span>
+                                        </a>
                                     </div>
                                 </article>
                             </div>
@@ -34,8 +36,9 @@
                         <article class="tile is-child notification">
                             <div class="content">
                                 <p class="subtitle">Connected Magic Blue BLE Bulbs</p>
-                                <div class="content">
-                                    <!-- Content -->
+                                <div v-for="bulb in bleBulbsConnected" class="content">
+                                    {{ bulb.name }}
+                                    <input type="color" :value="{{ bulb.color }}" v-on:change="changeColor(bulb.id)">
                                 </div>
                             </div>
                         </article>
@@ -54,6 +57,7 @@ export default {
                 text: ''
             },
             bleBulbsFound: [],
+            bleBulbsConnected: [],
             intervalId: 0,
             loading: {
                 scan: false,
@@ -74,19 +78,16 @@ export default {
                         clearInterval(this.intervalId);
                     }
                     //this.intervalId = setInterval(this.fetchBleBulbsDiscovered, 10000);
-                    setTimeout(this.fetchBleBulbsDiscovered, 1000);
+                    setTimeout(this.fetchBleBulbsDiscovered, 500);
                 }
             }).catch((error) => {
                 this._setMessage('error', 'Failed to scan for BLE bulbs');
             });
         },
         fetchBleBulbsDiscovered: function () {
-            axios.get(this.config.routes.bleBulbs.discoveredBulbs, {
-                params: { _csrf: this.csrfToken }
-            }).then((response) => {
+            axios.get(this.config.routes.bleBulbs.discoveredBulbs).then((response) => {
                 this.loading.scan = false;
                 this.bleBulbsFound = response.data.bulbs;
-                console.log(this.bleBulbsFound);
             }).catch((error) => {
                 this._setMessage('error', 'Failed to fetch BLE bulb data');
                 clearInterval(this.intervalId);
@@ -99,11 +100,27 @@ export default {
                 bulbId: bulbId
             }).then((response) => {
                 if (response.data.error) {
-                    console.log(response.data.error);
+                    this._setMessage('warning', response.data.error);
+                    this.loading.connect = false;
+                } else {
+                    this.bleBulbsConnected = response.data.bulbs;
+                    this.loading.connect = false;
+                }
+            }).catch((error) => {
+                this._setMessage('error', 'Failed to connect to BLE bulb');
+            });
+        },
+        changeColor: function (bulbId, event) {
+            console.log(event);
+            axios.post(this.config.routes.bleBulbs.changeColor, {
+                _csrf: this.csrfToken,
+                bulbId: bulbId,
+                color: ''
+            }).then((response) => {
+                if (response.data.error) {
                     this._setMessage('warning', response.data.error);
                 } else {
-                    console.log(response.data);
-                    this.loading.connect = false;
+                    console.log();
                 }
             }).catch((error) => {
                 this._setMessage('error', 'Failed to connect to BLE bulb');
@@ -118,6 +135,9 @@ export default {
             this.message.text = text;
         }
     },
+    mounted: function(){
+        this.bleBulbsConnected = this.connectedBubls;
+    },
     beforeDestroy: function () {
         if (this.intervalId !== 0) {
             clearInterval(this.intervalId);
@@ -126,5 +146,8 @@ export default {
 }
 </script>
 <style>
-
+.color-success{
+    color: seagreen;
+    padding-left: 4px; 
+}
 </style>

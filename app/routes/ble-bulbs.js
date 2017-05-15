@@ -44,8 +44,17 @@ class BleBulbs {
         this.router.get('/', (req, res) => {
             req.scope.addData({
                 user: req.session.user,
-                csrfToken: req.csrfToken()
+                csrfToken: req.csrfToken(),
+                connectedBubls: []
             });
+            if (req.app.locals.peripheralService) {
+                const connectedBubls = req.app.locals.peripheralService.getConnectedBleBulbPeripherals();
+                if (connectedBubls.length > 0){
+                    req.scope.addData({
+                        connectedBubls: connectedBubls
+                    });
+                }
+            }
             res.render('blebulbs/index', req.scope.getScope());
         });
     }
@@ -53,13 +62,13 @@ class BleBulbs {
     _addScanRoute() {
         this.router.post('/scan', (req, res) => {
             if (req.app.locals.peripheralService) {
-                res.status(200).send('ok');
+                res.send('ok');
             } else {
                 try {
                     req.app.locals.peripheralService = new PeripheralService(req);
-                    res.status(200).send('ok');
+                    res.send('ok');
                 } catch (error) {
-                    res.status(200).json({ error: error.message });
+                    res.json({ error: error.message });
                 }
             }
         });
@@ -69,9 +78,9 @@ class BleBulbs {
         this.router.get('/discovered', (req, res) => {
             if (req.app.locals.peripheralService) {
                 const discoveredBulbsData = req.app.locals.peripheralService.getDiscoveredBleBulbPeripherals();
-                res.status(200).json({ bulbs: discoveredBulbsData });
+                res.json({ bulbs: discoveredBulbsData });
             } else {
-                res.status(200).json({ error: 'Please run scan again' });
+                res.json({ error: 'Please run scan again' });
             }
 
         });
@@ -83,13 +92,12 @@ class BleBulbs {
             if (req.app.locals.peripheralService) {
                 const discoveredBulbPeripherals = req.app.locals.peripheralService.getDiscoveredPeripherals();
                 req.app.locals.peripheralService.connectToPeripheralAndInit(discoveredBulbPeripherals[bublId]).then((connectedBulbs) => {
-                    console.log(connectedBulbs);
-                    res.status(200).json({ bulbs: connectedBulbs });
+                    res.json({ bulbs: connectedBulbs });
                 }).catch((error) => {
-                    res.status(200).json({ error: error.message });
+                    res.json({ error: error.message });
                 });
             } else {
-                res.status(200).json({ error: 'Please run scan again' });
+                res.json({ error: 'Please run scan again' });
             }
 
         });
