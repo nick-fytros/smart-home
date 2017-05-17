@@ -79,9 +79,10 @@ class PeripheralService {
             connectedPeripheralData.push({
                 id: this.connectedPeripherals[peripheralId].peripheral.id,
                 name: this.connectedPeripherals[peripheralId].peripheral.advertisement.localName,
-                connectable: this.connectedPeripherals[peripheralId].peripheral.connectable,
                 state: this.connectedPeripherals[peripheralId].peripheral.state,
-                color: this.connectedPeripherals[peripheralId].color
+                color: this.connectedPeripherals[peripheralId].color,
+                previousColor: this.connectedPeripherals[peripheralId].previousColor,
+                customName: this.connectedPeripherals[peripheralId].customName
             });
         }
         return connectedPeripheralData;
@@ -111,6 +112,8 @@ class PeripheralService {
                         this.connectedPeripherals[peripheral.id] = {
                             peripheral: peripheral,
                             color: peripheral.color || '',
+                            previousColor: peripheral.previousColor || '',
+                            customName: peripheral.customName || '',
                             colorCharacteristic: characteristics[0]
                         };
                         /* on peripheral disconnect, reconnect */
@@ -131,18 +134,27 @@ class PeripheralService {
      * @param {Noble.Peripheral} peripheral 
      * @param {String} color
      */
-    setLampColor(peripheral, color) {
+    setBulbColor(peripheral, color) {
         const colorCommand = '56' + color.replace('#','') + '00f0aa';
         return new Promise((resolve, reject) => {
             peripheral.colorCharacteristic.write(new Buffer(colorCommand, 'hex'), true, (error) => {
                 if (error) {
                     reject(error);
                 }
-                /* save color set to the peripheral */
+                /* save color and previous color set to the peripheral */
+                this.connectedPeripherals[peripheral.peripheral.id].previousColor = this.connectedPeripherals[peripheral.peripheral.id].color;
                 this.connectedPeripherals[peripheral.peripheral.id].color = color;
                 resolve(this.getConnectedBleBulbPeripheralsData());
             });
         });
+    }
+
+    /**
+     * @param {Noble.Peripheral} peripheral 
+     * @param {String} customName
+     */
+    setBulbCustomName(peripheral, customName) {
+        this.connectedPeripherals[peripheral.peripheral.id].customName = customName;
     }
 }
 

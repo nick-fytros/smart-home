@@ -27,7 +27,8 @@
 			"scan": "/blebulbs/scan",
 			"discoveredBulbs": "/blebulbs/discovered",
 			"connect": "/blebulbs/connect",
-			"changeColor": "/blebulbs/color"
+			"changeColor": "/blebulbs/color",
+			"changeCustomName": "/blebulbs/name"
 		}
 	}
 }

@@ -37,7 +37,7 @@
                             <div class="content">
                                 <p class="subtitle">Connected Magic Blue BLE Bulbs</p>
                                 <div v-for="bulb in bleBulbsConnected" class="content">
-                                    <bulb :bulb="bulb" v-on:changecolor="changeColor"></bulb>
+                                    <bulb :bulb="bulb" v-on:changecolor="changeColor" v-on:changecustomname="changeCustomName"></bulb>
                                 </div>
                             </div>
                         </article>
@@ -115,10 +115,25 @@ export default {
                 if (response.data.error) {
                     this._setMessage('warning', response.data.error);
                 } else {
-                    console.log(response.data);
+                    this.bleBulbsConnected = response.data.bulbs;
                 }
             }).catch((error) => {
                 this._setMessage('error', 'Failed to change bulb color');
+            });
+        },
+        changeCustomName: function (bulbObj) {
+            axios.post(this.config.routes.bleBulbs.changeCustomName, {
+                _csrf: this.csrfToken,
+                bulbId: bulbObj.bulbId,
+                customName: bulbObj.customName
+            }).then((response) => {
+                if (response.data.error) {
+                    this._setMessage('warning', response.data.error);
+                } else {
+                    // console.log(response.data);
+                }
+            }).catch((error) => {
+                this._setMessage('error', 'Failed to change bulb name');
             });
         },
         _setMessage: function (status, text) {

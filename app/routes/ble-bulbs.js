@@ -28,6 +28,7 @@ class BleBulbs {
         this._addDiscoveredBulbsRoute();
         this._addConnectToBulbRoute();
         this._addBulbColorRoute();
+        this._addBulbCustomNameRoute();
     }
 
     /**
@@ -109,11 +110,20 @@ class BleBulbs {
         this.router.post('/color', (req, res) => {
             const bulbId = req.body.bulbId;
             const color = req.body.color;
-            req.app.locals.peripheralService.setLampColor(req.app.locals.peripheralService.getConnectedPeripherals()[bulbId], color).then((bulbs) => {
+            req.app.locals.peripheralService.setBulbColor(req.app.locals.peripheralService.getConnectedPeripherals()[bulbId], color).then((bulbs) => {
                 res.json({bulbs: bulbs});
             }).catch((error) => {
                 res.json({error: error.message});
             });
+        });
+    }
+
+    _addBulbCustomNameRoute() {
+        this.router.post('/name', (req, res) => {
+            const bulbId = req.body.bulbId;
+            const customName = req.body.customName;
+            req.app.locals.peripheralService.setBulbCustomName(req.app.locals.peripheralService.getConnectedPeripherals()[bulbId], customName);
+            res.json();
         });
     }
 }
