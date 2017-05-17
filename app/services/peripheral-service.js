@@ -57,7 +57,7 @@ class PeripheralService {
     /**
      * @returns discovered peripheral info array
      */
-    getDiscoveredBleBulbPeripherals() {
+    getDiscoveredBleBulbPeripheralsData() {
         let discoveredPeripheralData = [];
         for (let peripheralId in this.bleBulbPeripheralsDiscovered) {
             discoveredPeripheralData.push({
@@ -73,7 +73,7 @@ class PeripheralService {
     /**
      * @returns connected peripheral info array
      */
-    getConnectedBleBulbPeripherals() {
+    getConnectedBleBulbPeripheralsData() {
         let connectedPeripheralData = [];
         for (let peripheralId in this.connectedPeripherals) {
             connectedPeripheralData.push({
@@ -88,69 +88,60 @@ class PeripheralService {
     }
 
     /**
-     * @param {Noble.Peripheral} peripheral 
-     * @param {String} color
-     */
-    setLampColor(peripheral, color) {
-        let colorCommand = '56' + color + '00f0aa';
-        let peripheralIndex = this.connectedPeripherals.findIndex((obj) => {
-            return obj.id === peripheral.id;
-        });
-        if (peripheralIndex < 0) {
-            throw new Error(`Peripheral ${peripheral.advertisement.localName} is not connected`);
-        }
-        peripheral.colorCharecteristic.write(new Buffer(colorCommand, 'hex'), true, (error) => {
-            if (error) {
-                console.warn(error);
-                throw new Error(error.message);
-            }
-            console.log('set color ' + color);
-            /* save color set to the peripheral it belongs */
-            this.connectedPeripherals[peripheralIndex].currentColor = color;
-            console.log('final connected peripherals array is ' + this.connectedPeripherals.length);
-        });
-    }
-
-    /**
      * @param {Noble.Peripheral} peripheral
      */
     connectToPeripheralAndInit(peripheral) {
         return new Promise((resolve, reject) => {
-           peripheral.connect((error) => {
-            if (error) {
-                reject(error);
-            }
-            // console.log('connected to lamp ' + peripheral.advertisement.localName);
-            /* discover the only writable service */
-            peripheral.discoverServices(['ffe5'], (error, services) => {
+            peripheral.connect((error) => {
                 if (error) {
                     reject(error);
                 }
-                const colorService = services[0];
-                // console.log('discovered service ' + colorService);
-                /* discover the only writable characteristic */
-                colorService.discoverCharacteristics(['ffe9'], (error, characteristics) => {
+                /* discover the only writable service */
+                peripheral.discoverServices(['ffe5'], (error, services) => {
                     if (error) {
                         reject(error);
                     }
-                    const colorCharecteristic = characteristics[0];
-                    // console.log('discovered characteristic ' + colorCharecteristic);
-                    /* save the connected peripheral with its writable characteristic */
-                    this.connectedPeripherals[peripheral.id] = {
-                        peripheral: peripheral,
-                        color: ''
-                    };
-                    /* on peripheral disconnect, reconnect */
-                    peripheral.once('disconnect', () => {
-                        console.log('peripheral disconnected...');
-                        delete this.connectedPeripherals[peripheral.id];
-                        this.connectToPeripheralAndInit(peripheral);
-                    });
+                    const colorService = services[0];
+                    /* discover the only writable characteristic */
+                    colorService.discoverCharacteristics(['ffe9'], (error, characteristics) => {
+                        if (error) {
+                            reject(error);
+                        }
+                        /* save the connected peripheral with its writable characteristic */
+                        this.connectedPeripherals[peripheral.id] = {
+                            peripheral: peripheral,
+                            color: peripheral.color || '',
+                            colorCharacteristic: characteristics[0]
+                        };
+                        /* on peripheral disconnect, reconnect */
+                        peripheral.once('disconnect', () => {
+                            console.log('peripheral disconnected...');
+                            delete this.connectedPeripherals[peripheral.id];
+                            this.connectToPeripheralAndInit(peripheral);
+                        });
 
-                    resolve(this.getConnectedBleBulbPeripherals());
+                        resolve(this.getConnectedBleBulbPeripheralsData());
+                    });
                 });
+            }); 
+        });
+    }
+
+    /**
+     * @param {Noble.Peripheral} peripheral 
+     * @param {String} color
+     */
+    setLampColor(peripheral, color) {
+        const colorCommand = '56' + color.replace('#','') + '00f0aa';
+        return new Promise((resolve, reject) => {
+            peripheral.colorCharacteristic.write(new Buffer(colorCommand, 'hex'), true, (error) => {
+                if (error) {
+                    reject(error);
+                }
+                /* save color set to the peripheral */
+                this.connectedPeripherals[peripheral.peripheral.id].color = color;
+                resolve(this.getConnectedBleBulbPeripheralsData());
             });
-        }); 
         });
     }
 }

@@ -37,8 +37,7 @@
                             <div class="content">
                                 <p class="subtitle">Connected Magic Blue BLE Bulbs</p>
                                 <div v-for="bulb in bleBulbsConnected" class="content">
-                                    {{ bulb.name }}
-                                    <input type="color" :value="bulb.color" v-on:input="changeColor">
+                                    <bulb :bulb="bulb" v-on:changecolor="changeColor"></bulb>
                                 </div>
                             </div>
                         </article>
@@ -58,7 +57,6 @@ export default {
             },
             bleBulbsFound: [],
             bleBulbsConnected: [],
-            intervalId: 0,
             loading: {
                 scan: false,
                 connect: false
@@ -74,10 +72,6 @@ export default {
                 if (response.data.error) {
                     this._setMessage('warning', response.data.error);
                 } else {
-                    if (this.intervalId !== 0) {
-                        clearInterval(this.intervalId);
-                    }
-                    //this.intervalId = setInterval(this.fetchBleBulbsDiscovered, 10000);
                     setTimeout(this.fetchBleBulbsDiscovered, 500);
                 }
             }).catch((error) => {
@@ -86,11 +80,12 @@ export default {
         },
         fetchBleBulbsDiscovered: function () {
             axios.get(this.config.routes.bleBulbs.discoveredBulbs).then((response) => {
-                this.loading.scan = false;
                 this.bleBulbsFound = response.data.bulbs;
             }).catch((error) => {
                 this._setMessage('error', 'Failed to fetch BLE bulb data');
-                clearInterval(this.intervalId);
+            }).then(() => {
+                this.loading.scan = false;
+                this.loading.connect = false;
             });
         },
         connectToBulb: function (bulbId) {
@@ -101,29 +96,29 @@ export default {
             }).then((response) => {
                 if (response.data.error) {
                     this._setMessage('warning', response.data.error);
-                    this.loading.connect = false;
                 } else {
                     this.bleBulbsConnected = response.data.bulbs;
-                    this.loading.connect = false;
                 }
             }).catch((error) => {
                 this._setMessage('error', 'Failed to connect to BLE bulb');
+            }).then(() => {
+                /* after connecting fetch the available bulbs again */
+                this.fetchBleBulbsDiscovered();
             });
         },
-        changeColor: function (bulbId) {
-            console.log(bulbId);
+        changeColor: function (bulbObj) {
             axios.post(this.config.routes.bleBulbs.changeColor, {
                 _csrf: this.csrfToken,
-                bulbId: bulbId,
-                color: ''
+                bulbId: bulbObj.bulbId,
+                color: bulbObj.color
             }).then((response) => {
                 if (response.data.error) {
                     this._setMessage('warning', response.data.error);
                 } else {
-                    console.log();
+                    console.log(response.data);
                 }
             }).catch((error) => {
-                this._setMessage('error', 'Failed to connect to BLE bulb');
+                this._setMessage('error', 'Failed to change bulb color');
             });
         },
         _setMessage: function (status, text) {
@@ -139,9 +134,6 @@ export default {
         this.bleBulbsConnected = this.connectedBubls;
     },
     beforeDestroy: function () {
-        if (this.intervalId !== 0) {
-            clearInterval(this.intervalId);
-        }
     }
 }
 </script>

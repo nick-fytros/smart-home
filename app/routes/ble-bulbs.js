@@ -27,6 +27,7 @@ class BleBulbs {
         this._addScanRoute();
         this._addDiscoveredBulbsRoute();
         this._addConnectToBulbRoute();
+        this._addBulbColorRoute();
     }
 
     /**
@@ -47,8 +48,9 @@ class BleBulbs {
                 csrfToken: req.csrfToken(),
                 connectedBubls: []
             });
+            req.scope.addComponents(['bulb']);
             if (req.app.locals.peripheralService) {
-                const connectedBubls = req.app.locals.peripheralService.getConnectedBleBulbPeripherals();
+                const connectedBubls = req.app.locals.peripheralService.getConnectedBleBulbPeripheralsData();
                 if (connectedBubls.length > 0){
                     req.scope.addData({
                         connectedBubls: connectedBubls
@@ -77,7 +79,7 @@ class BleBulbs {
     _addDiscoveredBulbsRoute() {
         this.router.get('/discovered', (req, res) => {
             if (req.app.locals.peripheralService) {
-                const discoveredBulbsData = req.app.locals.peripheralService.getDiscoveredBleBulbPeripherals();
+                const discoveredBulbsData = req.app.locals.peripheralService.getDiscoveredBleBulbPeripheralsData();
                 res.json({ bulbs: discoveredBulbsData });
             } else {
                 res.json({ error: 'Please run scan again' });
@@ -103,10 +105,15 @@ class BleBulbs {
         });
     }
 
-    _addLampColorRoute() {
-        this.router.get('/color/:color', (req, res) => {
-            //peripheralService.setLampColor(peripheralService.getConnectedPeripherals()[0], req.params.color);
-            res.end('ok');
+    _addBulbColorRoute() {
+        this.router.post('/color', (req, res) => {
+            const bulbId = req.body.bulbId;
+            const color = req.body.color;
+            req.app.locals.peripheralService.setLampColor(req.app.locals.peripheralService.getConnectedPeripherals()[bulbId], color).then((bulbs) => {
+                res.json({bulbs: bulbs});
+            }).catch((error) => {
+                res.json({error: error.message});
+            });
         });
     }
 }
