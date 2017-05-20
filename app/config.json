@@ -24,8 +24,11 @@
 			}
 		},
 		"bleBulbs": {
-			"scanAndConnect": "/blebulbs/scan",
-			"discoveredBulbs": "/blebulbs/discovered"
+			"scan": "/blebulbs/scan",
+			"discoveredBulbs": "/blebulbs/discovered",
+			"connect": "/blebulbs/connect",
+			"changeColor": "/blebulbs/color",
+			"changeCustomName": "/blebulbs/name"
 		}
 	}
 }

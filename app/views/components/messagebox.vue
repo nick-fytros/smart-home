@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!_.isEmpty(flash)" class="columns">
+    <div v-if="flashIsEmpty" class="columns">
         <div class="column is-one-third is-offset-one-third">
             <div id="message-box">
                 <article v-if="flash && flash.info"
@@ -33,7 +33,12 @@
 
 <script>
 export default {
-    props: ['flash']
+    props: ['flash'],
+    methods: {
+        flashIsEmpty: function() {
+            return !_.isEmpty(flash);
+        }
+    }
 }
 
 </script>

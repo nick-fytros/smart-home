@@ -1,5 +1,4 @@
 const express = require('express');
-const VueScope = require('../models/vue-scope');
 const PeripheralService = require('../services/peripheral-service');
 
 /**
@@ -12,8 +11,6 @@ class BleBulbs {
      * @static
      * @param {Express.Application} app 
      * @returns 
-     * 
-     * @memberOf BleBulbs
      */
     static bootstrap(app) {
         return new BleBulbs(app);
@@ -22,8 +19,6 @@ class BleBulbs {
     /**
      * Creates an instance of BleBulbs.
      * @param {Express.Application} app 
-     * 
-     * @memberOf BleBulbs
      */
     constructor(app) {
         this.app = app;
@@ -31,12 +26,13 @@ class BleBulbs {
         this._addRootRoute();
         this._addScanRoute();
         this._addDiscoveredBulbsRoute();
+        this._addConnectToBulbRoute();
+        this._addBulbColorRoute();
+        this._addBulbCustomNameRoute();
     }
 
     /**
      * @param {string} [pathToAttach='/'] 
-     * 
-     * @memberOf BleBulbs
      */
     attach(pathToAttach = '/') {
         if (pathToAttach) {
@@ -46,60 +42,88 @@ class BleBulbs {
         }
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
-            const vueScope = new VueScope();
-            vueScope.addData({
+            req.scope.addData({
                 user: req.session.user,
-                csrfToken: req.csrfToken()
+                csrfToken: req.csrfToken(),
+                connectedBubls: []
             });
-            res.render('blebulbs/index', vueScope.getScope());
+            req.scope.addComponents(['bulb']);
+            if (req.app.locals.peripheralService) {
+                const connectedBubls = req.app.locals.peripheralService.getConnectedBleBulbPeripheralsData();
+                if (connectedBubls.length > 0){
+                    req.scope.addData({
+                        connectedBubls: connectedBubls
+                    });
+                }
+            }
+            res.render('blebulbs/index', req.scope.getScope());
         });
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
     _addScanRoute() {
         this.router.post('/scan', (req, res) => {
             if (req.app.locals.peripheralService) {
-                res.status(200).send('ok');
+                res.send('ok');
             } else {
                 try {
                     req.app.locals.peripheralService = new PeripheralService(req);
-                    res.status(200).send('ok');
+                    res.send('ok');
                 } catch (error) {
-                    res.status(200).send({ error: error.message });
+                    res.json({ error: error.message });
                 }
             }
         });
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
     _addDiscoveredBulbsRoute() {
         this.router.get('/discovered', (req, res) => {
             if (req.app.locals.peripheralService) {
-                const discoveredBulbsData = req.app.locals.peripheralService.getDiscoveredBleBulbPeripherals();
-                res.status(200).send({ bulbs: discoveredBulbsData });
+                const discoveredBulbsData = req.app.locals.peripheralService.getDiscoveredBleBulbPeripheralsData();
+                res.json({ bulbs: discoveredBulbsData });
             } else {
-                res.status(200).send({ error: 'err' });
+                res.json({ error: 'Please run scan again' });
             }
 
         });
     }
 
-    /**
-     * @memberOf BleBulbs
-     */
-    _addLampColorRoute() {
-        this.router.get('/color/:color', (req, res) => {
-            //peripheralService.setLampColor(peripheralService.getConnectedPeripherals()[0], req.params.color);
-            res.end('ok');
+    _addConnectToBulbRoute() {
+        this.router.post('/connect', (req, res) => {
+            const bublId = req.body.bulbId;
+            if (req.app.locals.peripheralService) {
+                const discoveredBulbPeripherals = req.app.locals.peripheralService.getDiscoveredPeripherals();
+                req.app.locals.peripheralService.connectToPeripheralAndInit(discoveredBulbPeripherals[bublId]).then((connectedBulbs) => {
+                    res.json({ bulbs: connectedBulbs });
+                }).catch((error) => {
+                    res.json({ error: error.message });
+                });
+            } else {
+                res.json({ error: 'Please run scan again' });
+            }
+
+        });
+    }
+
+    _addBulbColorRoute() {
+        this.router.post('/color', (req, res) => {
+            const bulbId = req.body.bulbId;
+            const color = req.body.color;
+            req.app.locals.peripheralService.setBulbColor(req.app.locals.peripheralService.getConnectedPeripherals()[bulbId], color).then((bulbs) => {
+                res.json({bulbs: bulbs});
+            }).catch((error) => {
+                res.json({error: error.message});
+            });
+        });
+    }
+
+    _addBulbCustomNameRoute() {
+        this.router.post('/name', (req, res) => {
+            const bulbId = req.body.bulbId;
+            const customName = req.body.customName;
+            req.app.locals.peripheralService.setBulbCustomName(req.app.locals.peripheralService.getConnectedPeripherals()[bulbId], customName);
+            res.json();
         });
     }
 }

@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const VueScope = require('../models/vue-scope');
 
 const User = require('../models/user');
 const FlashService = require('../services/flash-service');
@@ -100,9 +99,8 @@ class Auth {
             if (req.session.user) {
                 res.redirect('/apps');
             } else {
-                const vueScope = new VueScope();
-                vueScope.addData({ csrfToken: req.csrfToken() });
-                res.render('auth/signup', vueScope.getScope());
+                req.scope.addData({ csrfToken: req.csrfToken() });
+                res.render('auth/signup', req.scope.getScope());
             }
         });
 

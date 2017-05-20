@@ -1,5 +1,3 @@
-const VueScope = require('../models/vue-scope');
-
 /**
  * @export
  * @class Security

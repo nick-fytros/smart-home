@@ -1,5 +1,4 @@
 const express = require('express');
-const VueScope = require('../models/vue-scope');
 const FlashService = require('../services/flash-service');
 
 /**
@@ -46,16 +45,15 @@ class Main {
      */
     _addRootRoute() {
         this.router.get('/', (req, res) => {
-            const vueScope = new VueScope();
             if (req.session && req.session.flash) {
-                vueScope.addData({ flash: req.session.flash });
+                req.scope.addData({ flash: req.session.flash });
             }
             /* if a user is already logged in redirect to apps page */
             if (req.session.user) {
                 res.redirect('/apps');
             } else {
-                vueScope.addData({ csrfToken: req.csrfToken() });
-                res.render('main/index', vueScope.getScope());
+                req.scope.addData({ csrfToken: req.csrfToken() });
+                res.render('main/index', req.scope.getScope());
             }
         });
     }
@@ -65,12 +63,11 @@ class Main {
      */
     _addAppsRoute() {
         this.router.get('/apps', (req, res) => {
-            const vueScope = new VueScope();
-            vueScope.addData({
+            req.scope.addData({
                 user: req.session.user,
                 applications: req.app.locals.applications
             });
-            res.render('main/apps', vueScope.getScope());
+            res.render('main/apps', req.scope.getScope());
         });
     }
 }

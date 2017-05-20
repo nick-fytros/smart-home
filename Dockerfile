@@ -1,4 +1,4 @@
-FROM hypriot/rpi-node:latest
+FROM nickfytros/raspbian-jessie-lite
 
 # Install required libs for node noble js
 RUN apt-get update
