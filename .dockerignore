@@ -6,7 +6,6 @@ README.md
 deploy.sh
 npm-debug.log
 node_modules
-app
 test
 assets
 .env
