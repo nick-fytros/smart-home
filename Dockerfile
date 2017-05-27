@@ -4,7 +4,7 @@ FROM nickfytros/raspbian-jessie-lite-node7
 RUN apt-get update & apt-get clean
 RUN apt-get install bluetooth bluez libbluetooth-dev libudev-dev -y & apt-get clean
 RUN apt-get install libcap2-bin -y & apt-get clean
-RUN apt-get install build-essential & apt-get clean
+RUN apt-get install build-essential make & apt-get clean
 RUN setcap cap_net_raw+eip $(eval readlink -f `which node`)
 
 # Install pm2 globally
