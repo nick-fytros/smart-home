@@ -1,9 +1,10 @@
 FROM nickfytros/raspbian-jessie-lite
 
 # Install required libs for node noble js
-RUN apt-get update
-RUN apt-get install bluetooth bluez libbluetooth-dev libudev-dev
-RUN apt-get install libcap2-bin
+RUN apt-get update & apt-get clean
+RUN apt-get install bluetooth bluez libbluetooth-dev libudev-dev & apt-get clean
+RUN apt-get install libcap2-bin & apt-get clean
+RUN apt-get install build-essential & apt-get clean
 RUN setcap cap_net_raw+eip $(eval readlink -f `which node`)
 
 # Install pm2 globally
