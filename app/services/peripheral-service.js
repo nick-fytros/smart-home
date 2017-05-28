@@ -118,9 +118,9 @@ class PeripheralService {
                         };
                         /* on peripheral disconnect, reconnect */
                         peripheral.once('disconnect', () => {
-                            console.log('peripheral disconnected...');
-                            delete this.connectedPeripherals[peripheral.id];
-                            this.connectToPeripheralAndInit(peripheral);
+                            console.warn('peripheral disconnected...');
+                            // delete this.connectedPeripherals[peripheral.id];
+                            // this.connectToPeripheralAndInit(peripheral);
                         });
 
                         resolve(this.getConnectedBleBulbPeripheralsData());
