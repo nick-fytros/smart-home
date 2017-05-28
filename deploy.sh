@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# pulling the newest
+cd ~/projects/smart-home && git pull origin master
 # build the new image
 docker build -t smart-home ~/projects/smart-home
 # stop and rm the previous container
