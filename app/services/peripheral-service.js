@@ -111,9 +111,9 @@ class PeripheralService {
                         /* save the connected peripheral with its writable characteristic */
                         this.connectedPeripherals[peripheral.id] = {
                             peripheral: peripheral,
-                            color: peripheral.color || '',
-                            previousColor: peripheral.previousColor || '',
-                            customName: peripheral.customName || '',
+                            color: this.connectedPeripherals[peripheral.id] ? this.connectedPeripherals[peripheral.id].color : '',
+                            previousColor: this.connectedPeripherals[peripheral.id] ? this.connectedPeripherals[peripheral.id].previousColor : '',
+                            customName: this.connectedPeripherals[peripheral.id] ? this.connectedPeripherals[peripheral.id].customName : '',
                             colorCharacteristic: characteristics[0]
                         };
                         /* on peripheral disconnect, reconnect */
