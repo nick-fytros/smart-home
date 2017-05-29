@@ -116,7 +116,7 @@ class PeripheralService {
                             reject(error);
                         }
                         /* save the connected peripheral with its writable characteristic */
-                        if (this.connectedPeripherals[peripheral.id].peripheral.id) {
+                        if (typeof(this.connectedPeripherals[peripheral.id]) !== 'undefined') {
                             Object.assign(this.connectedPeripherals[peripheral.id], {
                                 peripheral: peripheral,
                                 colorCharacteristic: characteristics[0],
