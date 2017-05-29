@@ -2,7 +2,7 @@
     <div>
         <div class="columns">
             <div class="column">
-                {{ bulb.customName || bulb.name }}
+                {{ bulb.customName || bulb.name }} | {{ bulb.connected ? 'connected' : 'disconnected' }}
             </div>
         </div>
         <div class="columns">
