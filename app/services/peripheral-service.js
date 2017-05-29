@@ -116,11 +116,19 @@ class PeripheralService {
                             reject(error);
                         }
                         /* save the connected peripheral with its writable characteristic */
-                        Object.assign(this.connectedPeripherals[peripheral.id], {
-                            peripheral: peripheral,
-                            colorCharacteristic: characteristics[0],
-                            connected: true
-                        });
+                        if (this.connectedPeripherals[peripheral.id].peripheral.id) {
+                            Object.assign(this.connectedPeripherals[peripheral.id], {
+                                peripheral: peripheral,
+                                colorCharacteristic: characteristics[0],
+                                connected: true
+                            });
+                        } else {
+                            this.connectedPeripherals[peripheral.id] = {
+                                peripheral: peripheral,
+                                colorCharacteristic: characteristics[0],
+                                connected: true
+                            };
+                        }
                         /* on peripheral disconnect, reconnect */
                         peripheral.once('disconnect', () => {
                             this.connectedPeripherals[peripheral.id].connected = false;
