@@ -21,35 +21,27 @@ class PeripheralService {
                 throw error;
             }
         }
-        this
-            .noble
-            .removeAllListeners('stageChange');
-        this
-            .noble
-            .removeAllListeners('discover');
-        this
-            .noble
-            .on('stateChange', (state) => {
-                // possible state values: "unknown", "resetting", "unsupported", "unauthorized",
-                // "poweredOff", "poweredOn"
-                if (state === 'poweredOn') {
-                    this
-                        .noble
-                        .startScanning();
-                } else {
-                    this
-                        .noble
-                        .stopScanning();
-                }
-            });
-        this
-            .noble
-            .on('discover', (peripheral) => {
-                /* find and connect to all the Ble bulbs */
-                if (typeof(peripheral.advertisement.localName) !== 'undefined' && peripheral.advertisement.localName.includes('LEDBLE-')) {
-                    this.bleBulbPeripheralsDiscovered[peripheral.id] = peripheral;
-                }
-            });
+        this.noble.removeAllListeners('stageChange');
+        this.noble.removeAllListeners('discover');
+        this.noble.on('stateChange', (state) => {
+            // possible state values: "unknown", "resetting", "unsupported", "unauthorized",
+            // "poweredOff", "poweredOn"
+            if (state === 'poweredOn') {
+                this.noble.startScanning();
+                //REMOVE
+                console.log('started scanning');
+            } else {
+                this.noble.stopScanning();
+            }
+        });
+        this.noble.on('discover', (peripheral) => {
+            /* find and connect to all the Ble bulbs */
+            if (typeof (peripheral.advertisement.localName) !== 'undefined' && peripheral.advertisement.localName.includes('LEDBLE-')) {
+                //REMOVE
+                console.log('found LEDBLE');
+                this.bleBulbPeripheralsDiscovered[peripheral.id] = peripheral;
+            }
+        });
     }
 
     /**
@@ -72,7 +64,12 @@ class PeripheralService {
     getDiscoveredBleBulbPeripheralsData() {
         let discoveredPeripheralData = [];
         for (let peripheralId in this.bleBulbPeripheralsDiscovered) {
-            discoveredPeripheralData.push({id: this.bleBulbPeripheralsDiscovered[peripheralId].id, name: this.bleBulbPeripheralsDiscovered[peripheralId].advertisement.localName, connectable: this.bleBulbPeripheralsDiscovered[peripheralId].connectable, state: this.bleBulbPeripheralsDiscovered[peripheralId].state});
+            discoveredPeripheralData.push({
+                id: this.bleBulbPeripheralsDiscovered[peripheralId].id,
+                name: this.bleBulbPeripheralsDiscovered[peripheralId].advertisement.localName,
+                connectable: this.bleBulbPeripheralsDiscovered[peripheralId].connectable,
+                state: this.bleBulbPeripheralsDiscovered[peripheralId].state
+            });
         }
         return discoveredPeripheralData;
     }
@@ -116,7 +113,7 @@ class PeripheralService {
                             reject(error);
                         }
                         /* save the connected peripheral with its writable characteristic */
-                        if (typeof(this.connectedPeripherals[peripheral.id]) !== 'undefined') {
+                        if (typeof (this.connectedPeripherals[peripheral.id]) !== 'undefined') {
                             Object.assign(this.connectedPeripherals[peripheral.id], {
                                 peripheral: peripheral,
                                 colorCharacteristic: characteristics[0],
@@ -129,6 +126,9 @@ class PeripheralService {
                                 connected: true
                             };
                         }
+                        //REMOVE
+                        console.log('peripheral');
+                        console.log(this.connectedPeripherals);
                         /* on peripheral disconnect, reconnect */
                         peripheral.once('disconnect', () => {
                             this.connectedPeripherals[peripheral.id].connected = false;
@@ -148,17 +148,15 @@ class PeripheralService {
     setBulbColor(peripheral, color) {
         const colorCommand = '56' + color.replace('#', '') + '00f0aa';
         return new Promise((resolve, reject) => {
-            peripheral
-                .colorCharacteristic
-                .write(new Buffer(colorCommand, 'hex'), true, (error) => {
-                    if (error) {
-                        reject(error);
-                    }
-                    /* save color and previous color set to the peripheral */
-                    this.connectedPeripherals[peripheral.peripheral.id].previousColor = this.connectedPeripherals[peripheral.peripheral.id].color;
-                    this.connectedPeripherals[peripheral.peripheral.id].color = color;
-                    resolve(this.getConnectedBleBulbPeripheralsData());
-                });
+            peripheral.colorCharacteristic.write(new Buffer(colorCommand, 'hex'), true, (error) => {
+                if (error) {
+                    reject(error);
+                }
+                /* save color and previous color set to the peripheral */
+                this.connectedPeripherals[peripheral.peripheral.id].previousColor = this.connectedPeripherals[peripheral.peripheral.id].color;
+                this.connectedPeripherals[peripheral.peripheral.id].color = color;
+                resolve(this.getConnectedBleBulbPeripheralsData());
+            });
         });
     }
 
