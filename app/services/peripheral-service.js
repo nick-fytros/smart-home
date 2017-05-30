@@ -28,8 +28,6 @@ class PeripheralService {
             // "poweredOff", "poweredOn"
             if (state === 'poweredOn') {
                 this.noble.startScanning();
-                //REMOVE
-                console.log('started scanning');
             } else {
                 this.noble.stopScanning();
             }
@@ -37,8 +35,6 @@ class PeripheralService {
         this.noble.on('discover', (peripheral) => {
             /* find and connect to all the Ble bulbs */
             if (typeof (peripheral.advertisement.localName) !== 'undefined' && peripheral.advertisement.localName.includes('LEDBLE-')) {
-                //REMOVE
-                console.log('found LEDBLE');
                 this.bleBulbPeripheralsDiscovered[peripheral.id] = peripheral;
             }
         });
@@ -126,9 +122,6 @@ class PeripheralService {
                                 connected: true
                             };
                         }
-                        //REMOVE
-                        console.log('peripheral');
-                        console.log(this.connectedPeripherals);
                         /* on peripheral disconnect, reconnect */
                         peripheral.once('disconnect', () => {
                             this.connectedPeripherals[peripheral.id].connected = false;
